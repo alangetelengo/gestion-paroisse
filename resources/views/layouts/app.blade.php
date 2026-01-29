@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
+    @php
+    $paroisseId = auth()->check() ? (auth()->user()->paroisse_id ?? null) : null;
+    $loaderActif = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_actif', true);
+    $loaderDureeMin = (int) \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_duree_min', 10);
+    $loaderAfficherLogo = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true);
+    $loaderStyle = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style', 'logo_spinner');
+    $loaderLogoPath = \App\Helpers\ParoisseConfig::get($paroisseId, 'logo_path', '/images/logo-paroisse.svg');
+@endphp
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,7 +20,8 @@
     <title>@yield('title', 'Gestion de Paroisse') - {{ config('app.name') }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('tpl/images/favicon.png') }}">
+    {{-- <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('tpl/images/favicon.png') }}"> --}}
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset(ltrim($loaderLogoPath, '/')) }}">
 
     <!-- Styles du template -->
     <link rel="stylesheet" href="{{ asset('tpl/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
@@ -31,14 +40,7 @@
     @stack('styles')
 </head>
 <body>
-    @php
-        $paroisseId = auth()->check() ? (auth()->user()->paroisse_id ?? null) : null;
-        $loaderActif = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_actif', true);
-        $loaderDureeMin = (int) \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_duree_min', 10);
-        $loaderAfficherLogo = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true);
-        $loaderStyle = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style', 'logo_spinner');
-        $loaderLogoPath = \App\Helpers\ParoisseConfig::get($paroisseId, 'logo_path', '/images/logo-paroisse.svg');
-    @endphp
+
     <!--*******************
         Preloader start (paramétrable : Configuration > Loader)
     ********************-->
