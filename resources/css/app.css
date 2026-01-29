@@ -1,0 +1,982 @@
+/* ============================================
+   CHARTE DE COULEURS OFFICIELLE DE L'ÉGLISE CATHOLIQUE
+   ============================================
+   - Primaire (#003366) : Bleu marine - Couleur de la Vierge Marie
+   - Secondaire (#FFD700) : Or - Couleur papale et symbolique
+   - Succès (#2D5016) : Vert foncé - Espérance et croissance
+   - Info (#4A90E2) : Bleu clair - Confiance et sérénité
+   - Avertissement (#FF8C00) : Orange - Vigilance
+   - Danger (#DC143C) : Rouge - Sang du Christ, sacrifice
+   ============================================ */
+
+:root {
+    /* Couleurs officielles de l'Église catholique */
+    --primary: #003366;        /* Bleu marine - Vierge Marie */
+    --secondary: #FFD700;      /* Or - Papal */
+    --success: #2D5016;        /* Vert foncé - Espérance */
+    --info: #4A90E2;          /* Bleu clair - Confiance */
+    --warning: #FF8C00;        /* Orange - Vigilance */
+    --danger: #DC143C;         /* Rouge - Sang du Christ */
+    --purple: #800080;         /* Violet - Liturgie */
+
+    /* Variations de la couleur primaire */
+    --primary-hover: #002244;
+    --primary-dark: #001122;
+    --rgba-primary-1: rgba(0, 51, 102, 0.1);
+    --rgba-primary-2: rgba(0, 51, 102, 0.2);
+    --rgba-primary-3: rgba(0, 51, 102, 0.3);
+    --rgba-primary-4: rgba(0, 51, 102, 0.4);
+    --rgba-primary-5: rgba(0, 51, 102, 0.5);
+    --rgba-primary-6: rgba(0, 51, 102, 0.6);
+    --rgba-primary-7: rgba(0, 51, 102, 0.7);
+    --rgba-primary-8: rgba(0, 51, 102, 0.8);
+    --rgba-primary-9: rgba(0, 51, 102, 0.9);
+
+    /* Ombres modernes */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+    /* Transitions */
+    --transition-base: all 0.3s ease;
+    --transition-fast: all 0.15s ease;
+    --transition-slow: all 0.5s ease;
+}
+
+/* Styles personnalisés pour l'application */
+.brand-logo .svg-logo-path {
+    fill: var(--secondary);
+}
+
+.brand-logo .svg-logo-title {
+    fill: var(--primary);
+}
+
+/* Menu principal : violet #6A1B9A (logo → bas de la colonne)
+   !important pour override data-sibebarbg / data-navheaderbg du template */
+.nav-header,
+#main-wrapper .nav-header,
+[data-navheaderbg] .nav-header,
+body .nav-header {
+    background: #6A1B9A !important;
+    background-color: #6A1B9A !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   MENU LATÉRAL (DEZNAV) - Violet #6A1B9A
+   ============================================ */
+.deznav,
+#main-wrapper .deznav,
+[data-sibebarbg] .deznav,
+body .deznav {
+    background: #6A1B9A !important;
+    background-color: #6A1B9A !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.deznav .metismenu a {
+    color: rgba(255, 255, 255, 0.9);
+    transition: var(--transition-base);
+}
+
+.deznav .metismenu a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--secondary);
+}
+
+.deznav .metismenu .mm-active > a {
+    background: rgba(255, 215, 0, 0.2);
+    color: var(--secondary);
+    border-left: 3px solid var(--secondary);
+}
+
+.deznav .metismenu .nav-text {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+}
+
+.deznav .metismenu .mm-active > a .nav-text {
+    color: var(--secondary);
+    font-weight: 600;
+}
+
+.deznav .metismenu i {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.deznav .metismenu .mm-active > a i,
+.deznav .metismenu a:hover i {
+    color: var(--secondary);
+}
+
+.deznav .copyright,
+.deznav .copyright p {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* ============================================
+   TOGGLE MENU (HAMBURGER) - COMPORTEMENT COMME LE TEMPLATE
+   ============================================ */
+/* Quand le menu est en mode collapsed (menu-toggle) */
+#main-wrapper.menu-toggle .nav-header {
+    width: 7.5rem;
+    z-index: 999;
+}
+
+#main-wrapper.menu-toggle .nav-header .brand-logo {
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: center;
+}
+
+#main-wrapper.menu-toggle .nav-header .brand-title {
+    display: none;
+}
+
+#main-wrapper.menu-toggle .nav-header .logo-abbr,
+#main-wrapper.menu-toggle .nav-header img.logo-abbr {
+    display: block !important;
+    margin: 0 auto !important;
+    margin-right: 0 !important;
+}
+
+#main-wrapper.menu-toggle .header {
+    padding-left: 7.5rem;
+    width: 100%;
+}
+
+#main-wrapper.menu-toggle .deznav {
+    width: 7.5rem;
+    overflow: visible;
+    position: absolute;
+}
+
+#main-wrapper.menu-toggle .deznav .nav-text {
+    display: none;
+}
+
+#main-wrapper.menu-toggle .deznav .slimScrollDiv,
+#main-wrapper.menu-toggle .deznav .deznav-scroll {
+    overflow: visible !important;
+}
+
+#main-wrapper.menu-toggle .deznav .metismenu li {
+    position: relative;
+}
+
+#main-wrapper.menu-toggle .deznav .metismenu li a {
+    padding: 22px 15px;
+    text-align: center;
+    justify-content: center;
+}
+
+#main-wrapper.menu-toggle .deznav .metismenu li a > i {
+    width: auto;
+    height: auto;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+#main-wrapper.menu-toggle .deznav .metismenu li a svg {
+    max-width: 24px;
+    max-height: 24px;
+    margin-right: 0;
+}
+
+#main-wrapper.menu-toggle .deznav .metismenu .has-arrow:after {
+    display: none;
+}
+
+#main-wrapper.menu-toggle .deznav .copyright {
+    display: none;
+}
+
+/* Le content-body s'ajuste automatiquement via le header padding */
+
+/* Responsive pour menu-toggle */
+@media only screen and (max-width: 1400px) {
+    #main-wrapper.menu-toggle .nav-header {
+        width: 5rem;
+    }
+
+    #main-wrapper.menu-toggle .header {
+        padding-left: 5rem;
+    }
+
+    #main-wrapper.menu-toggle .deznav {
+        width: 5rem;
+    }
+
+    #main-wrapper.menu-toggle .content-body {
+        margin-left: 5rem;
+    }
+}
+
+/* ============================================
+   TEXTE BLANC SUR FONDS #003366
+   ============================================ */
+.nav-header,
+.card-header,
+.btn-primary,
+.badge-primary,
+.widget-stat::before {
+    color: white !important;
+}
+
+.nav-header *,
+.card-header *,
+.btn-primary *,
+.badge-primary * {
+    color: white !important;
+}
+
+.dashboard_bar span {
+    color: var(--primary) !important;
+}
+
+/* ============================================
+   BOUTONS MODERNES
+   ============================================ */
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: white;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: #333;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+    background-color: #E6C200;
+    border-color: #E6C200;
+    color: #333;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+/* Style par défaut du template - pas de coins arrondis pour les boutons */
+
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: white;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-success:hover {
+    background-color: #1f3a0f;
+    border-color: #1f3a0f;
+    color: white;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+/* Boutons d'action du tableau - Utilise les variables CSS paramétrables */
+.btn-info {
+    background-color: var(--action-voir, var(--info));
+    border-color: var(--action-voir, var(--info));
+    color: white;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-info:hover {
+    background-color: var(--action-voir, var(--info));
+    border-color: var(--action-voir, var(--info));
+    color: white;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-warning {
+    background-color: var(--action-modifier, var(--warning));
+    border-color: var(--action-modifier, var(--warning));
+    color: white;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-warning:hover {
+    background-color: var(--action-modifier, var(--warning));
+    border-color: var(--action-modifier, var(--warning));
+    color: white;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background-color: var(--action-supprimer, var(--danger));
+    border-color: var(--action-supprimer, var(--danger));
+    color: white;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:hover {
+    background-color: var(--action-supprimer, var(--danger));
+    border-color: var(--action-supprimer, var(--danger));
+    color: white;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+/* Bouton citron pour les actions d'ajout - Utilise les variables CSS paramétrables */
+.btn-citron {
+    background-color: var(--bouton-ajout, #FFEB3B);
+    border-color: var(--bouton-ajout, #FFEB3B);
+    color: #333;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+    font-weight: 600;
+}
+
+.btn-citron:hover {
+    background-color: var(--bouton-ajout-hover, #FDD835);
+    border-color: var(--bouton-ajout-hover, #FDD835);
+    color: #333;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+/* Sur header foncé: rendre le bouton plus vif/visible */
+.card-header .btn-citron {
+    background-color: var(--bouton-ajout, #FFEA00);
+    border-color: rgba(255, 255, 255, 0.65);
+    color: #111;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+}
+
+.card-header .btn-citron:hover,
+.card-header .btn-citron:focus {
+    background-color: var(--bouton-ajout-hover, #FFD200);
+    border-color: rgba(255, 255, 255, 0.85);
+    color: #111;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+    transform: translateY(-1px);
+}
+
+/* Boutons de taille sm */
+.btn-sm.btn-rounded {
+    padding: 6px 16px;
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   CARTES MODERNES - Style template original (coins carrés)
+   ============================================ */
+.card {
+    border: none;
+    /* Force la forme (évite les styles du template qui peuvent reprendre la main) */
+    border-radius: 0 !important;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-base);
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--titre-page, var(--primary)) 0%, var(--titre-page-dark, var(--primary-dark)) 100%);
+    color: white;
+    padding: 20px 24px;
+    border-bottom: none;
+    border-radius: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Le header doit remplir aussi les coins/bordures de la carte */
+.card > .card-header {
+    border-top-left-radius: inherit !important;
+    border-top-right-radius: inherit !important;
+}
+
+.card-header h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.card-header .card-title {
+    color: white;
+}
+
+.card-header .card-action {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Le template force .card-action > a à une taille "icône" (1.875rem).
+   On annule ça pour nos vrais boutons (texte horizontal). */
+.card-header .card-action > a.btn {
+    width: auto !important;
+    height: auto !important;
+    line-height: normal !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap !important;
+    text-align: center;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* ============================================
+   TABLEAUX MODERNES
+   ============================================ */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, var(--rgba-primary-1) 0%, var(--rgba-primary-2) 100%);
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    border: none;
+    border-bottom: 2px solid var(--primary);
+}
+
+.table tbody tr {
+    transition: var(--transition-fast);
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table tbody tr:hover {
+    background-color: var(--rgba-primary-1);
+    transform: scale(1.01);
+    box-shadow: var(--shadow-sm);
+}
+
+.table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+}
+
+/* ============================================
+   BADGES MODERNES
+   ============================================ */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--shadow-sm);
+}
+
+.badge-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+}
+
+.badge-success {
+    background: linear-gradient(135deg, var(--success) 0%, #1f3a0f 100%);
+    color: white;
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, var(--danger) 0%, #b8112f 100%);
+    color: white;
+}
+
+.badge-info {
+    background: linear-gradient(135deg, var(--info) 0%, #3570b8 100%);
+    color: white;
+}
+
+.badge-warning {
+    background: linear-gradient(135deg, var(--warning) 0%, #e67d00 100%);
+    color: white;
+}
+
+/* ============================================
+   WIDGET STATISTIQUES
+   ============================================ */
+.widget-stat {
+    border: none;
+    border-radius: 0;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-base);
+    overflow: hidden;
+    position: relative;
+}
+
+.widget-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.widget-stat:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.widget-stat .card-body {
+    padding: 24px;
+}
+
+.widget-stat .media {
+    align-items: center;
+}
+
+.widget-stat .media .me-3 {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: var(--shadow-sm);
+}
+
+.widget-stat .media-body p {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.widget-stat .media-body h4 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+}
+
+/* ============================================
+   FORMULAIRES MODERNES
+   ============================================ */
+.form-label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    transition: var(--transition-base);
+    font-size: 0.9375rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem var(--rgba-primary-2);
+    outline: none;
+}
+
+.form-control-color {
+    width: 60px;
+    height: 50px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    transition: var(--transition-base);
+}
+
+.form-control-color:hover {
+    border-color: var(--primary);
+    transform: scale(1.1);
+}
+
+/* ============================================
+   SECTIONS DE FORMULAIRE
+   ============================================ */
+.mb-4 h5 {
+    color: var(--primary);
+    font-weight: 600;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--rgba-primary-1);
+    margin-bottom: 20px;
+}
+
+/* ============================================
+   ALERTES MODERNES
+   ============================================ */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 16px 20px;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid;
+}
+
+.alert-danger {
+    background-color: rgba(220, 20, 60, 0.1);
+    border-left-color: var(--danger);
+    color: #721c24;
+}
+
+/* ============================================
+   WELCOME CARD
+   ============================================ */
+.welcome-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.welcome-card h4 {
+    color: var(--secondary);
+    font-weight: 700;
+    font-size: 1.75rem;
+    margin-bottom: 12px;
+}
+
+.welcome-card p {
+    font-size: 1.0625rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+/* ============================================
+   ACTIONS DANS LES TABLEAUX
+   ============================================ */
+.table .d-flex .btn {
+    margin: 0 2px;
+    transition: var(--transition-fast);
+}
+
+.table .d-flex .btn:hover {
+    transform: scale(1.1);
+}
+
+/* ============================================
+   PAGINATION
+   ============================================ */
+.pagination .page-link {
+    color: var(--primary);
+    border-color: #e0e0e0;
+    transition: var(--transition-base);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--rgba-primary-1);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .widget-stat .media-body h4 {
+        font-size: 1.5rem;
+    }
+
+    .card-header {
+        padding: 16px;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+}
+
+/* ============================================
+   PAGE UTILISATEUR - DÉTAILS (scopé)
+   Respecte les variables CSS paramétrables
+   ============================================ */
+.user-details .user-hero {
+    background: linear-gradient(
+        135deg,
+        var(--titre-page, var(--primary)) 0%,
+        var(--titre-page-dark, var(--primary-dark)) 100%
+    );
+    color: white;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.user-details .user-hero::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -30%;
+    width: 90%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, transparent 60%);
+    transform: rotate(12deg);
+}
+
+.user-details .user-hero-body {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.user-details .user-hero-left {
+    display: flex;
+    gap: 16px;
+    min-width: 0;
+}
+
+.user-details .user-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.18);
+    flex: 0 0 auto;
+}
+
+.user-details .user-hero-meta {
+    min-width: 0;
+}
+
+.user-details .user-hero-name {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    color: white;
+}
+
+.user-details .user-hero-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.95;
+    margin-bottom: 10px;
+}
+
+.user-details .user-hero-item {
+    display: inline-flex;
+    gap: 6px;
+    align-items: baseline;
+    min-width: 0;
+}
+
+.user-details .user-hero-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    opacity: 0.85;
+}
+
+.user-details .user-hero-value {
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.user-details .user-hero-sep {
+    opacity: 0.8;
+}
+
+.user-details .user-hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.user-details .badge-secondary {
+    background: rgba(255, 255, 255, 0.16);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.user-details .user-hero-right {
+    flex: 0 0 auto;
+}
+
+.user-details .kv {
+    display: grid;
+    gap: 10px;
+}
+
+.user-details .kv-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 100%);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.user-details .kv-key {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.user-details .kv-val {
+    color: #2d3748;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.user-details .section-title {
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 0.2px;
+    margin-bottom: 10px;
+}
+
+.user-details .chip-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.user-details .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.user-details .chip-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.user-details .chip-info {
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(0, 51, 102, 0.12) 100%);
+    color: var(--primary);
+    border-color: rgba(0, 51, 102, 0.12);
+}
+
+.user-details .permission-groups {
+    display: grid;
+    gap: 14px;
+}
+
+.user-details .permission-group {
+    padding: 12px 12px 14px;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.user-details .permission-group-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.user-details .permission-group-title {
+    font-weight: 900;
+    color: var(--primary);
+    letter-spacing: 0.6px;
+}
+
+.user-details .permission-group-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: var(--primary);
+    font-weight: 800;
+}
+
+@media (max-width: 576px) {
+    .user-details .user-hero-body {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .user-details .kv-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+}
