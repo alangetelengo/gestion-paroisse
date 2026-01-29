@@ -31,14 +31,33 @@
     @stack('styles')
 </head>
 <body>
+    @php
+        $paroisseId = auth()->check() ? (auth()->user()->paroisse_id ?? null) : null;
+        $loaderActif = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_actif', true);
+        $loaderDureeMin = (int) \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_duree_min', 10);
+        $loaderAfficherLogo = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true);
+        $loaderStyle = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style', 'logo_spinner');
+        $loaderLogoPath = \App\Helpers\ParoisseConfig::get($paroisseId, 'logo_path', '/images/logo-paroisse.svg');
+    @endphp
     <!--*******************
-        Preloader start
+        Preloader start (paramétrable : Configuration > Loader)
     ********************-->
-    <div id="preloader">
-        <div class="sk-three-bounce">
-            <div class="sk-child sk-bounce1"></div>
-            <div class="sk-child sk-bounce2"></div>
-            <div class="sk-child sk-bounce3"></div>
+    <div id="preloader"
+         class="page-loader loader-style-{{ $loaderStyle }} {{ $loaderActif ? '' : 'loader-disabled' }}"
+         data-loader-actif="{{ $loaderActif ? '1' : '0' }}"
+         data-loader-duree-min="{{ $loaderDureeMin }}"
+         style="background: var(--loader-bg, #003366); color: var(--loader-text, #fff);">
+        <div class="page-loader-inner">
+            @if($loaderAfficherLogo && $loaderLogoPath)
+                <img src="{{ asset(ltrim($loaderLogoPath, '/')) }}" alt="Logo" class="page-loader-logo" width="120" height="120">
+            @endif
+            @if($loaderStyle !== 'logo_centre')
+                <div class="sk-three-bounce">
+                    <div class="sk-child sk-bounce1"></div>
+                    <div class="sk-child sk-bounce2"></div>
+                    <div class="sk-child sk-bounce3"></div>
+                </div>
+            @endif
         </div>
     </div>
     <!--*******************
@@ -207,6 +226,47 @@
     <script src="{{ asset('tpl/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('tpl/js/custom.min.js') }}"></script>
     <script src="{{ asset('tpl/js/deznav-init.js') }}"></script>
+
+    <!-- Script du loader : durée min (ex. 10s) + logo, puis masquage -->
+    <script>
+        (function() {
+            var preloader = document.getElementById('preloader');
+            var mainWrapper = document.getElementById('main-wrapper');
+            if (!preloader || !mainWrapper) return;
+
+            var actif = preloader.getAttribute('data-loader-actif') === '1';
+            var dureeMinSec = parseInt(preloader.getAttribute('data-loader-duree-min'), 10) || 10;
+            var dureeMinMs = Math.max(1000, dureeMinSec * 1000);
+            var start = Date.now();
+
+            function hidePreloader() {
+                if (typeof jQuery !== 'undefined') {
+                    jQuery(preloader).fadeOut(500);
+                    jQuery(mainWrapper).addClass('show');
+                } else {
+                    preloader.style.opacity = '0';
+                    preloader.style.visibility = 'hidden';
+                    preloader.style.transition = 'opacity 0.5s ease, visibility 0.5s ease';
+                    mainWrapper.classList.add('show');
+                    setTimeout(function() { preloader.style.display = 'none'; }, 500);
+                }
+            }
+
+            if (!actif) {
+                preloader.style.display = 'none';
+                document.addEventListener('DOMContentLoaded', function() {
+                    mainWrapper.classList.add('show');
+                });
+                return;
+            }
+
+            window.addEventListener('load', function() {
+                var elapsed = Date.now() - start;
+                var remaining = Math.max(0, dureeMinMs - elapsed);
+                setTimeout(hidePreloader, remaining);
+            });
+        })();
+    </script>
 
     <!-- Script pour garantir le fonctionnement du hamburger -->
     <script>

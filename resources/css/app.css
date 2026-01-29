@@ -1,4 +1,92 @@
 /* ============================================
+   LOADER / PRELOADER (chargement des pages - paramétrable)
+   ============================================ */
+#preloader.page-loader {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+    background: var(--loader-bg, #003366) !important;
+    color: var(--loader-text, #fff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#preloader .page-loader-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+#preloader .page-loader-logo {
+    max-width: 140px;
+    max-height: 140px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.95;
+}
+
+/* Style : logo seul centré */
+#preloader.loader-style-logo_centre .page-loader-inner {
+    gap: 0;
+}
+
+#preloader.loader-style-logo_centre .page-loader-logo {
+    max-width: 160px;
+    max-height: 160px;
+}
+
+/* Style : logo + points animés */
+#preloader.loader-style-logo_spinner .sk-three-bounce {
+    margin: 0;
+    width: auto;
+    height: auto;
+    background: transparent;
+}
+
+#preloader.loader-style-logo_spinner .sk-three-bounce .sk-child,
+#preloader.loader-style-spinner_seul .sk-three-bounce .sk-child {
+    background-color: var(--loader-text, #fff) !important;
+    width: 14px;
+    height: 14px;
+}
+
+/* Style : points animés seuls */
+#preloader.loader-style-spinner_seul .page-loader-inner {
+    gap: 0;
+}
+
+#preloader.loader-style-spinner_seul .sk-three-bounce .sk-child {
+    background-color: var(--loader-text, #fff) !important;
+}
+
+#preloader .sk-three-bounce {
+    margin: 0;
+    width: auto;
+    height: auto;
+    background: transparent;
+}
+
+#preloader .sk-three-bounce .sk-child {
+    background-color: var(--loader-text, #fff) !important;
+    width: 14px;
+    height: 14px;
+}
+
+/* Loader désactivé (Configuration > Loader) */
+#preloader.loader-disabled {
+    display: none !important;
+}
+
+/* ============================================
    CHARTE DE COULEURS OFFICIELLE DE L'ÉGLISE CATHOLIQUE
    ============================================
    - Primaire (#003366) : Bleu marine - Couleur de la Vierge Marie

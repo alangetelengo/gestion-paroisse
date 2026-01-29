@@ -61,6 +61,11 @@
                             En-tête PDF
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="loader-tab" data-bs-toggle="tab" data-bs-target="#loader" type="button" role="tab">
+                            Loader (chargement)
+                        </button>
+                    </li>
                 </ul>
 
                 <div class="tab-content">
@@ -474,6 +479,77 @@
                                                class="form-control"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'pdf_header_text_color', '#FFFFFF') }}"
                                                placeholder="#FFFFFF">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-4 pt-4 border-top">
+                                <button type="submit" class="btn btn-primary">
+                                    Enregistrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {{-- Section 8: Loader (chargement des pages) --}}
+                    <div class="tab-pane fade" id="loader" role="tabpanel">
+                        <form action="{{ route('configurations.update-bulk') }}" method="POST" class="config-section-form">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="section" value="loader">
+
+                            <div class="alert alert-info mb-3">
+                                Affiche un écran de chargement avec le logo de la paroisse pendant au moins la durée choisie, puis masque le loader une fois la page chargée.
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Activer le loader</label>
+                                    <select name="loader_actif" class="form-control">
+                                        <option value="1" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_actif', true))>Oui</option>
+                                        <option value="0" @selected(!\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_actif', true))>Non</option>
+                                    </select>
+                                    <small class="text-muted">Afficher l'écran de chargement au démarrage des pages</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Durée minimale (secondes)</label>
+                                    <input type="number" name="loader_duree_min" class="form-control"
+                                           value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_duree_min', 10) }}"
+                                           min="1" max="60" step="1">
+                                    <small class="text-muted">Le loader reste visible au moins ce nombre de secondes (ex: 10)</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Afficher le logo</label>
+                                    <select name="loader_afficher_logo" class="form-control">
+                                        <option value="1" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true))>Oui</option>
+                                        <option value="0" @selected(!\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true))>Non</option>
+                                    </select>
+                                    <small class="text-muted">Utilise le logo configuré dans « Identité de la paroisse »</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Style du loader</label>
+                                    <select name="loader_style" class="form-control">
+                                        <option value="logo_centre" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style') === 'logo_centre')>Logo seul (centré)</option>
+                                        <option value="logo_spinner" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style', 'logo_spinner') === 'logo_spinner')>Logo + points animés</option>
+                                        <option value="spinner_seul" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style') === 'spinner_seul')>Points animés seuls</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Couleur de fond</label>
+                                    <div class="d-flex align-items-center">
+                                        <input type="color" name="loader_couleur_fond" class="form-control form-control-color me-3"
+                                               value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_fond', '#003366') }}">
+                                        <input type="text" class="form-control" readonly style="flex: 1;"
+                                               value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_fond', '#003366') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Couleur du texte / points</label>
+                                    <div class="d-flex align-items-center">
+                                        <input type="color" name="loader_couleur_texte" class="form-control form-control-color me-3"
+                                               value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_texte', '#FFFFFF') }}">
+                                        <input type="text" class="form-control" readonly style="flex: 1;"
+                                               value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_texte', '#FFFFFF') }}">
                                     </div>
                                 </div>
                             </div>

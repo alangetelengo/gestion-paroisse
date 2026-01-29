@@ -54,6 +54,13 @@ class ParoisseConfig
             'format_date' => 'd/m/Y',
             'format_heure' => 'H:i',
             'langue' => 'fr',
+            // Loader (écran de chargement)
+            'loader_actif' => true,
+            'loader_duree_min' => 10,
+            'loader_afficher_logo' => true,
+            'loader_style' => 'logo_spinner',
+            'loader_couleur_fond' => '#003366',
+            'loader_couleur_texte' => '#FFFFFF',
         ];
 
         // Essayer de récupérer depuis la base de données
@@ -137,6 +144,8 @@ class ParoisseConfig
             --action-voir: {$couleurActionVoir};
             --action-modifier: {$couleurActionModifier};
             --action-supprimer: {$couleurActionSupprimer};
+            --loader-bg: ".self::get($paroisseId, 'loader_couleur_fond', '#003366').";
+            --loader-text: ".self::get($paroisseId, 'loader_couleur_texte', '#FFFFFF').";
         ";
     }
 

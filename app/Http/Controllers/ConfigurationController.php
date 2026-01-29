@@ -181,6 +181,13 @@ class ConfigurationController extends Controller
                 'pdf_header_bg_color_text' => 'nullable|string|max:7',
                 'pdf_header_text_color' => 'nullable|string|max:7',
                 'pdf_header_text_color_text' => 'nullable|string|max:7',
+                // Loader (chargement des pages)
+                'loader_actif' => 'nullable|in:0,1',
+                'loader_duree_min' => 'nullable|integer|min:1|max:60',
+                'loader_afficher_logo' => 'nullable|in:0,1',
+                'loader_style' => 'nullable|in:logo_centre,logo_spinner,spinner_seul',
+                'loader_couleur_fond' => 'nullable|string|max:7',
+                'loader_couleur_texte' => 'nullable|string|max:7',
             ]);
 
             $paroisseId = auth()->check() ? (auth()->user()->paroisse_id ?? null) : null;
@@ -200,6 +207,14 @@ class ConfigurationController extends Controller
             // Convertir pdf_header_show_logo en boolean
             if (isset($data['pdf_header_show_logo'])) {
                 $data['pdf_header_show_logo'] = $data['pdf_header_show_logo'] === '1';
+            }
+
+            // Convertir loader_actif et loader_afficher_logo en boolean
+            if (isset($data['loader_actif'])) {
+                $data['loader_actif'] = $data['loader_actif'] === '1';
+            }
+            if (isset($data['loader_afficher_logo'])) {
+                $data['loader_afficher_logo'] = $data['loader_afficher_logo'] === '1';
             }
 
             $updatedKeys = [];
