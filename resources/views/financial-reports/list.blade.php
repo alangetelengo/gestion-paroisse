@@ -3,18 +3,39 @@
 @section('title', 'Rapports financiers enregistrés')
 @section('page-title', 'Rapports financiers enregistrés')
 
+@push('styles')
+<style>
+.page-list .card { border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: none; }
+.page-list .card-header { background: linear-gradient(135deg, var(--primary, #6A1B9A) 0%, #552586 100%); color: #fff; border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem; }
+.page-list .card-title { font-weight: 600; font-size: 1.2rem; }
+.page-list .table-list { font-size: 0.95rem; }
+.page-list .table-list thead th { background: var(--primary, #6A1B9A); color: #fff; font-weight: 600; padding: 14px 16px; border: none; }
+.page-list .table-list thead th:first-child { border-radius: 8px 0 0 0; }
+.page-list .table-list thead th:last-child { border-radius: 0 8px 0 0; }
+.page-list .table-list tbody tr { transition: background 0.2s; }
+.page-list .table-list tbody tr:hover { background: rgba(106, 27, 154, 0.04); }
+.page-list .table-list td { padding: 14px 16px; vertical-align: middle; }
+.page-list .empty-state { padding: 4rem 2rem; }
+.page-list .empty-state .empty-icon { font-size: 5rem; color: #dee2e6; margin-bottom: 1rem; }
+</style>
+@endpush
+
 @section('content')
+<div class="page-list">
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <i class="flaticon-381-calculator me-2"></i>
+            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <h4 class="card-title mb-0 d-flex align-items-center">
+                    <i class="fas fa-list me-3" style="font-size: 1.4rem; opacity: 0.9;"></i>
                     Liste des rapports enregistrés
                 </h4>
-                <div class="card-action">
-                    <a href="{{ route('financial-reports.index') }}" class="btn btn-secondary me-2">
-                        Générer un nouveau rapport
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{{ route('financial-reports.list') }}" class="btn btn-action btn-refresh">
+                        <i class="fas fa-sync-alt"></i> Rafraîchir
+                    </a>
+                    <a href="{{ route('financial-reports.index') }}" class="btn btn-action btn-add" title="Créer et enregistrer un nouveau rapport financier">
+                        <i class="fas fa-file-invoice-dollar"></i> Générer un nouveau rapport
                     </a>
                 </div>
             </div>
@@ -44,15 +65,19 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary">Filtrer</button>
-                            <a href="{{ route('financial-reports.list') }}" class="btn btn-secondary">Réinitialiser</a>
+                            <button type="submit" class="btn btn-primary btn-filter">
+                                <i class="fas fa-filter me-1"></i> Filtrer
+                            </button>
+                            <a href="{{ route('financial-reports.list') }}" class="btn btn-secondary">
+                                <i class="fas fa-undo me-1"></i> Réinitialiser
+                            </a>
                         </div>
                     </div>
                 </form>
 
                 @if($reports->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
+                    <div class="table-responsive rounded overflow-hidden">
+                        <table class="table table-list table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>Période</th>
@@ -101,10 +126,12 @@
                                         <td>
                                             {{ $report->createdBy->name ?? '—' }}
                                         </td>
-                                        <td class="text-center">
-                                            <a href="{{ route('financial-reports.show', $report) }}" class="btn btn-sm btn-primary">
-                                                Voir / Imprimer
-                                            </a>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <a href="{{ route('financial-reports.show', $report) }}" class="btn btn-view btn-info btn-sm" title="Voir et imprimer">
+                                                    <i class="fas fa-eye"></i> Voir / Imprimer
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -116,15 +143,18 @@
                         {{ $reports->links() }}
                     </div>
                 @else
-                    <div class="text-center py-5">
-                        <i class="flaticon-381-calculator" style="font-size:64px;color:#ccc;margin-bottom:20px;"></i>
-                        <h5 class="text-muted">Aucun rapport enregistré</h5>
-                        <p class="text-muted">Générez un rapport mensuel pour commencer.</p>
-                        <a href="{{ route('financial-reports.index') }}" class="btn btn-primary">Générer un rapport</a>
+                    <div class="empty-state text-center">
+                        <i class="fas fa-calculator empty-icon d-block"></i>
+                        <h5 class="text-muted mb-2">Aucun rapport enregistré</h5>
+                        <p class="text-muted mb-4">Générez un rapport mensuel pour commencer.</p>
+                        <a href="{{ route('financial-reports.index') }}" class="btn btn-add btn-action">
+                            <i class="fas fa-file-invoice-dollar"></i> Générer un rapport
+                        </a>
                     </div>
                 @endif
             </div>
         </div>
     </div>
+</div>
 </div>
 @endsection

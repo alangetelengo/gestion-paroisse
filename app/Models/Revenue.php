@@ -16,6 +16,7 @@ class Revenue extends Model
         'revenue_type_id',
         'periode_messe',
         'jour_semaine',
+        'mois_location',
         'event_id',
         'montant',
         'date_recette',

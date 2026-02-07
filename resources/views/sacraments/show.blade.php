@@ -7,12 +7,12 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <i class="flaticon-381-heart me-2"></i>
+            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-heart me-2"></i>
                     {{ $sacrament->type_label }}
                 </h4>
-                <div class="card-action">
+                <div class="card-action d-flex align-items-center gap-2 flex-wrap">
                     @can(\App\Http\Controllers\SacramentController::TYPE_PERMISSIONS[$sacrament->type]['edit'] ?? 'edit_baptisms')
                     <a href="{{ route('sacraments.edit', $sacrament) }}" class="btn btn-warning btn-sm">Modifier</a>
                     @endcan

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rapport des revenus - Quête ordinaire (impression)</title>
+    <title>Rapport Subvention Popote (impression)</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -37,10 +37,7 @@
         }
         .btn-print:hover { background: #5a1590; }
         .btn-print:focus { outline: 2px solid #6A1B9A; outline-offset: 2px; }
-        .print-page {
-            font-size: 10px;
-            line-height: 1.3;
-        }
+        .print-page { font-size: 10px; line-height: 1.3; }
         .header {
             background-color: {{ $headerConfig['header_bg_color'] ?? '#003366' }};
             color: {{ $headerConfig['header_text_color'] ?? '#FFFFFF' }};
@@ -71,14 +68,13 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-        .summary-box.primary { background-color: #cfe2ff; border-color: #b6d4fe; }
         .summary-box.success { background-color: #d1e7dd; border-color: #badbcc; }
+        .summary-box.danger { background-color: #f8d7da; border-color: #f5c2c7; }
         .summary-box.info { background-color: #d1ecf1; border-color: #bee5eb; }
+        .summary-box.warning { background-color: #fff3cd; border-color: #ffecb5; }
         .summary-box h4 { font-size: 10px; margin-bottom: 4px; font-weight: bold; }
         .summary-box .amount { font-size: 14px; font-weight: bold; }
         .summary-box .label { font-size: 9px; color: #666; }
-        .details-grid { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
-        .details-col { flex: 1; min-width: 200px; }
         .section { margin: 10px 0; }
         .section-title {
             font-size: 11px;
@@ -100,7 +96,6 @@
         table td { padding: 4px 8px; border: 1px solid #ddd; }
         table tr:nth-child(even) { background-color: #f9f9f9; }
         table .text-right { text-align: right; }
-        table .text-center { text-align: center; }
         .total-row { font-weight: bold; background-color: #f0f0f0 !important; }
         .footer {
             margin-top: 12px;
@@ -126,7 +121,6 @@
             .summary-box h4 { font-size: 8px; }
             .summary-box .amount { font-size: 10px; }
             .summary-box .label { font-size: 7px; }
-            .details-grid { margin-bottom: 8px; }
             .section { margin: 6px 0; page-break-inside: avoid; }
             .section-title { font-size: 9px; margin-bottom: 4px; }
             table { font-size: 7px; margin-bottom: 6px; }
@@ -138,7 +132,7 @@
 </head>
 <body>
     <div class="no-print">
-        <strong>Rapport des revenus - Quête ordinaire</strong>
+        <strong>Rapport Subvention Popote — Dépenses alimentation</strong>
         <button type="button" class="btn-print" onclick="window.print();">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path></svg>
             Imprimer
@@ -181,122 +175,66 @@
         </div>
 
         <div class="report-title">
-            <h3>Rapport des revenus - Quête ordinaire</h3>
-            <p>Période : {{ $dateDebut->format('d/m/Y') }} au {{ $dateFin->format('d/m/Y') }} — Généré le {{ now()->format('d/m/Y H:i') }}</p>
+            <h3>Rapport Subvention Popote — Dépenses alimentation</h3>
+            <p>Période : {{ $report['date_debut']->format('d/m/Y') }} au {{ $report['date_fin']->format('d/m/Y') }} — Généré le {{ now()->format('d/m/Y H:i') }}</p>
         </div>
 
         <div class="summary">
-            <div class="summary-box primary">
-                <h4>Total Semaine</h4>
-                <div class="amount">{{ number_format($report['total_semaine'], 0, ',', ' ') }} FCFA</div>
-                <div class="label">Lundi - Samedi</div>
-            </div>
             <div class="summary-box success">
-                <h4>Total Dimanche</h4>
-                <div class="amount">{{ number_format($report['total_dimanche'], 0, ',', ' ') }} FCFA</div>
-                <div class="label">Dimanche</div>
+                <h4>Subvention Popote reçue</h4>
+                <div class="amount">{{ number_format($report['subvention_recue'], 0, ',', ' ') }} FCFA</div>
+                <div class="label">Période sélectionnée</div>
             </div>
-            <div class="summary-box info">
-                <h4>Total Général</h4>
-                <div class="amount">{{ number_format($report['total_general'], 0, ',', ' ') }} FCFA</div>
-                <div class="label">Semaine + Dimanche</div>
+            <div class="summary-box danger">
+                <h4>Dépenses alimentation</h4>
+                <div class="amount">{{ number_format($report['total_depenses_alimentation'], 0, ',', ' ') }} FCFA</div>
+                <div class="label">{{ $report['depenses_alimentation']->count() }} ligne(s)</div>
             </div>
-        </div>
-
-        <div class="details-grid">
-            <div class="details-col">
-                <div class="section">
-                    <div class="section-title">Semaine (Lundi - Samedi)</div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Jour</th>
-                                <th class="text-right">Montant</th>
-                                <th class="text-center">Nb</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php $joursLabels = ['lundi'=>'Lundi','mardi'=>'Mardi','mercredi'=>'Mercredi','jeudi'=>'Jeudi','vendredi'=>'Vendredi','samedi'=>'Samedi']; @endphp
-                            @foreach(['lundi','mardi','mercredi','jeudi','vendredi','samedi'] as $jour)
-                                <tr>
-                                    <td>{{ $joursLabels[$jour] }}</td>
-                                    <td class="text-right">{{ number_format($report['details_semaine'][$jour]['montant'] ?? 0, 0, ',', ' ') }} FCFA</td>
-                                    <td class="text-center">{{ $report['details_semaine'][$jour]['count'] ?? 0 }}</td>
-                                </tr>
-                            @endforeach
-                            <tr class="total-row">
-                                <td>TOTAL SEMAINE</td>
-                                <td class="text-right">{{ number_format($report['total_semaine'], 0, ',', ' ') }} FCFA</td>
-                                <td class="text-center">{{ $report['revenues_semaine']->count() }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="details-col">
-                <div class="section">
-                    <div class="section-title">Dimanche</div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Jour</th>
-                                <th class="text-right">Montant</th>
-                                <th class="text-center">Nb</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Dimanche</td>
-                                <td class="text-right">{{ number_format($report['total_dimanche'], 0, ',', ' ') }} FCFA</td>
-                                <td class="text-center">{{ $report['details_dimanche']['count'] }}</td>
-                            </tr>
-                            <tr class="total-row">
-                                <td>TOTAL DIMANCHE</td>
-                                <td class="text-right">{{ number_format($report['total_dimanche'], 0, ',', ' ') }} FCFA</td>
-                                <td class="text-center">{{ $report['details_dimanche']['count'] }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="summary-box {{ $report['solde'] >= 0 ? 'info' : 'warning' }}">
+                <h4>Solde</h4>
+                <div class="amount">{{ number_format($report['solde'], 0, ',', ' ') }} FCFA</div>
+                <div class="label">{{ $report['solde'] >= 0 ? 'Reste subvention' : 'Dépassement' }}</div>
             </div>
         </div>
 
-        @if($report['revenues_all']->count() > 0)
-            <div class="section">
-                <div class="section-title">Liste détaillée des recettes ({{ $report['revenues_all']->count() }})</div>
+        <div class="section">
+            <div class="section-title">Détail des dépenses alimentation</div>
+            @if($report['depenses_alimentation']->count() > 0)
+                @php $joursLabels = ['lundi'=>'Lundi','mardi'=>'Mardi','mercredi'=>'Mercredi','jeudi'=>'Jeudi','vendredi'=>'Vendredi','samedi'=>'Samedi','dimanche'=>'Dimanche']; @endphp
                 <table>
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Jour</th>
-                            <th>Période</th>
-                            <th>Méthode</th>
+                            <th>Libellé</th>
                             <th class="text-right">Montant</th>
+                            <th>Méthode</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php $joursLabels = ['lundi'=>'Lun','mardi'=>'Mar','mercredi'=>'Mer','jeudi'=>'Jeu','vendredi'=>'Ven','samedi'=>'Sam','dimanche'=>'Dim']; @endphp
-                        @foreach($report['revenues_all']->take(20) as $revenue)
+                        @foreach($report['depenses_alimentation'] as $dep)
                             <tr>
-                                <td>{{ $revenue->date_recette?->format('d/m/Y') }}</td>
-                                <td>{{ $joursLabels[$revenue->jour_semaine] ?? '—' }}</td>
-                                <td>{{ ($revenue->periode_messe === 'semaine' || in_array($revenue->jour_semaine, ['lundi','mardi','mercredi','jeudi','vendredi','samedi'])) ? 'Semaine' : 'Dimanche' }}</td>
-                                <td>{{ $revenue->methode_paiement ?? '—' }}</td>
-                                <td class="text-right">{{ number_format($revenue->montant, 0, ',', ' ') }} FCFA</td>
+                                <td>{{ $dep->date_depense?->format('d/m/Y') }}</td>
+                                <td>{{ $joursLabels[$dep->jour_semaine] ?? $dep->jour_semaine ?? '—' }}</td>
+                                <td>{{ $dep->libelle ?? '—' }}</td>
+                                <td class="text-right">{{ number_format($dep->montant, 0, ',', ' ') }} FCFA</td>
+                                <td>{{ ucfirst(str_replace('_', ' ', $dep->methode_paiement)) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr class="total-row">
-                            <td colspan="4">@if($report['revenues_all']->count() > 20) … ({{ $report['revenues_all']->count() }} recettes) — @endif TOTAL GÉNÉRAL</td>
-                            <td class="text-right">{{ number_format($report['total_general'], 0, ',', ' ') }} FCFA</td>
+                            <td colspan="3" class="text-right">Total dépenses alimentation</td>
+                            <td class="text-right">{{ number_format($report['total_depenses_alimentation'], 0, ',', ' ') }} FCFA</td>
+                            <td></td>
                         </tr>
                     </tfoot>
                 </table>
-            </div>
-        @endif
+            @else
+                <p class="text-muted">Aucune dépense alimentation enregistrée pour cette période.</p>
+            @endif
+        </div>
 
-        {{-- Signataires --}}
         <div class="signatures" style="margin-top: 30px; page-break-inside: avoid;">
             <div class="section-title">Signatures</div>
             <table style="width: 100%; border: none; margin-top: 15px;">
@@ -321,7 +259,7 @@
         </div>
 
         <div class="footer">
-            Rapport des revenus - Quête ordinaire. Généré le {{ now()->format('d/m/Y à H:i') }}.
+            Rapport Subvention Popote — Dépenses alimentation. Généré le {{ now()->format('d/m/Y à H:i') }}.
         </div>
     </div>
 

@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <i class="flaticon-381-user me-2"></i>
+                    <i class="fas fa-user me-2"></i>
                     Modifier le membre
                 </h4>
             </div>

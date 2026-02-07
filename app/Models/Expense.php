@@ -16,6 +16,8 @@ class Expense extends Model
         'type_charge',
         'montant',
         'date_depense',
+        'jour_semaine',
+        'libelle',
         'facture_reference',
         'piece_facture_path',
         'piece_recu_path',
@@ -46,6 +48,18 @@ class Expense extends Model
     public function validatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'validated_by');
+    }
+
+    /** Dépenses alimentation (subvention popote) — réservées à l'alimentation de la paroisse. */
+    public function scopeAlimentationPopote($query)
+    {
+        return $query->where('categorie_charge', 'alimentation_popote');
+    }
+
+    /** Charges fixes — non comptabilisées dans la subvention popote, pour rapport à la hiérarchie. */
+    public function scopeChargesFixes($query)
+    {
+        return $query->where('categorie_charge', 'charge_fixe');
     }
 }
 

@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             RevenueCategorySeeder::class,
             RevenueTypeSeeder::class,
-            RevenueSeeder::class,
-            ExpenseSeeder::class,
+            // RevenueSeeder::class,
+            // ExpenseSeeder::class,
         ]);
     }
 }

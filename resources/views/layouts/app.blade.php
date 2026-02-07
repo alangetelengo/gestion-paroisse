@@ -30,6 +30,9 @@
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
+    <!-- Font Awesome (CDN fiable pour les icônes) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Styles personnalisés de l'application -->
     <style>
         :root {
@@ -129,9 +132,9 @@
                                             <div style="font-weight: 600; line-height: 1;">{{ $u->name }}</div>
                                             <small class="text-muted">
                                                 {{ $u->email ?? '—' }}
-                                                @if($u->paroisse?->nom)
+                                                {{-- @if($u->paroisse?->nom)
                                                     · {{ $u->paroisse->nom }}
-                                                @endif
+                                                @endif --}}
                                             </small>
                                         </div>
                                         <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; background: var(--rgba-primary-1); color: var(--primary); font-weight: 700;">

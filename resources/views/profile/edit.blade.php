@@ -134,7 +134,7 @@
     <div class="col-lg-8 mb-4">
         <div class="card profile-card">
             <div class="card-header d-flex align-items-center">
-                <i class="flaticon-381-user me-2"></i>
+                <i class="fas fa-user me-2"></i>
                 Informations du compte
             </div>
             <div class="card-body" style="padding: 1.5rem 2rem;">
@@ -165,7 +165,7 @@
 
                     <div class="mt-4 pt-3 border-top border-2" style="border-color: var(--rgba-primary-1) !important;">
                         <button type="submit" class="btn btn-primary px-4">
-                            <i class="flaticon-381-save me-1"></i>
+                            <i class="fas fa-save me-1"></i>
                             Enregistrer le profil
                         </button>
                     </div>
@@ -178,7 +178,7 @@
     <div class="col-lg-4 mb-4">
         <div class="card profile-card">
             <div class="card-header d-flex align-items-center">
-                <i class="flaticon-381-lock me-2"></i>
+                <i class="fas fa-lock me-2"></i>
                 Sécurité
             </div>
             <div class="card-body" style="padding: 1.5rem 2rem;">
@@ -205,7 +205,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-warning w-100">
-                        <i class="flaticon-381-lock me-1"></i>
+                        <i class="fas fa-lock me-1"></i>
                         Mettre à jour le mot de passe
                     </button>
                 </form>

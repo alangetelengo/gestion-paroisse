@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <i class="flaticon-381-heart me-2"></i>
+                    <i class="fas fa-heart me-2"></i>
                     Nouveau {{ \App\Models\Sacrament::TYPES[$type] ?? $type }}
                 </h4>
             </div>

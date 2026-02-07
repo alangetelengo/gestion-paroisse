@@ -37,7 +37,7 @@
                         </div>
                         <div class="user-hero-meta">
                             <div class="user-hero-name">
-                                <i class="flaticon-381-user me-2"></i>
+                                <i class="fas fa-user me-2"></i>
                                 {{ $fullName !== '' ? $fullName : 'Membre sans nom' }}
                             </div>
                             <div class="user-hero-sub">

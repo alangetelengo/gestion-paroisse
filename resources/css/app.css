@@ -87,6 +87,61 @@
 }
 
 /* ============================================
+   CORRECTION AFFICHAGE BOUTONS ET HEADERS DE CARTES
+   Le template force .card-action > a à 30x30px, ce qui coupe le texte.
+   On surcharge ces styles pour afficher correctement les boutons.
+   ============================================ */
+.card-header {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.75rem !important;
+    overflow: visible !important;
+}
+.card-header .card-title {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.card-header .card-action,
+.card-header .report-header-actions,
+.card-header .d-flex.gap-2 {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+}
+/* Surcharge du template : .card-action > a forcé à 30x30px → on rétablit l'affichage normal */
+.card-header .card-action > a,
+.card-header .card-action > button,
+.card-header .card-action .btn,
+.card-header .card-action form,
+.card-header .report-header-actions > a,
+.card-header .report-header-actions > button {
+    width: auto !important;
+    min-width: auto !important;
+    height: auto !important;
+    line-height: inherit !important;
+    padding: 0.375rem 0.75rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    text-align: left !important;
+}
+.card-header .btn,
+.card-header a.btn {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    width: auto !important;
+    min-width: auto !important;
+    height: auto !important;
+}
+
+/* ============================================
    CHARTE DE COULEURS OFFICIELLE DE L'ÉGLISE CATHOLIQUE
    ============================================
    - Primaire (#003366) : Bleu marine - Couleur de la Vierge Marie
@@ -786,6 +841,95 @@ body .deznav {
     font-size: 1.0625rem;
     opacity: 0.9;
     margin-bottom: 20px;
+}
+
+/* ============================================
+   BOUTONS D'ACTION HARMONISÉS (Pages liste - référence: Liste des recettes)
+   S'applique aux pages .page-list et .revenue-page
+   ============================================ */
+.page-list .btn-action,
+.revenue-page .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.page-list .btn-action:hover,
+.revenue-page .btn-action:hover {
+    transform: translateY(-1px);
+}
+
+/* Rafraîchir / liens secondaires sur header gradient */
+.page-list .btn-refresh,
+.revenue-page .btn-refresh,
+.page-list .btn-secondary-action,
+.revenue-page .btn-secondary-action {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.page-list .btn-refresh:hover,
+.revenue-page .btn-refresh:hover,
+.page-list .btn-secondary-action:hover,
+.revenue-page .btn-secondary-action:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+/* Bouton Ajouter (or) */
+.page-list .btn-add,
+.revenue-page .btn-add {
+    background: #FFD700;
+    color: #1a1a1a;
+    border: none;
+}
+.page-list .btn-add:hover,
+.revenue-page .btn-add:hover {
+    background: #ffe033;
+    color: #1a1a1a;
+}
+
+/* Boutons dans le tableau: Modifier */
+.page-list .btn-edit,
+.revenue-page .btn-edit {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Boutons dans le tableau: Supprimer (icône seule) */
+.page-list .btn-delete,
+.revenue-page .btn-delete {
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Bouton Voir (dans tableau) */
+.page-list .btn-view,
+.revenue-page .btn-view {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Bouton Filtrer */
+.page-list .btn-filter,
+.revenue-page .btn-filter {
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
 }
 
 /* ============================================

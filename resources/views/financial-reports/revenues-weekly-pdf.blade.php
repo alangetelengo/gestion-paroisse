@@ -265,6 +265,30 @@
         </div>
     @endif
 
+    {{-- Signataires --}}
+    <div class="signatures" style="margin-top: 20px; page-break-inside: avoid;">
+        <div class="section-title">Signatures</div>
+        <table style="width: 100%; border: none; margin-top: 12px;">
+            <tr>
+                <td style="width: 33%; text-align: center; border: none; padding: 8px;">
+                    <div style="border-bottom: 1px solid #333; margin-bottom: 6px; height: 35px;"></div>
+                    <strong style="font-size: 8px;">Le Curé</strong>
+                    <p style="font-size: 6px; color: #666; margin-top: 2px;">Nom et signature</p>
+                </td>
+                <td style="width: 33%; text-align: center; border: none; padding: 8px;">
+                    <div style="border-bottom: 1px solid #333; margin-bottom: 6px; height: 35px;"></div>
+                    <strong style="font-size: 8px;">Le Gestionnaire</strong>
+                    <p style="font-size: 6px; color: #666; margin-top: 2px;">Nom et signature</p>
+                </td>
+                <td style="width: 33%; text-align: center; border: none; padding: 8px;">
+                    <div style="border-bottom: 1px solid #333; margin-bottom: 6px; height: 35px;"></div>
+                    <strong style="font-size: 8px;">Le Vicaire Économe</strong>
+                    <p style="font-size: 6px; color: #666; margin-top: 2px;">Nom et signature</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <div class="footer">
         Rapport des revenus - Quête ordinaire. Généré le {{ now()->format('d/m/Y à H:i') }}.
     </div>

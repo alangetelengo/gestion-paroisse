@@ -40,7 +40,7 @@
             <div class="card-body p-4">
                 <div class="media ai-icon">
                     <span class="me-3 stat-icon" style="background: var(--rgba-primary-1); color: var(--primary);">
-                        <i class="flaticon-381-user"></i>
+                        <i class="fas fa-user"></i>
                     </span>
                     <div class="media-body">
                         <p class="mb-1">Membres</p>
@@ -57,7 +57,7 @@
             <div class="card-body p-4">
                 <div class="media ai-icon">
                     <span class="me-3 stat-icon" style="background: rgba(45, 80, 22, 0.1); color: var(--success);">
-                        <i class="flaticon-381-calendar"></i>
+                        <i class="fas fa-calendar"></i>
                     </span>
                     <div class="media-body">
                         <p class="mb-1">Événements</p>
@@ -74,7 +74,7 @@
             <div class="card-body p-4">
                 <div class="media ai-icon">
                     <span class="me-3 stat-icon" style="background: rgba(255, 140, 0, 0.1); color: var(--warning);">
-                        <i class="flaticon-381-money"></i>
+                        <i class="fas fa-money-bill-alt"></i>
                     </span>
                     <div class="media-body">
                         <p class="mb-1">Recettes</p>
@@ -91,7 +91,7 @@
             <div class="card-body p-4">
                 <div class="media ai-icon">
                     <span class="me-3 stat-icon" style="background: rgba(220, 20, 60, 0.1); color: var(--danger);">
-                        <i class="flaticon-381-users"></i>
+                        <i class="fas fa-users"></i>
                     </span>
                     <div class="media-body">
                         <p class="mb-1">Groupes</p>
@@ -159,7 +159,7 @@
                     @can('manage_users')
                     <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{{ route('users.index') }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center" style="min-height: 60px;">
-                            <i class="flaticon-381-user me-2" style="font-size: 24px;"></i>
+                            <i class="fas fa-user me-2" style="font-size: 24px;"></i>
                             <span>Gérer les utilisateurs</span>
                         </a>
                     </div>
@@ -168,7 +168,7 @@
                     @can('manage_paroisses')
                     <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{{ route('paroisses.index') }}" class="btn btn-info w-100 d-flex align-items-center justify-content-center" style="min-height: 60px;">
-                            <i class="flaticon-381-home me-2" style="font-size: 24px;"></i>
+                            <i class="fas fa-home me-2" style="font-size: 24px;"></i>
                             <span>Gérer les paroisses</span>
                         </a>
                     </div>
@@ -176,7 +176,7 @@
 
                     <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{{ route('configurations.index') }}" class="btn btn-warning w-100 d-flex align-items-center justify-content-center" style="min-height: 60px;">
-                            <i class="flaticon-381-settings-1 me-2" style="font-size: 24px;"></i>
+                            <i class="fas fa-cog me-2" style="font-size: 24px;"></i>
                             <span>Configuration</span>
                         </a>
                     </div>
@@ -184,7 +184,7 @@
                     @can('view_financial_reports')
                     <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{{ route('financial-reports.index') }}" class="btn btn-success btn-rounded w-100 d-flex align-items-center justify-content-center" style="min-height: 60px;">
-                            <i class="flaticon-381-file me-2" style="font-size: 24px;"></i>
+                            <i class="fas fa-file me-2" style="font-size: 24px;"></i>
                             <span>Rapports</span>
                         </a>
                     </div>
@@ -239,7 +239,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <div class="stat-icon" style="background: rgba(40, 167, 69, 0.1); color: #28a745; width: 50px; height: 50px;">
-                                    <i class="flaticon-381-check"></i>
+                                    <i class="fas fa-check"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
@@ -252,7 +252,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <div class="stat-icon" style="background: rgba(108, 117, 125, 0.1); color: #6c757d; width: 50px; height: 50px;">
-                                    <i class="flaticon-381-pause"></i>
+                                    <i class="fas fa-pause"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
@@ -265,7 +265,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <div class="stat-icon" style="background: rgba(220, 53, 69, 0.1); color: #dc3545; width: 50px; height: 50px;">
-                                    <i class="flaticon-381-close"></i>
+                                    <i class="fas fa-times"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
@@ -278,7 +278,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <div class="stat-icon" style="background: rgba(0, 123, 255, 0.1); color: #007bff; width: 50px; height: 50px;">
-                                    <i class="flaticon-381-user"></i>
+                                    <i class="fas fa-user"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
@@ -307,7 +307,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <div class="stat-icon" style="background: rgba(40, 167, 69, 0.1); color: #28a745; width: 50px; height: 50px;">
-                                    <i class="flaticon-381-calendar"></i>
+                                    <i class="fas fa-calendar"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
@@ -320,7 +320,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <div class="stat-icon" style="background: rgba(255, 193, 7, 0.1); color: #ffc107; width: 50px; height: 50px;">
-                                    <i class="flaticon-381-calendar-1"></i>
+                                    <i class="fas fa-calendar-1"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
@@ -333,7 +333,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <div class="stat-icon" style="background: rgba(23, 162, 184, 0.1); color: #17a2b8; width: 50px; height: 50px;">
-                                    <i class="flaticon-381-calendar-2"></i>
+                                    <i class="fas fa-calendar-2"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">

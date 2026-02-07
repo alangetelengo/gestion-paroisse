@@ -34,7 +34,7 @@ class RevenueController extends Controller
 
             $query = Revenue::query()
                 ->with(['paroisse', 'category', 'type', 'event'])
-                ->orderByDesc('date_recette');
+                ->orderByDesc('created_at');
 
             if (! $user->hasRole('super_admin')) {
                 $query->where('paroisse_id', $user->paroisse_id);
@@ -144,6 +144,9 @@ class RevenueController extends Controller
             ]);
 
             $category = RevenueCategory::find($validated['revenue_category_id']);
+            $revenueType = RevenueType::find($validated['revenue_type_id']);
+
+            // Quête ordinaire : gestion du jour de la semaine
             if ($category && $category->code === 'quete_ordinaire') {
                 $jourData = $request->validate([
                     'jour_semaine' => ['required', 'in:lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche'],
@@ -167,9 +170,20 @@ class RevenueController extends Controller
                         'jour_semaine' => 'Le jour choisi ne correspond pas à la date de la recette (devrait être ' . ucfirst($expectedJour) . ').',
                     ]);
                 }
+                $validated['mois_location'] = null;
+            }
+            // Location + Loyer Boutique : gestion du mois de location
+            elseif ($category && $category->code === 'location' && $revenueType && $revenueType->code === 'loyer_boutique') {
+                $moisData = $request->validate([
+                    'mois_location' => ['required', 'regex:/^\d{4}-\d{2}$/'],
+                ]);
+                $validated['mois_location'] = $moisData['mois_location'];
+                $validated['jour_semaine'] = null;
+                $validated['periode_messe'] = null;
             } else {
                 $validated['jour_semaine'] = null;
                 $validated['periode_messe'] = null;
+                $validated['mois_location'] = null;
             }
 
             if (! $user->hasRole('super_admin')) {
@@ -244,6 +258,9 @@ class RevenueController extends Controller
             ]);
 
             $category = RevenueCategory::find($validated['revenue_category_id']);
+            $revenueType = RevenueType::find($validated['revenue_type_id']);
+
+            // Quête ordinaire : gestion du jour de la semaine
             if ($category && $category->code === 'quete_ordinaire') {
                 $jourData = $request->validate([
                     'jour_semaine' => ['required', 'in:lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche'],
@@ -266,9 +283,20 @@ class RevenueController extends Controller
                         'jour_semaine' => 'Le jour choisi ne correspond pas à la date de la recette (devrait être ' . ucfirst($expectedJour) . ').',
                     ]);
                 }
+                $validated['mois_location'] = null;
+            }
+            // Location + Loyer Boutique : gestion du mois de location
+            elseif ($category && $category->code === 'location' && $revenueType && $revenueType->code === 'loyer_boutique') {
+                $moisData = $request->validate([
+                    'mois_location' => ['required', 'regex:/^\d{4}-\d{2}$/'],
+                ]);
+                $validated['mois_location'] = $moisData['mois_location'];
+                $validated['jour_semaine'] = null;
+                $validated['periode_messe'] = null;
             } else {
                 $validated['jour_semaine'] = null;
                 $validated['periode_messe'] = null;
+                $validated['mois_location'] = null;
             }
 
             if (! $user->hasRole('super_admin')) {

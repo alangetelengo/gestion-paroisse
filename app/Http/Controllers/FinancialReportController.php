@@ -27,9 +27,10 @@ class FinancialReportController extends Controller
     {
         $this->middleware('permission:view_financial_reports')->only([
             'index', 'list', 'show', 'statistics', 'revenuesWeekly', 'revenuesWeeklyPrint',
+            'popoteReport', 'popotePrint', 'chargesFixesReport',
         ]);
         $this->middleware('permission:generate_financial_reports')->only([
-            'store', 'downloadPdf', 'downloadRevenuesWeeklyPdf',
+            'store', 'downloadPdf', 'downloadRevenuesWeeklyPdf', 'downloadPopotePdf',
         ]);
     }
 
@@ -640,6 +641,280 @@ class FinancialReportController extends Controller
             'revenues_semaine' => $revenuesSemaine,
             'revenues_dimanche' => $revenuesDimanche,
             'revenues_all' => $revenues,
+        ];
+    }
+
+    /**
+     * Rapport Subvention Popote vs Dépenses alimentation (mensuel / annuel).
+     * La subvention popote est réservée aux dépenses d'alimentation.
+     */
+    public function popoteReport(Request $request): View
+    {
+        try {
+            $user = $request->user();
+
+            $paroisses = $user->hasRole('super_admin')
+                ? Paroisse::orderBy('nom')->get()
+                : Paroisse::whereKey($user->paroisse_id)->get();
+
+            $selectedParoisseId = $request->integer('paroisse_id', $user->hasRole('super_admin') ? null : $user->paroisse_id);
+            $periodType = $request->input('period_type', 'month'); // month | year
+            $selectedMonth = $request->integer('month', now()->month);
+            $selectedYear = $request->integer('year', now()->year);
+
+            $report = null;
+            if ($selectedParoisseId) {
+                if ($periodType === 'year') {
+                    $dateDebut = Carbon::create($selectedYear, 1, 1)->startOfMonth();
+                    $dateFin = Carbon::create($selectedYear, 12, 31)->endOfDay();
+                } else {
+                    $dateDebut = Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth();
+                    $dateFin = $dateDebut->copy()->endOfMonth();
+                }
+                $report = $this->calculatePopoteReport($selectedParoisseId, $dateDebut, $dateFin);
+            }
+
+            return view('financial-reports.popote-report', [
+                'paroisses' => $paroisses,
+                'selectedParoisseId' => $selectedParoisseId,
+                'periodType' => $periodType,
+                'selectedMonth' => $selectedMonth,
+                'selectedYear' => $selectedYear,
+                'report' => $report,
+            ]);
+        } catch (Throwable $e) {
+            $this->logError($e, 'Erreur rapport Popote');
+            FlashAlert::error('Une erreur est survenue.');
+
+            return view('financial-reports.popote-report', [
+                'paroisses' => collect(),
+                'selectedParoisseId' => null,
+                'periodType' => 'month',
+                'selectedMonth' => now()->month,
+                'selectedYear' => now()->year,
+                'report' => null,
+            ]);
+        }
+    }
+
+    /**
+     * Vue imprimable du rapport Subvention Popote.
+     */
+    public function popotePrint(Request $request): View|RedirectResponse
+    {
+        try {
+            $user = $request->user();
+
+            $validated = $request->validate([
+                'paroisse_id' => ['required', 'exists:paroisses,id'],
+                'period_type' => ['required', 'in:month,year'],
+                'month' => ['required_if:period_type,month', 'integer', 'min:1', 'max:12'],
+                'year' => ['required', 'integer', 'min:2000', 'max:2100'],
+            ]);
+
+            if (! $user->hasRole('super_admin') && (int) $validated['paroisse_id'] !== (int) $user->paroisse_id) {
+                FlashAlert::error('Vous ne pouvez générer des rapports que pour votre paroisse.');
+
+                return redirect()->route('financial-reports.popote');
+            }
+
+            if ($validated['period_type'] === 'year') {
+                $dateDebut = Carbon::create($validated['year'], 1, 1)->startOfMonth();
+                $dateFin = Carbon::create($validated['year'], 12, 31)->endOfDay();
+            } else {
+                $dateDebut = Carbon::create($validated['year'], $validated['month'], 1)->startOfMonth();
+                $dateFin = $dateDebut->copy()->endOfMonth();
+            }
+
+            $report = $this->calculatePopoteReport($validated['paroisse_id'], $dateDebut, $dateFin);
+            $paroisse = Paroisse::find($validated['paroisse_id']);
+            $headerConfig = $this->getHeaderConfig($validated['paroisse_id']);
+
+            return view('financial-reports.popote-print', [
+                'report' => $report,
+                'paroisse' => $paroisse,
+                'headerConfig' => $headerConfig,
+                'dateDebut' => $dateDebut,
+                'dateFin' => $dateFin,
+                'periodType' => $validated['period_type'],
+            ]);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            $this->logError($e, 'Erreur affichage rapport Popote imprimable');
+            FlashAlert::error('Une erreur est survenue.');
+
+            return redirect()->route('financial-reports.popote');
+        }
+    }
+
+    public function downloadPopotePdf(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            $validated = $request->validate([
+                'paroisse_id' => ['required', 'exists:paroisses,id'],
+                'period_type' => ['required', 'in:month,year'],
+                'month' => ['required_if:period_type,month', 'integer', 'min:1', 'max:12'],
+                'year' => ['required', 'integer', 'min:2000', 'max:2100'],
+            ]);
+
+            if (! $user->hasRole('super_admin') && (int) $validated['paroisse_id'] !== (int) $user->paroisse_id) {
+                FlashAlert::error('Vous ne pouvez générer des rapports que pour votre paroisse.');
+
+                return redirect()->back();
+            }
+
+            if ($validated['period_type'] === 'year') {
+                $dateDebut = Carbon::create($validated['year'], 1, 1)->startOfMonth();
+                $dateFin = Carbon::create($validated['year'], 12, 31)->endOfDay();
+            } else {
+                $dateDebut = Carbon::create($validated['year'], $validated['month'], 1)->startOfMonth();
+                $dateFin = $dateDebut->copy()->endOfMonth();
+            }
+
+            $report = $this->calculatePopoteReport($validated['paroisse_id'], $dateDebut, $dateFin);
+            $paroisse = Paroisse::find($validated['paroisse_id']);
+            $headerConfig = $this->getHeaderConfig($validated['paroisse_id']);
+
+            $pdf = Pdf::loadView('financial-reports.popote-pdf', [
+                'report' => $report,
+                'paroisse' => $paroisse,
+                'headerConfig' => $headerConfig,
+                'dateDebut' => $dateDebut,
+                'dateFin' => $dateFin,
+                'periodType' => $validated['period_type'],
+            ])->setPaper('a4', 'portrait');
+
+            $periodLabel = $validated['period_type'] === 'year'
+                ? $dateDebut->format('Y')
+                : $dateDebut->format('Y-m');
+            $filename = 'rapport-popote-'.\Illuminate\Support\Str::slug($paroisse->nom).'-'.$periodLabel.'.pdf';
+
+            return $pdf->download($filename);
+        } catch (Throwable $e) {
+            $this->logError($e, 'Erreur génération PDF Popote', ['data' => $request->all()]);
+            FlashAlert::error('Une erreur est survenue lors de la génération du PDF.');
+
+            return redirect()->back();
+        }
+    }
+
+    private function calculatePopoteReport(int $paroisseId, Carbon $dateDebut, Carbon $dateFin): array
+    {
+        $popoteCategory = RevenueCategory::where('paroisse_id', $paroisseId)->where('code', 'popote_subvention')->first();
+
+        $subventionRecue = Revenue::query()
+            ->where('paroisse_id', $paroisseId)
+            ->whereDate('date_recette', '>=', $dateDebut)
+            ->whereDate('date_recette', '<=', $dateFin)
+            ->when($popoteCategory, fn ($q) => $q->where('revenue_category_id', $popoteCategory->id))
+            ->sum('montant');
+
+        $depensesAlimentation = Expense::query()
+            ->where('paroisse_id', $paroisseId)
+            ->where('categorie_charge', 'alimentation_popote')
+            ->whereDate('date_depense', '>=', $dateDebut)
+            ->whereDate('date_depense', '<=', $dateFin)
+            ->orderBy('date_depense')
+            ->get();
+
+        $totalDepensesAlimentation = $depensesAlimentation->sum('montant');
+        $solde = $subventionRecue - $totalDepensesAlimentation;
+
+        return [
+            'subvention_recue' => $subventionRecue,
+            'depenses_alimentation' => $depensesAlimentation,
+            'total_depenses_alimentation' => $totalDepensesAlimentation,
+            'solde' => $solde,
+            'date_debut' => $dateDebut,
+            'date_fin' => $dateFin,
+        ];
+    }
+
+    /**
+     * Rapport des charges fixes (mensuel / annuel) — pour la hiérarchie.
+     * Les charges fixes ne sont déduites d'aucune recette ; ce rapport liste les dépenses enregistrées.
+     */
+    public function chargesFixesReport(Request $request): View
+    {
+        try {
+            $user = $request->user();
+
+            $paroisses = $user->hasRole('super_admin')
+                ? Paroisse::orderBy('nom')->get()
+                : Paroisse::whereKey($user->paroisse_id)->get();
+
+            $selectedParoisseId = $request->integer('paroisse_id', $user->hasRole('super_admin') ? null : $user->paroisse_id);
+            $periodType = $request->input('period_type', 'month');
+            $selectedMonth = $request->integer('month', now()->month);
+            $selectedYear = $request->integer('year', now()->year);
+
+            $report = null;
+            if ($selectedParoisseId) {
+                if ($periodType === 'year') {
+                    $dateDebut = Carbon::create($selectedYear, 1, 1)->startOfMonth();
+                    $dateFin = Carbon::create($selectedYear, 12, 31)->endOfDay();
+                } else {
+                    $dateDebut = Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth();
+                    $dateFin = $dateDebut->copy()->endOfMonth();
+                }
+                $report = $this->calculateChargesFixesReport($selectedParoisseId, $dateDebut, $dateFin);
+            }
+
+            return view('financial-reports.charges-fixes-report', [
+                'paroisses' => $paroisses,
+                'selectedParoisseId' => $selectedParoisseId,
+                'periodType' => $periodType,
+                'selectedMonth' => $selectedMonth,
+                'selectedYear' => $selectedYear,
+                'report' => $report,
+            ]);
+        } catch (Throwable $e) {
+            $this->logError($e, 'Erreur rapport charges fixes');
+            FlashAlert::error('Une erreur est survenue.');
+
+            return view('financial-reports.charges-fixes-report', [
+                'paroisses' => collect(),
+                'selectedParoisseId' => null,
+                'periodType' => 'month',
+                'selectedMonth' => now()->month,
+                'selectedYear' => now()->year,
+                'report' => null,
+            ]);
+        }
+    }
+
+    private function calculateChargesFixesReport(int $paroisseId, Carbon $dateDebut, Carbon $dateFin): array
+    {
+        $expenses = Expense::query()
+            ->where('paroisse_id', $paroisseId)
+            ->where('categorie_charge', 'charge_fixe')
+            ->whereDate('date_depense', '>=', $dateDebut)
+            ->whereDate('date_depense', '<=', $dateFin)
+            ->orderBy('date_depense')
+            ->get();
+
+        $typeLabels = [
+            'carburant' => 'Carburant',
+            'hosties' => 'Hosties',
+            'internet' => 'Internet',
+            'maintenance_materiel' => 'Maintenance matériel',
+            'gaz' => 'Gaz',
+            'eau' => 'Eau',
+            'electricite' => 'Électricité',
+            'gardiennage' => 'Gardiennage',
+            'salaire_ouvrier' => 'Salaire ouvrier',
+            'autre' => 'Autre',
+        ];
+
+        return [
+            'expenses' => $expenses,
+            'total' => $expenses->sum('montant'),
+            'date_debut' => $dateDebut,
+            'date_fin' => $dateFin,
+            'type_labels' => $typeLabels,
         ];
     }
 }

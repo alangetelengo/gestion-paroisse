@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <i class="flaticon-381-calendar-1 me-2"></i>
+                    <i class="fas fa-calendar-alt me-2"></i>
                     Nouvel événement
                 </h4>
             </div>

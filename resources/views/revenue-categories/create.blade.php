@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <i class="flaticon-381-folder me-2"></i>
+                    <i class="fas fa-folder me-2"></i>
                     Nouvelle catégorie de recettes
                 </h4>
             </div>

@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <i class="flaticon-381-notepad me-2"></i>
+                    <i class="fas fa-sticky-note me-2"></i>
                     Nouveau type de recette
                 </h4>
             </div>

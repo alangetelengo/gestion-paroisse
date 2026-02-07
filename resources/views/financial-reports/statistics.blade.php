@@ -10,13 +10,13 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <i class="flaticon-381-calculator me-2"></i>
+            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-calculator me-2"></i>
                     Vue d'ensemble annuelle
                 </h4>
-                <div class="card-action">
-                    <a href="{{ route('financial-reports.index') }}" class="btn btn-secondary me-2">
+                <div class="card-action d-flex align-items-center gap-2 flex-wrap">
+                    <a href="{{ route('financial-reports.index') }}" class="btn btn-secondary">
                         Générer un rapport
                     </a>
                     <a href="{{ route('financial-reports.list') }}" class="btn btn-outline-secondary">
@@ -134,7 +134,7 @@
                     </div>
                 @else
                     <div class="text-center py-5">
-                        <i class="flaticon-381-calculator" style="font-size:64px;color:#ccc;margin-bottom:20px;"></i>
+                        <i class="fas fa-calculator" style="font-size:64px;color:#ccc;margin-bottom:20px;"></i>
                         <h5 class="text-muted">Sélectionnez une paroisse et une année</h5>
                         <p class="text-muted">Les statistiques afficheront le total des recettes, des dépenses et le solde sur l'année, avec la répartition par mois.</p>
                     </div>

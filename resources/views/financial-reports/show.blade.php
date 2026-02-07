@@ -7,24 +7,24 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <i class="flaticon-381-calculator me-2"></i>
+            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-calculator me-2"></i>
                     Rapport mensuel de justification
                     <br>
                     <small class="text-muted">
                         {{ $financialReport->paroisse->nom ?? '—' }} - {{ $financialReport->date_debut->format('F Y') }}
                     </small>
                 </h4>
-                <div class="card-action">
-                    <a href="{{ route('financial-reports.download-pdf', $financialReport) }}" class="btn btn-danger me-2" target="_blank">
-                        <i class="flaticon-381-download me-2"></i>Télécharger PDF
+                <div class="report-header-actions d-flex flex-wrap align-items-center gap-2">
+                    <a href="{{ route('financial-reports.download-pdf', $financialReport) }}" class="btn btn-danger d-inline-flex align-items-center" target="_blank" style="flex-shrink: 0;">
+                        <i class="fas fa-download me-2"></i><span>Télécharger PDF</span>
                     </a>
-                    <button onclick="window.print()" class="btn btn-primary me-2">
-                        <i class="flaticon-381-printer me-2"></i>Imprimer
+                    <button type="button" onclick="window.print()" class="btn btn-primary d-inline-flex align-items-center" style="flex-shrink: 0;">
+                        <i class="fas fa-print me-2"></i><span>Imprimer</span>
                     </button>
-                    <a href="{{ route('financial-reports.list') }}" class="btn btn-secondary">
-                        Retour à la liste
+                    <a href="{{ route('financial-reports.list') }}" class="btn btn-secondary d-inline-flex align-items-center" style="flex-shrink: 0;">
+                        <i class="fas fa-arrow-left me-2"></i><span>Retour à la liste</span>
                     </a>
                 </div>
             </div>
@@ -272,6 +272,10 @@
 
 @push('styles')
 <style>
+    .report-header-actions .btn {
+        white-space: nowrap;
+        min-width: fit-content;
+    }
     @media print {
         body * {
             visibility: hidden;
@@ -285,7 +289,7 @@
             top: 0;
             width: 100%;
         }
-        .card-action, .btn {
+        .report-header-actions {
             display: none !important;
         }
         .card {

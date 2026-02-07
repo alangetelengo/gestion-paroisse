@@ -65,7 +65,8 @@ class ExpenseController extends Controller
                 $query->where(function ($sub) use ($q): void {
                     $sub->whereRaw('LOWER(fournisseur) LIKE ?', ["%{$q}%"])
                         ->orWhereRaw('LOWER(facture_reference) LIKE ?', ["%{$q}%"])
-                        ->orWhereRaw('LOWER(notes) LIKE ?', ["%{$q}%"]);
+                        ->orWhereRaw('LOWER(notes) LIKE ?', ["%{$q}%"])
+                        ->orWhereRaw('LOWER(libelle) LIKE ?', ["%{$q}%"]);
                 });
             }
 
@@ -117,10 +118,12 @@ class ExpenseController extends Controller
 
             $validated = $request->validate([
                 'paroisse_id' => ['nullable', 'exists:paroisses,id'],
-                'categorie_charge' => ['required', 'in:charge_fixe,charge_variable,charge_exceptionnelle'],
-                'type_charge' => ['required', 'in:carburant,hosties,internet,maintenance_materiel,gaz,eau,electricite,jardinage,salaire_ouvrier,autre'],
+                'categorie_charge' => ['required', 'in:charge_fixe,charge_variable,charge_exceptionnelle,alimentation_popote'],
+                'type_charge' => ['nullable', 'in:carburant,hosties,internet,maintenance_materiel,gaz,eau,electricite,gardiennage,salaire_ouvrier,autre,alimentation'],
                 'date_depense' => ['required', 'date'],
                 'montant' => ['required', 'numeric', 'min:0'],
+                'jour_semaine' => ['nullable', 'in:lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche'],
+                'libelle' => ['nullable', 'string', 'max:500'],
                 'facture_reference' => ['nullable', 'string', 'max:255'],
                 'fournisseur' => ['nullable', 'string', 'max:255'],
                 'methode_paiement' => ['required', 'in:especes,cheque,virement,carte,mobile_money'],
@@ -128,6 +131,21 @@ class ExpenseController extends Controller
                 'piece_recu' => ['nullable', 'file', 'mimes:pdf,jpeg,jpg,png', 'max:4096'],
                 'notes' => ['nullable', 'string'],
             ]);
+
+            if ($validated['categorie_charge'] === 'alimentation_popote') {
+                $request->validate(['libelle' => ['required', 'string', 'max:500']]);
+                $validated['type_charge'] = 'alimentation';
+                if (empty($validated['jour_semaine'])) {
+                    $d = \Carbon\Carbon::parse($validated['date_depense']);
+                    $validated['jour_semaine'] = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'][$d->dayOfWeek];
+                }
+                $validated['facture_reference'] = $validated['facture_reference'] ?? null;
+                $validated['fournisseur'] = $validated['fournisseur'] ?? null;
+            } else {
+                $request->validate(['type_charge' => ['required', 'in:carburant,hosties,internet,maintenance_materiel,gaz,eau,electricite,gardiennage,salaire_ouvrier,autre']]);
+                $validated['libelle'] = null;
+                $validated['jour_semaine'] = null;
+            }
 
             if (! $user->hasRole('super_admin')) {
                 $validated['paroisse_id'] = $user->paroisse_id;
@@ -203,10 +221,12 @@ class ExpenseController extends Controller
 
             $validated = $request->validate([
                 'paroisse_id' => ['nullable', 'exists:paroisses,id'],
-                'categorie_charge' => ['required', 'in:charge_fixe,charge_variable,charge_exceptionnelle'],
-                'type_charge' => ['required', 'in:carburant,hosties,internet,maintenance_materiel,gaz,eau,electricite,jardinage,salaire_ouvrier,autre'],
+                'categorie_charge' => ['required', 'in:charge_fixe,charge_variable,charge_exceptionnelle,alimentation_popote'],
+                'type_charge' => ['nullable', 'in:carburant,hosties,internet,maintenance_materiel,gaz,eau,electricite,gardiennage,salaire_ouvrier,autre,alimentation'],
                 'date_depense' => ['required', 'date'],
                 'montant' => ['required', 'numeric', 'min:0'],
+                'jour_semaine' => ['nullable', 'in:lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche'],
+                'libelle' => ['nullable', 'string', 'max:500'],
                 'facture_reference' => ['nullable', 'string', 'max:255'],
                 'fournisseur' => ['nullable', 'string', 'max:255'],
                 'methode_paiement' => ['required', 'in:especes,cheque,virement,carte,mobile_money'],
@@ -214,6 +234,21 @@ class ExpenseController extends Controller
                 'piece_recu' => ['nullable', 'file', 'mimes:pdf,jpeg,jpg,png', 'max:4096'],
                 'notes' => ['nullable', 'string'],
             ]);
+
+            if ($validated['categorie_charge'] === 'alimentation_popote') {
+                $request->validate(['libelle' => ['required', 'string', 'max:500']]);
+                $validated['type_charge'] = 'alimentation';
+                if (empty($validated['jour_semaine'])) {
+                    $d = \Carbon\Carbon::parse($validated['date_depense']);
+                    $validated['jour_semaine'] = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'][$d->dayOfWeek];
+                }
+                $validated['facture_reference'] = $validated['facture_reference'] ?? null;
+                $validated['fournisseur'] = $validated['fournisseur'] ?? null;
+            } else {
+                $request->validate(['type_charge' => ['required', 'in:carburant,hosties,internet,maintenance_materiel,gaz,eau,electricite,gardiennage,salaire_ouvrier,autre']]);
+                $validated['libelle'] = null;
+                $validated['jour_semaine'] = null;
+            }
 
             if (! $user->hasRole('super_admin')) {
                 $validated['paroisse_id'] = $user->paroisse_id;

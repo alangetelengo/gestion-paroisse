@@ -100,6 +100,42 @@
         @enderror
     </div>
 
+    {{-- Mois de location (pour loyer boutique) --}}
+    <div class="col-md-6 mb-3" id="mois-location-container" style="display: none;">
+        <label class="form-label">Mois de paiement du loyer <span class="text-danger">*</span></label>
+        @php
+            $moisLocation = old('mois_location', $revenue?->mois_location);
+            $moisLabels = [
+                '01' => 'Janvier', '02' => 'Février', '03' => 'Mars', '04' => 'Avril',
+                '05' => 'Mai', '06' => 'Juin', '07' => 'Juillet', '08' => 'Août',
+                '09' => 'Septembre', '10' => 'Octobre', '11' => 'Novembre', '12' => 'Décembre',
+            ];
+            $currentYear = now()->year;
+            $currentMonth = now()->format('m');
+        @endphp
+        <div class="row">
+            <div class="col-6">
+                <select name="mois_location_mois" id="mois-location-mois" class="form-control @error('mois_location') is-invalid @enderror">
+                    @foreach($moisLabels as $num => $label)
+                        <option value="{{ $num }}" @selected($moisLocation ? substr($moisLocation, 5, 2) === $num : $num === $currentMonth)>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-6">
+                <select name="mois_location_annee" id="mois-location-annee" class="form-control">
+                    @for($y = $currentYear - 1; $y <= $currentYear + 1; $y++)
+                        <option value="{{ $y }}" @selected($moisLocation ? (int)substr($moisLocation, 0, 4) === $y : $y === $currentYear)>{{ $y }}</option>
+                    @endfor
+                </select>
+            </div>
+        </div>
+        <input type="hidden" name="mois_location" id="mois-location" value="{{ $moisLocation }}">
+        <small class="text-muted">Sélectionnez le mois pour lequel ce loyer est payé</small>
+        @error('mois_location')
+        <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
+
     <div class="col-md-6 mb-3">
         <label class="form-label">Montant ({{ $currency }}) <span class="text-danger">*</span></label>
         <input type="text"
@@ -168,6 +204,12 @@
         const dateInput = document.querySelector('input[name="date_recette"]');
         const montantInput = document.querySelector('input[name="montant"]');
 
+        // Éléments pour mois_location
+        const moisLocationContainer = document.getElementById('mois-location-container');
+        const moisLocationMois = document.getElementById('mois-location-mois');
+        const moisLocationAnnee = document.getElementById('mois-location-annee');
+        const moisLocationHidden = document.getElementById('mois-location');
+
         if (categorySelect && typeSelect) {
             function filterTypes() {
                 const categoryId = categorySelect.value;
@@ -179,34 +221,45 @@
                     const belongs = opt.getAttribute('data-category') === categoryId;
                     opt.hidden = !belongs;
                 });
-                updateJourSemaineVisibility();
+                updateFieldsVisibility();
             }
 
-            function updateJourSemaineVisibility() {
-                if (!jourContainer || !jourHidden || !jourDisplay) return;
+            function updateFieldsVisibility() {
                 const selectedOption = typeSelect.options[typeSelect.selectedIndex];
                 if (!selectedOption || !selectedOption.value) {
-                    jourContainer.style.display = 'none';
-                    jourHidden.value = '';
-                    jourDisplay.value = '';
+                    // Cacher tous les champs conditionnels
+                    if (jourContainer) jourContainer.style.display = 'none';
+                    if (moisLocationContainer) moisLocationContainer.style.display = 'none';
+                    if (jourHidden) jourHidden.value = '';
+                    if (jourDisplay) jourDisplay.value = '';
+                    if (moisLocationHidden) moisLocationHidden.value = '';
                     return;
                 }
+
                 const categoryCode = selectedOption.getAttribute('data-category-code');
                 const typeCode = selectedOption.getAttribute('data-code');
 
-                if (categoryCode === 'quete_ordinaire') {
-                    jourContainer.style.display = '';
-                        // Les règles de cohérence sont gérées côté contrôleur,
-                        // ici on laisse juste le champ en lecture seule.
-                } else {
-                    jourContainer.style.display = 'none';
+                // Jour semaine : visible uniquement pour quête ordinaire
+                if (jourContainer && jourHidden && jourDisplay) {
+                    if (categoryCode === 'quete_ordinaire') {
+                        jourContainer.style.display = '';
+                        syncJourWithDate(true);
+                    } else {
+                        jourContainer.style.display = 'none';
                         jourHidden.value = '';
                         jourDisplay.value = '';
+                    }
                 }
 
-                // Si le champ est visible, on synchronise automatiquement avec la date
-                if (jourContainer.style.display !== 'none') {
-                    syncJourWithDate(true);
+                // Mois location : visible pour catégorie "location" et type "loyer_boutique"
+                if (moisLocationContainer && moisLocationHidden) {
+                    if (categoryCode === 'location' && typeCode === 'loyer_boutique') {
+                        moisLocationContainer.style.display = '';
+                        syncMoisLocation();
+                    } else {
+                        moisLocationContainer.style.display = 'none';
+                        moisLocationHidden.value = '';
+                    }
                 }
             }
 
@@ -234,17 +287,39 @@
                     };
                     jourDisplay.value = labels[expected] || expected;
                 }
-                // Rien à réappliquer ici, la vraie validation se fait côté backend
+            }
+
+            function syncMoisLocation() {
+                if (!moisLocationMois || !moisLocationAnnee || !moisLocationHidden) return;
+                const mois = moisLocationMois.value;
+                const annee = moisLocationAnnee.value;
+                if (mois && annee) {
+                    moisLocationHidden.value = annee + '-' + mois;
+                }
             }
 
             categorySelect.addEventListener('change', filterTypes);
-            typeSelect.addEventListener('change', updateJourSemaineVisibility);
+            typeSelect.addEventListener('change', updateFieldsVisibility);
+
+            if (moisLocationMois) {
+                moisLocationMois.addEventListener('change', syncMoisLocation);
+            }
+            if (moisLocationAnnee) {
+                moisLocationAnnee.addEventListener('change', syncMoisLocation);
+            }
+
             filterTypes();
 
             if (dateInput) {
-                dateInput.addEventListener('change', syncJourWithDate);
-                // Initialisation au chargement si on est sur une quête ordinaire
+                dateInput.addEventListener('change', function() {
+                    syncJourWithDate(true);
+                });
                 syncJourWithDate();
+            }
+
+            // Sync initial mois_location si déjà visible
+            if (moisLocationContainer && moisLocationContainer.style.display !== 'none') {
+                syncMoisLocation();
             }
         }
 

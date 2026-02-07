@@ -3,7 +3,7 @@
     {{-- Dashboard --}}
     <li>
         <a class="ai-icon" href="{{ route('dashboard') }}" aria-expanded="false">
-            <i class="flaticon-381-networking"></i>
+            <i class="fas fa-chart-line"></i>
             <span class="nav-text">Tableau de bord</span>
         </a>
     </li>
@@ -28,7 +28,7 @@
     @if(auth()->user()->can('view_baptisms') || auth()->user()->can('view_confirmations') || auth()->user()->can('view_communions') || auth()->user()->can('view_marriages') || auth()->user()->can('view_funerals'))
     <li>
         <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-            <i class="flaticon-381-heart"></i>
+            <i class="fas fa-heart"></i>
             <span class="nav-text">Sacrements</span>
         </a>
         <ul aria-expanded="false">
@@ -54,7 +54,7 @@
     {{-- Événements --}}
     <li>
         <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-            <i class="flaticon-381-calendar"></i>
+            <i class="fas fa-calendar-alt"></i>
             <span class="nav-text">Événements</span>
         </a>
         <ul aria-expanded="false">
@@ -89,7 +89,7 @@
     {{-- Finances --}}
     <li>
         <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-            <i class="flaticon-381-calculator"></i>
+            <i class="fas fa-calculator"></i>
             <span class="nav-text">Finances</span>
         </a>
         <ul aria-expanded="false">
@@ -127,6 +127,8 @@
                     <li><a href="{{ route('financial-reports.index') }}">Générer un rapport</a></li>
                     <li><a href="{{ route('financial-reports.list') }}">Rapports enregistrés</a></li>
                     <li><a href="{{ route('financial-reports.revenues-weekly') }}">Rapport Quête ordinaire</a></li>
+                    <li><a href="{{ route('financial-reports.popote') }}">Rapport Subvention Popote</a></li>
+                    <li><a href="{{ route('financial-reports.charges-fixes') }}">Rapport Charges fixes</a></li>
                     <li><a href="{{ route('financial-reports.statistics') }}">Statistiques</a></li>
                 </ul>
             </li>
@@ -149,7 +151,7 @@
     @can('manage_paroisses')
     <li>
         <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-            <i class="flaticon-381-home"></i>
+            <i class="fas fa-home"></i>
             <span class="nav-text">Paroisses</span>
         </a>
         <ul aria-expanded="false">

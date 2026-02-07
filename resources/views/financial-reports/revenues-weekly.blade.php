@@ -7,12 +7,12 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <i class="flaticon-381-calculator me-2"></i>
+            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-calculator me-2"></i>
                     Rapport des revenus - Quête ordinaire
                 </h4>
-                <div class="card-action">
+                <div class="card-action d-flex align-items-center gap-2 flex-wrap">
                     @if($report)
                         <button type="button"
                                 class="btn btn-secondary me-2"
@@ -25,9 +25,9 @@
                                     'month' => $selectedMonth,
                                     'year' => $selectedYear,
                                 ]) }}">
-                            <i class="flaticon-381-printer me-2"></i>Imprimer
+                            <i class="fas fa-print me-2"></i>Imprimer
                         </button>
-                        <form action="{{ route('financial-reports.revenues-weekly-pdf') }}" method="POST" class="d-inline">
+                        <form action="{{ route('financial-reports.revenues-weekly-pdf') }}" method="POST" class="d-inline-flex align-items-center">
                             @csrf
                             <input type="hidden" name="paroisse_id" value="{{ $selectedParoisseId }}">
                             <input type="hidden" name="period_type" value="{{ $periodType }}">
@@ -35,7 +35,7 @@
                             <input type="hidden" name="month" value="{{ $selectedMonth }}">
                             <input type="hidden" name="year" value="{{ $selectedYear }}">
                             <button type="submit" class="btn btn-danger me-2">
-                                <i class="flaticon-381-download me-2"></i>Télécharger PDF
+                                <i class="fas fa-download me-2"></i>Télécharger PDF
                             </button>
                         </form>
                     @endif
@@ -292,7 +292,7 @@
                     </div>
                 @else
                     <div class="text-center py-5">
-                        <i class="flaticon-381-calculator" style="font-size:64px;color:#ccc;margin-bottom:20px;"></i>
+                        <i class="fas fa-calculator" style="font-size:64px;color:#ccc;margin-bottom:20px;"></i>
                         <h5 class="text-muted">Sélectionnez une période pour générer le rapport</h5>
                         <p class="text-muted">Le rapport calculera automatiquement les revenus de quête ordinaire pour la période choisie.</p>
                     </div>
@@ -309,7 +309,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalPrintReportLabel">
-                    <i class="flaticon-381-printer me-2"></i>Rapport des revenus - Quête ordinaire
+                    <i class="fas fa-print me-2"></i>Rapport des revenus - Quête ordinaire
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
@@ -319,7 +319,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 <button type="button" class="btn btn-primary" id="btnPrintFromModal">
-                    <i class="flaticon-381-printer me-2"></i>Imprimer
+                    <i class="fas fa-print me-2"></i>Imprimer
                 </button>
             </div>
         </div>

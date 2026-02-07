@@ -22,7 +22,7 @@
                 <div class="card-body user-hero-body">
                     <div class="user-hero-left">
                         <div class="user-avatar" aria-hidden="true">
-                            <i class="flaticon-381-calendar-1"></i>
+                            <i class="fas fa-calendar-alt"></i>
                         </div>
                         <div class="user-hero-meta">
                             <div class="user-hero-name">

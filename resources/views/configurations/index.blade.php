@@ -3,19 +3,41 @@
 @section('title', 'Configuration')
 @section('page-title', 'Configuration de l\'application')
 
+@push('styles')
+<style>
+.page-config .card { border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: none; }
+.page-config .card-header { background: linear-gradient(135deg, var(--primary, #6A1B9A) 0%, #552586 100%); color: #fff; border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem; }
+.page-config .card-title { font-weight: 600; font-size: 1.2rem; }
+.page-config .nav-tabs { border-bottom: 2px solid #e9ecef; gap: 4px; flex-wrap: wrap; }
+.page-config .nav-tabs .nav-link { border: none; border-radius: 8px 8px 0 0; padding: 12px 20px; font-weight: 500; color: #6c757d; background: #f8f9fa; transition: all 0.2s; }
+.page-config .nav-tabs .nav-link:hover { color: var(--primary, #6A1B9A); background: #f0f0f0; }
+.page-config .nav-tabs .nav-link.active { color: #fff; background: var(--primary, #6A1B9A); }
+.page-config .tab-content { padding-top: 1.5rem; }
+.page-config .form-label { font-weight: 600; color: #495057; margin-bottom: 0.5rem; }
+.page-config .form-control { border-radius: 8px; border: 1px solid #dee2e6; }
+.page-config .form-control:focus { border-color: var(--primary, #6A1B9A); box-shadow: 0 0 0 0.2rem rgba(106, 27, 154, 0.15); }
+.page-config .form-control-color { width: 50px; height: 38px; border-radius: 8px; }
+.page-config .btn-save { padding: 12px 30px; border-radius: 8px; font-weight: 600; }
+.page-config .section-divider { border-top: 1px solid #e9ecef; padding-top: 1.5rem; margin-top: 1.5rem; }
+.page-config .alert { border-radius: 10px; }
+</style>
+@endpush
+
 @section('content')
+<div class="page-config">
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">
+                <h4 class="card-title mb-0 d-flex align-items-center">
+                    <i class="fas fa-cogs me-3" style="font-size: 1.4rem; opacity: 0.9;"></i>
                     Paramètres de l'application
                 </h4>
             </div>
             <div class="card-body">
                 @if ($errors->any())
                     <div class="alert alert-danger mb-4">
-                        <h6 class="alert-heading mb-2">Erreurs de validation</h6>
+                        <h6 class="alert-heading mb-2"><i class="fas fa-exclamation-triangle me-2"></i>Erreurs de validation</h6>
                         <ul class="mb-0">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -28,42 +50,42 @@
                 <ul class="nav nav-tabs mb-4" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="identite-tab" data-bs-toggle="tab" data-bs-target="#identite" type="button" role="tab">
-                            Identité de la paroisse
+                            <i class="fas fa-church me-2"></i>Identité
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="couleurs-tab" data-bs-toggle="tab" data-bs-target="#couleurs" type="button" role="tab">
-                            Charte de couleurs
+                            <i class="fas fa-palette me-2"></i>Couleurs
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="boutons-tab" data-bs-toggle="tab" data-bs-target="#boutons" type="button" role="tab">
-                            Boutons et titres
+                            <i class="fas fa-hand-pointer me-2"></i>Boutons
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="actions-tab" data-bs-toggle="tab" data-bs-target="#actions" type="button" role="tab">
-                            Actions du tableau
+                            <i class="fas fa-table me-2"></i>Actions
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="generaux-tab" data-bs-toggle="tab" data-bs-target="#generaux" type="button" role="tab">
-                            Paramètres généraux
+                            <i class="fas fa-sliders-h me-2"></i>Généraux
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="telephone-tab" data-bs-toggle="tab" data-bs-target="#telephone" type="button" role="tab">
-                            Téléphone / Pays
+                            <i class="fas fa-phone me-2"></i>Téléphone
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="pdf-tab" data-bs-toggle="tab" data-bs-target="#pdf" type="button" role="tab">
-                            En-tête PDF
+                            <i class="fas fa-file-pdf me-2"></i>PDF
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="loader-tab" data-bs-toggle="tab" data-bs-target="#loader" type="button" role="tab">
-                            Loader (chargement)
+                            <i class="fas fa-spinner me-2"></i>Loader
                         </button>
                     </li>
                 </ul>
@@ -92,9 +114,9 @@
                                 </div>
                             </div>
 
-                            <div class="text-end mt-4 pt-4 border-top">
-                                <button type="submit" class="btn btn-primary">
-                                    Enregistrer
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
                                 </button>
                             </div>
                         </form>
@@ -110,8 +132,8 @@
                             <div class="row">
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur primaire</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_primaire" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_primaire" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_primaire') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_primaire') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -119,8 +141,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur secondaire</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_secondaire" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_secondaire" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_secondaire') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_secondaire') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -128,8 +150,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur succès</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_succes" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_succes" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_succes') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_succes') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -137,8 +159,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur info</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_info" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_info" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_info') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_info') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -146,8 +168,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur avertissement</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_avertissement" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_avertissement" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_avertissement') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_avertissement') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -155,8 +177,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur danger</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_danger" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_danger" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_danger') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_danger') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -164,9 +186,9 @@
                                 </div>
                             </div>
 
-                            <div class="text-end mt-4 pt-4 border-top">
-                                <button type="submit" class="btn btn-primary">
-                                    Enregistrer
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
                                 </button>
                             </div>
                         </form>
@@ -182,8 +204,8 @@
                             <div class="row">
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur bouton d'ajout</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_bouton_ajout" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_bouton_ajout" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_bouton_ajout') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_bouton_ajout') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -192,8 +214,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur bouton d'ajout (hover)</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_bouton_ajout_hover" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_bouton_ajout_hover" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_bouton_ajout_hover') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_bouton_ajout_hover') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -202,8 +224,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur titre de page</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_titre_page" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_titre_page" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_titre_page') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_titre_page') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -212,9 +234,9 @@
                                 </div>
                             </div>
 
-                            <div class="text-end mt-4 pt-4 border-top">
-                                <button type="submit" class="btn btn-primary">
-                                    Enregistrer
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
                                 </button>
                             </div>
                         </form>
@@ -230,8 +252,8 @@
                             <div class="row">
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur action "Voir"</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_action_voir" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_action_voir" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_action_voir') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_action_voir') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -240,8 +262,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur action "Modifier"</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_action_modifier" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_action_modifier" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_action_modifier') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_action_modifier') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -250,8 +272,8 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6 mb-3">
                                     <label class="form-label">Couleur action "Supprimer"</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="couleur_action_supprimer" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="couleur_action_supprimer" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_action_supprimer') }}">
                                         <input type="text" value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'couleur_action_supprimer') }}"
                                                class="form-control" readonly style="flex: 1;">
@@ -260,9 +282,9 @@
                                 </div>
                             </div>
 
-                            <div class="text-end mt-4 pt-4 border-top">
-                                <button type="submit" class="btn btn-primary">
-                                    Enregistrer
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
                                 </button>
                             </div>
                         </form>
@@ -276,27 +298,27 @@
                             <input type="hidden" name="section" value="generaux">
 
                             <div class="row">
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Monnaie</label>
                                     <input type="text" name="monnaie" class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'monnaie') }}"
                                            placeholder="FCFA">
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Format de date</label>
                                     <input type="text" name="format_date" class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'format_date') }}"
                                            placeholder="d/m/Y">
                                     <small class="text-muted">Ex: d/m/Y</small>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Format d'heure</label>
                                     <input type="text" name="format_heure" class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'format_heure') }}"
                                            placeholder="H:i">
                                     <small class="text-muted">Ex: H:i</small>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Langue</label>
                                     <select name="langue" class="form-control">
                                         <option value="fr" {{ \App\Helpers\ParoisseConfig::get($paroisseId, 'langue') == 'fr' ? 'selected' : '' }}>Français</option>
@@ -305,9 +327,9 @@
                                 </div>
                             </div>
 
-                            <div class="text-end mt-4 pt-4 border-top">
-                                <button type="submit" class="btn btn-primary">
-                                    Enregistrer
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
                                 </button>
                             </div>
                         </form>
@@ -354,15 +376,14 @@
                                            class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'phone_regex', '/^(\+242|242|0)?[ \-]?[0-9]{9}$/') }}">
                                     <small class="text-muted">
-                                        Expression régulière PHP pour valider le format. Défaut (Congo) :
-                                        <code>/^(\+242|242|0)?[ \-]?[0-9]{9}$/</code>
+                                        Expression régulière PHP pour valider le format.
                                     </small>
                                 </div>
                             </div>
 
-                            <div class="text-end mt-4 pt-4 border-top">
-                                <button type="submit" class="btn btn-primary">
-                                    Enregistrer
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
                                 </button>
                             </div>
                         </form>
@@ -375,7 +396,8 @@
                             @method('PUT')
                             <input type="hidden" name="section" value="pdf">
 
-                            <div class="alert alert-info mb-3">
+                            <div class="alert alert-info mb-4">
+                                <i class="fas fa-info-circle me-2"></i>
                                 Configurez l'apparence de l'en-tête des rapports financiers téléchargés en PDF.
                             </div>
 
@@ -394,7 +416,7 @@
                                            class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'pdf_header_logo', '') }}"
                                            placeholder="/images/logo-paroisse.png">
-                                    <small class="text-muted">Chemin relatif depuis le dossier public (ex: /images/logo.png)</small>
+                                    <small class="text-muted">Chemin relatif depuis le dossier public</small>
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label class="form-label">Largeur du logo (px)</label>
@@ -412,7 +434,6 @@
                                            class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'pdf_header_title', '') }}"
                                            placeholder="Laissez vide pour utiliser le nom de la paroisse">
-                                    <small class="text-muted">Si vide, le nom de la paroisse sera utilisé</small>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Sous-titre</label>
@@ -436,7 +457,7 @@
                                            name="pdf_header_phone"
                                            class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'pdf_header_phone', '') }}"
-                                           placeholder="Laissez vide pour utiliser le téléphone de la paroisse">
+                                           placeholder="Téléphone de la paroisse">
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label class="form-label">Email</label>
@@ -444,7 +465,7 @@
                                            name="pdf_header_email"
                                            class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'pdf_header_email', '') }}"
-                                           placeholder="Laissez vide pour utiliser l'email de la paroisse">
+                                           placeholder="Email de la paroisse">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Texte personnalisé</label>
@@ -454,7 +475,7 @@
                                               placeholder="Texte supplémentaire à afficher dans l'en-tête">{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'pdf_header_custom_text', '') }}</textarea>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label class="form-label">Couleur de fond de l'en-tête</label>
+                                    <label class="form-label">Couleur de fond</label>
                                     <div class="d-flex gap-2">
                                         <input type="color"
                                                name="pdf_header_bg_color"
@@ -468,7 +489,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label class="form-label">Couleur du texte de l'en-tête</label>
+                                    <label class="form-label">Couleur du texte</label>
                                     <div class="d-flex gap-2">
                                         <input type="color"
                                                name="pdf_header_text_color"
@@ -483,23 +504,24 @@
                                 </div>
                             </div>
 
-                            <div class="text-end mt-4 pt-4 border-top">
-                                <button type="submit" class="btn btn-primary">
-                                    Enregistrer
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
                                 </button>
                             </div>
                         </form>
                     </div>
 
-                    {{-- Section 8: Loader (chargement des pages) --}}
+                    {{-- Section 8: Loader --}}
                     <div class="tab-pane fade" id="loader" role="tabpanel">
                         <form action="{{ route('configurations.update-bulk') }}" method="POST" class="config-section-form">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="section" value="loader">
 
-                            <div class="alert alert-info mb-3">
-                                Affiche un écran de chargement avec le logo de la paroisse pendant au moins la durée choisie, puis masque le loader une fois la page chargée.
+                            <div class="alert alert-info mb-4">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Affiche un écran de chargement avec le logo de la paroisse pendant au moins la durée choisie.
                             </div>
 
                             <div class="row">
@@ -516,7 +538,7 @@
                                     <input type="number" name="loader_duree_min" class="form-control"
                                            value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_duree_min', 10) }}"
                                            min="1" max="60" step="1">
-                                    <small class="text-muted">Le loader reste visible au moins ce nombre de secondes (ex: 10)</small>
+                                    <small class="text-muted">Le loader reste visible au moins ce nombre de secondes</small>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Afficher le logo</label>
@@ -524,7 +546,6 @@
                                         <option value="1" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true))>Oui</option>
                                         <option value="0" @selected(!\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true))>Non</option>
                                     </select>
-                                    <small class="text-muted">Utilise le logo configuré dans « Identité de la paroisse »</small>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Style du loader</label>
@@ -536,8 +557,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Couleur de fond</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="loader_couleur_fond" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="loader_couleur_fond" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_fond', '#003366') }}">
                                         <input type="text" class="form-control" readonly style="flex: 1;"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_fond', '#003366') }}">
@@ -545,8 +566,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Couleur du texte / points</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="color" name="loader_couleur_texte" class="form-control form-control-color me-3"
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="loader_couleur_texte" class="form-control form-control-color"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_texte', '#FFFFFF') }}">
                                         <input type="text" class="form-control" readonly style="flex: 1;"
                                                value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_texte', '#FFFFFF') }}">
@@ -554,9 +575,9 @@
                                 </div>
                             </div>
 
-                            <div class="text-end mt-4 pt-4 border-top">
-                                <button type="submit" class="btn btn-primary">
-                                    Enregistrer
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
                                 </button>
                             </div>
                         </form>
@@ -566,10 +587,10 @@
         </div>
     </div>
 </div>
+</div>
 
 @push('scripts')
 <script>
-    // Mise à jour automatique des champs texte lors du changement de couleur
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('input[type="color"]').forEach(function(colorInput) {
             colorInput.addEventListener('input', function() {
