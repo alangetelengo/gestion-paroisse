@@ -94,7 +94,7 @@
                                         </a>
                                         @endcan
                                         @can('delete_revenues')
-                                        <form action="{{ route('revenue-categories.destroy', $cat) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
+                                        <form action="{{ route('revenue-categories.destroy', $cat) }}" method="POST" class="d-inline" data-confirm="Supprimer cette catégorie ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">

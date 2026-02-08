@@ -104,7 +104,7 @@
                                         </a>
                                         @endcan
                                         @can('delete_revenues')
-                                        <form action="{{ route('revenue-types.destroy', $type) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer ce type ?');">
+                                        <form action="{{ route('revenue-types.destroy', $type) }}" method="POST" class="d-inline" data-confirm="Supprimer ce type ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">

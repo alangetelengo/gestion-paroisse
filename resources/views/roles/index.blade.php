@@ -66,7 +66,7 @@
                                             <i class="fas fa-pen"></i> Modifier
                                         </a>
                                         @if($role->name !== 'super_admin')
-                                        <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer ce rôle ?')">
+                                        <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline" data-confirm="Supprimer ce rôle ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">

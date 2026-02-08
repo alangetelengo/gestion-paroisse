@@ -223,6 +223,25 @@
         Main wrapper end
     ***********************************-->
 
+    {{-- Modal FlashAlert : confirmation avant suppression --}}
+    <div class="modal fade" id="flashConfirmModal" tabindex="-1" aria-labelledby="flashConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="flashConfirmModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="flashConfirmMessage" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-danger" id="flashConfirmSubmit">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--**********************************
         Scripts
     ***********************************-->
@@ -400,7 +419,7 @@
     @vite(['resources/js/app.js'])
     @stack('scripts')
 
-    <!-- FlashAlert -->
+    <!-- FlashAlert (toastr pour les notifications) -->
     @if(session('flash_alert'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -420,5 +439,42 @@
             });
         </script>
     @endif
+
+    <!-- FlashAlert : confirmation de suppression (remplace confirm() natif) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var confirmModal = document.getElementById('flashConfirmModal');
+            var confirmMessage = document.getElementById('flashConfirmMessage');
+            var confirmSubmitBtn = document.getElementById('flashConfirmSubmit');
+            if (!confirmModal || !confirmMessage || !confirmSubmitBtn) return;
+
+            var bsModal = typeof bootstrap !== 'undefined' && bootstrap.Modal ? new bootstrap.Modal(confirmModal) : null;
+            var pendingForm = null;
+
+            document.addEventListener('submit', function(e) {
+                var form = e.target && e.target.tagName === 'FORM' ? e.target : null;
+                if (!form) return;
+                var msg = form.getAttribute('data-confirm');
+                if (!msg) return;
+                e.preventDefault();
+                pendingForm = form;
+                confirmMessage.textContent = msg;
+                if (bsModal) bsModal.show();
+                else confirmModal.classList.add('show');
+            }, true);
+
+            function doSubmit() {
+                if (pendingForm) {
+                    pendingForm.removeAttribute('data-confirm');
+                    pendingForm.submit();
+                    pendingForm = null;
+                }
+                if (bsModal) bsModal.hide();
+                else confirmModal.classList.remove('show');
+            }
+
+            confirmSubmitBtn.addEventListener('click', doSubmit);
+        });
+    </script>
 </body>
 </html>

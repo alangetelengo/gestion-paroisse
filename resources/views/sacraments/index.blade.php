@@ -113,7 +113,7 @@
                                         </a>
                                         @endcan
                                         @can(\App\Http\Controllers\SacramentController::TYPE_PERMISSIONS[$type]['delete'] ?? 'delete_baptisms')
-                                        <form action="{{ route('sacraments.destroy', $sacrament) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cet enregistrement ?');">
+                                        <form action="{{ route('sacraments.destroy', $sacrament) }}" method="POST" class="d-inline" data-confirm="Supprimer cet enregistrement ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">

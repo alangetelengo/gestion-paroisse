@@ -64,7 +64,7 @@
                                         <a href="{{ route('permissions.edit', $permission) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
                                             <i class="fas fa-pen"></i> Modifier
                                         </a>
-                                        <form action="{{ route('permissions.destroy', $permission) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette permission ?')">
+                                        <form action="{{ route('permissions.destroy', $permission) }}" method="POST" class="d-inline" data-confirm="Supprimer cette permission ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">

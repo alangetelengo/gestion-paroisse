@@ -93,7 +93,7 @@
                                             <i class="fas fa-pen"></i> Modifier
                                         </a>
                                         @if($user->id !== auth()->id())
-                                        <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">
+                                        <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline" data-confirm="Êtes-vous sûr de vouloir supprimer cet utilisateur ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">

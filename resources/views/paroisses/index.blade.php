@@ -102,7 +102,7 @@
                                         <a href="{{ route('paroisses.edit', $paroisse) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
                                             <i class="fas fa-pen"></i> Modifier
                                         </a>
-                                        <form action="{{ route('paroisses.destroy', $paroisse) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir désactiver cette paroisse ?')">
+                                        <form action="{{ route('paroisses.destroy', $paroisse) }}" method="POST" class="d-inline" data-confirm="Êtes-vous sûr de vouloir désactiver cette paroisse ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Désactiver">

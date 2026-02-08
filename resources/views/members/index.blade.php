@@ -148,7 +148,7 @@
                                         </a>
                                         @endcan
                                         @can('delete_members')
-                                        <form action="{{ route('members.destroy', $member) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce membre ?')">
+                                        <form action="{{ route('members.destroy', $member) }}" method="POST" class="d-inline" data-confirm="Êtes-vous sûr de vouloir supprimer ce membre ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">

@@ -165,7 +165,7 @@
                                         </a>
                                         @endcan
                                         @can('delete_expenses')
-                                        <form action="{{ route('expenses.destroy', $expense) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?')">
+                                        <form action="{{ route('expenses.destroy', $expense) }}" method="POST" class="d-inline" data-confirm="Êtes-vous sûr de vouloir supprimer cette dépense ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">

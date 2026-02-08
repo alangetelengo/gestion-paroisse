@@ -133,7 +133,7 @@
                                         </a>
                                         @endcan
                                         @can('delete_events')
-                                        <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">
+                                        <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline" data-confirm="Êtes-vous sûr de vouloir supprimer cet événement ?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">
