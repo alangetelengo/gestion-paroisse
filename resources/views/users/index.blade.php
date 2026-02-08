@@ -34,10 +34,20 @@
                     <i class="fas fa-user-cog me-3" style="font-size: 1.4rem; opacity: 0.9;"></i>
                     Liste des utilisateurs
                 </h4>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
                     <a href="{{ route('users.index') }}" class="btn btn-action btn-refresh">
                         <i class="fas fa-sync-alt"></i> Rafraîchir
                     </a>
+                    @can('manage_roles')
+                    <a href="{{ route('roles.index') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-user-shield"></i> Rôles
+                    </a>
+                    @endcan
+                    @can('manage_permissions')
+                    <a href="{{ route('permissions.index') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-key"></i> Permissions
+                    </a>
+                    @endcan
                     @can('manage_users')
                     <a href="{{ route('users.create') }}" class="btn btn-action btn-add">
                         <i class="fas fa-plus"></i> Ajouter un utilisateur

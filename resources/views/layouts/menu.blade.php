@@ -161,6 +161,27 @@
     </li>
     @endcan
 
+    {{-- Gestion utilisateur (Utilisateurs, Rôles, Permissions) --}}
+    @if(auth()->user()->can('manage_users') || auth()->user()->can('manage_roles') || auth()->user()->can('manage_permissions'))
+    <li>
+        <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="fas fa-users-cog"></i>
+            <span class="nav-text">Gestion utilisateur</span>
+        </a>
+        <ul aria-expanded="false">
+            @can('manage_users')
+            <li><a href="{{ route('users.index') }}">Utilisateurs</a></li>
+            @endcan
+            @can('manage_roles')
+            <li><a href="{{ route('roles.index') }}">Rôles</a></li>
+            @endcan
+            @can('manage_permissions')
+            <li><a href="{{ route('permissions.index') }}">Permissions</a></li>
+            @endcan
+        </ul>
+    </li>
+    @endif
+
     {{-- Configuration --}}
     <li>
         <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
@@ -169,17 +190,8 @@
         </a>
         <ul aria-expanded="false">
             <li><a href="{{ route('configurations.index') }}">Paramètres généraux</a></li>
-            @can('manage_users')
-            <li><a href="{{ route('users.index') }}">Utilisateurs</a></li>
-            @endcan
             @can('manage_paroisses')
             <li><a href="{{ route('paroisses.index') }}">Paroisses</a></li>
-            @endcan
-            @can('manage_roles')
-            <li><a href="{{ route('roles.index') }}">Rôles</a></li>
-            @endcan
-            @can('manage_permissions')
-            <li><a href="{{ route('permissions.index') }}">Permissions</a></li>
             @endcan
         </ul>
     </li>

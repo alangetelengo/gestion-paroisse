@@ -95,7 +95,7 @@
                     </div>
 
                     <div class="mb-3">
-        <label class="form-label dècexb-flex justify-content-between align-items-center">
+        <label class="form-label d-flex justify-content-between align-items-center">
             <span>Permissions directes (optionnel)</span>
             <span>
                 <button type="button" class="btn btn-sm btn-primary me-1"

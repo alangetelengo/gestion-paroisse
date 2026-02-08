@@ -32,10 +32,20 @@
                     <i class="fas fa-user-shield me-3" style="font-size: 1.4rem; opacity: 0.9;"></i>
                     Liste des rôles
                 </h4>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
                     <a href="{{ route('roles.index') }}" class="btn btn-action btn-refresh">
                         <i class="fas fa-sync-alt"></i> Rafraîchir
                     </a>
+                    @can('manage_users')
+                    <a href="{{ route('users.index') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-users"></i> Utilisateurs
+                    </a>
+                    @endcan
+                    @can('manage_permissions')
+                    <a href="{{ route('permissions.index') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-key"></i> Permissions
+                    </a>
+                    @endcan
                     <a href="{{ route('roles.create') }}" class="btn btn-action btn-add">
                         <i class="fas fa-plus"></i> Ajouter un rôle
                     </a>

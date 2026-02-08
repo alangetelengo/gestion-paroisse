@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 
 class RolePermissionSeeder extends Seeder
@@ -16,97 +16,75 @@ class RolePermissionSeeder extends Seeder
         // Vider le cache des permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
+        // Libellés français des permissions (affichage utilisateur)
+        $libelles = [
+            'view_dashboard' => 'Voir le tableau de bord',
+            'view_members' => 'Voir les membres',
+            'create_members' => 'Créer des membres',
+            'edit_members' => 'Modifier les membres',
+            'delete_members' => 'Supprimer des membres',
+            'export_members' => 'Exporter les membres',
+            'import_members' => 'Importer les membres',
+            'view_baptisms' => 'Voir les baptêmes',
+            'create_baptisms' => 'Créer des baptêmes',
+            'edit_baptisms' => 'Modifier les baptêmes',
+            'delete_baptisms' => 'Supprimer des baptêmes',
+            'view_confirmations' => 'Voir les confirmations',
+            'create_confirmations' => 'Créer des confirmations',
+            'edit_confirmations' => 'Modifier les confirmations',
+            'delete_confirmations' => 'Supprimer des confirmations',
+            'view_communions' => 'Voir les communions',
+            'create_communions' => 'Créer des communions',
+            'edit_communions' => 'Modifier les communions',
+            'delete_communions' => 'Supprimer des communions',
+            'view_marriages' => 'Voir les mariages',
+            'create_marriages' => 'Créer des mariages',
+            'edit_marriages' => 'Modifier les mariages',
+            'delete_marriages' => 'Supprimer des mariages',
+            'view_funerals' => 'Voir les obsèques',
+            'create_funerals' => 'Créer des obsèques',
+            'edit_funerals' => 'Modifier les obsèques',
+            'delete_funerals' => 'Supprimer des obsèques',
+            'view_events' => 'Voir les événements',
+            'create_events' => 'Créer des événements',
+            'edit_events' => 'Modifier les événements',
+            'delete_events' => 'Supprimer des événements',
+            'manage_event_participants' => 'Gérer les participants aux événements',
+            'view_groups' => 'Voir les groupes',
+            'create_groups' => 'Créer des groupes',
+            'edit_groups' => 'Modifier les groupes',
+            'delete_groups' => 'Supprimer des groupes',
+            'manage_group_members' => 'Gérer les membres des groupes',
+            'view_revenues' => 'Voir les recettes',
+            'create_revenues' => 'Créer des recettes',
+            'edit_revenues' => 'Modifier les recettes',
+            'delete_revenues' => 'Supprimer des recettes',
+            'validate_revenues' => 'Valider les recettes',
+            'view_expenses' => 'Voir les dépenses',
+            'create_expenses' => 'Créer des dépenses',
+            'edit_expenses' => 'Modifier les dépenses',
+            'delete_expenses' => 'Supprimer des dépenses',
+            'validate_expenses' => 'Valider les dépenses',
+            'view_financial_reports' => 'Voir les rapports financiers',
+            'generate_financial_reports' => 'Générer des rapports financiers',
+            'view_configuration' => 'Voir la configuration',
+            'edit_configuration' => 'Modifier la configuration',
+            'manage_users' => 'Gérer les utilisateurs',
+            'manage_roles' => 'Gérer les rôles',
+            'manage_permissions' => 'Gérer les permissions',
+            'manage_paroisses' => 'Gérer les paroisses',
+        ];
+
         // ============================================
         // CRÉATION DES PERMISSIONS
         // ============================================
 
-        $makeLabel = static fn (string $name): string => ucfirst(str_replace('_', ' ', $name));
-
-        // Dashboard
-        Permission::firstOrCreate(
-            ['name' => 'view_dashboard', 'guard_name' => 'web'],
-            ['libelle_permission' => $makeLabel('view_dashboard')]
-        );
-
-        // Membres
-        Permission::firstOrCreate(['name' => 'view_members', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_members')]);
-        Permission::firstOrCreate(['name' => 'create_members', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_members')]);
-        Permission::firstOrCreate(['name' => 'edit_members', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_members')]);
-        Permission::firstOrCreate(['name' => 'delete_members', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_members')]);
-        Permission::firstOrCreate(['name' => 'export_members', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('export_members')]);
-        Permission::firstOrCreate(['name' => 'import_members', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('import_members')]);
-
-        // Sacrements - Baptêmes
-        Permission::firstOrCreate(['name' => 'view_baptisms', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_baptisms')]);
-        Permission::firstOrCreate(['name' => 'create_baptisms', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_baptisms')]);
-        Permission::firstOrCreate(['name' => 'edit_baptisms', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_baptisms')]);
-        Permission::firstOrCreate(['name' => 'delete_baptisms', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_baptisms')]);
-
-        // Sacrements - Confirmations
-        Permission::firstOrCreate(['name' => 'view_confirmations', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_confirmations')]);
-        Permission::firstOrCreate(['name' => 'create_confirmations', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_confirmations')]);
-        Permission::firstOrCreate(['name' => 'edit_confirmations', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_confirmations')]);
-        Permission::firstOrCreate(['name' => 'delete_confirmations', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_confirmations')]);
-
-        // Sacrements - Communions
-        Permission::firstOrCreate(['name' => 'view_communions', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_communions')]);
-        Permission::firstOrCreate(['name' => 'create_communions', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_communions')]);
-        Permission::firstOrCreate(['name' => 'edit_communions', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_communions')]);
-        Permission::firstOrCreate(['name' => 'delete_communions', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_communions')]);
-
-        // Sacrements - Mariages
-        Permission::firstOrCreate(['name' => 'view_marriages', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_marriages')]);
-        Permission::firstOrCreate(['name' => 'create_marriages', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_marriages')]);
-        Permission::firstOrCreate(['name' => 'edit_marriages', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_marriages')]);
-        Permission::firstOrCreate(['name' => 'delete_marriages', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_marriages')]);
-
-        // Sacrements - Obsèques
-        Permission::firstOrCreate(['name' => 'view_funerals', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_funerals')]);
-        Permission::firstOrCreate(['name' => 'create_funerals', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_funerals')]);
-        Permission::firstOrCreate(['name' => 'edit_funerals', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_funerals')]);
-        Permission::firstOrCreate(['name' => 'delete_funerals', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_funerals')]);
-
-        // Événements
-        Permission::firstOrCreate(['name' => 'view_events', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_events')]);
-        Permission::firstOrCreate(['name' => 'create_events', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_events')]);
-        Permission::firstOrCreate(['name' => 'edit_events', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_events')]);
-        Permission::firstOrCreate(['name' => 'delete_events', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_events')]);
-        Permission::firstOrCreate(['name' => 'manage_event_participants', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('manage_event_participants')]);
-
-        // Groupes
-        Permission::firstOrCreate(['name' => 'view_groups', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_groups')]);
-        Permission::firstOrCreate(['name' => 'create_groups', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_groups')]);
-        Permission::firstOrCreate(['name' => 'edit_groups', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_groups')]);
-        Permission::firstOrCreate(['name' => 'delete_groups', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_groups')]);
-        Permission::firstOrCreate(['name' => 'manage_group_members', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('manage_group_members')]);
-
-        // Finances - Recettes
-        Permission::firstOrCreate(['name' => 'view_revenues', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_revenues')]);
-        Permission::firstOrCreate(['name' => 'create_revenues', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_revenues')]);
-        Permission::firstOrCreate(['name' => 'edit_revenues', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_revenues')]);
-        Permission::firstOrCreate(['name' => 'delete_revenues', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_revenues')]);
-        Permission::firstOrCreate(['name' => 'validate_revenues', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('validate_revenues')]);
-
-        // Finances - Dépenses
-        Permission::firstOrCreate(['name' => 'view_expenses', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_expenses')]);
-        Permission::firstOrCreate(['name' => 'create_expenses', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('create_expenses')]);
-        Permission::firstOrCreate(['name' => 'edit_expenses', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_expenses')]);
-        Permission::firstOrCreate(['name' => 'delete_expenses', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('delete_expenses')]);
-        Permission::firstOrCreate(['name' => 'validate_expenses', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('validate_expenses')]);
-
-        // Finances - Rapports
-        Permission::firstOrCreate(['name' => 'view_financial_reports', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_financial_reports')]);
-        Permission::firstOrCreate(['name' => 'generate_financial_reports', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('generate_financial_reports')]);
-
-        // Configuration
-        Permission::firstOrCreate(['name' => 'view_configuration', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('view_configuration')]);
-        Permission::firstOrCreate(['name' => 'edit_configuration', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('edit_configuration')]);
-
-        // Administration
-        Permission::firstOrCreate(['name' => 'manage_users', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('manage_users')]);
-        Permission::firstOrCreate(['name' => 'manage_roles', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('manage_roles')]);
-        Permission::firstOrCreate(['name' => 'manage_permissions', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('manage_permissions')]);
-        Permission::firstOrCreate(['name' => 'manage_paroisses', 'guard_name' => 'web'], ['libelle_permission' => $makeLabel('manage_paroisses')]);
+        foreach ($libelles as $name => $libelle) {
+            Permission::updateOrCreate(
+                ['name' => $name, 'guard_name' => 'web'],
+                ['libelle_permission' => $libelle]
+            );
+        }
 
         // ============================================
         // CRÉATION DES RÔLES
@@ -138,7 +116,9 @@ class RolePermissionSeeder extends Seeder
             'view_expenses', 'create_expenses', 'edit_expenses', 'delete_expenses', 'validate_expenses',
             'view_financial_reports', 'generate_financial_reports',
             'view_configuration', 'edit_configuration',
-            'manage_users', // Peut gérer les utilisateurs de sa paroisse
+            'manage_users',
+            'manage_roles',      // Ajouter, modifier, supprimer des rôles
+            'manage_permissions', // Ajouter, modifier, supprimer des permissions
         ]);
 
         // Paroisse Secrétaire - Création et modification, pas de suppression ni validation financière
