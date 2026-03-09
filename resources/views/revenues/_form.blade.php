@@ -73,6 +73,51 @@
         @enderror
     </div>
 
+    {{-- Informations du donateur (dîme / don — catégorie Procure) --}}
+    <div class="col-12 mb-3" id="donateur-container" style="display: none;">
+        <div class="card border-primary">
+            <div class="card-header bg-light">
+                <strong><i class="fas fa-user me-1"></i> Informations de la personne (dîme / don)</strong>
+            </div>
+            <div class="card-body row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nom du donateur</label>
+                    <input type="text"
+                           name="donateur_nom"
+                           class="form-control text-uppercase @error('donateur_nom') is-invalid @enderror"
+                           style="text-transform: uppercase;"
+                           value="{{ old('donateur_nom', $revenue?->donateur_nom) }}"
+                           placeholder="Nom et prénom (en majuscules)">
+                    @error('donateur_nom')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Téléphone du donateur</label>
+                    @php
+                        $donateurPhone = old('donateur_telephone', $revenue?->donateur_telephone);
+                        $donateurPhoneDigits = $donateurPhone ? preg_replace('/\D/', '', $donateurPhone) : '';
+                        $donateurPhoneSuffix = ($donateurPhoneDigits !== '' && str_starts_with($donateurPhoneDigits, '242'))
+                            ? substr($donateurPhoneDigits, 3) : $donateurPhoneDigits;
+                    @endphp
+                    <div class="input-group">
+                        <span class="input-group-text">242</span>
+                        <input type="text"
+                               name="donateur_telephone"
+                               class="form-control @error('donateur_telephone') is-invalid @enderror"
+                               value="{{ $donateurPhoneSuffix }}"
+                               placeholder="06 123 45 67"
+                               inputmode="tel">
+                    </div>
+                    <small class="text-muted">Le préfixe 242 (Congo) est ajouté automatiquement.</small>
+                    @error('donateur_telephone')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-6 mb-3" id="jour-semaine-container">
         <label class="form-label">Jour de la semaine (quête ordinaire)</label>
         @php
@@ -142,7 +187,7 @@
                name="montant"
                class="form-control @error('montant') is-invalid @enderror"
                inputmode="decimal"
-               value="{{ old('montant', $revenue?->montant ? number_format($revenue->montant, 0, ',', '.') : '') }}"
+               value="{{ old('montant', \App\Helpers\ParoisseConfig::formatMontantSaisie($revenue?->montant)) }}"
                required>
         @error('montant')
         <div class="invalid-feedback">{{ $message }}</div>
@@ -167,19 +212,6 @@
             @endforeach
         </select>
         @error('methode_paiement')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Référence paiement</label>
-        <input type="text"
-               name="reference_paiement"
-               class="form-control @error('reference_paiement') is-invalid @enderror"
-               value="{{ old('reference_paiement', $revenue?->reference_paiement) }}"
-               readonly
-               placeholder="Générée automatiquement">
-        @error('reference_paiement')
         <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
@@ -209,6 +241,7 @@
         const moisLocationMois = document.getElementById('mois-location-mois');
         const moisLocationAnnee = document.getElementById('mois-location-annee');
         const moisLocationHidden = document.getElementById('mois-location');
+        const donateurContainer = document.getElementById('donateur-container');
 
         if (categorySelect && typeSelect) {
             function filterTypes() {
@@ -225,6 +258,13 @@
             }
 
             function updateFieldsVisibility() {
+                // Donateur : visible pour catégorie Procure (dîme, don, etc.)
+                var categoryOption = categorySelect.selectedOptions[0];
+                var selectedCategoryCode = categoryOption ? categoryOption.getAttribute('data-category-code') : null;
+                if (donateurContainer) {
+                    donateurContainer.style.display = selectedCategoryCode === 'procure' ? '' : 'none';
+                }
+
                 const selectedOption = typeSelect.options[typeSelect.selectedIndex];
                 if (!selectedOption || !selectedOption.value) {
                     // Cacher tous les champs conditionnels
@@ -333,7 +373,7 @@
                     montantInput.value = '';
                     return;
                 }
-                // Format 100.000 avec des points comme séparateurs de milliers
+                // Format 35 000 avec espaces comme séparateurs de milliers
                 const parts = [];
                 while (value.length > 3) {
                     parts.unshift(value.slice(-3));
@@ -342,16 +382,16 @@
                 if (value.length) {
                     parts.unshift(value);
                 }
-                montantInput.value = parts.join('.');
+                montantInput.value = parts.join(' ');
             }
 
             montantInput.addEventListener('input', formatMontant);
 
             if (form) {
                 form.addEventListener('submit', function () {
-                    // enlever les points avant envoi au serveur
+                    // enlever les espaces avant envoi au serveur
                     if (montantInput.value) {
-                        montantInput.value = montantInput.value.replace(/\./g, '');
+                        montantInput.value = montantInput.value.replace(/\s/g, '');
                     }
                 });
             }

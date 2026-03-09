@@ -129,7 +129,7 @@
                             <div class="card bg-primary text-white">
                                 <div class="card-body text-center">
                                     <h5>Total Semaine</h5>
-                                    <h3>{{ number_format($report['total_semaine'], 0, ',', ' ') }} FCFA</h3>
+                                    <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_semaine']) }}</h3>
                                     <small>Lundi - Samedi</small>
                                 </div>
                             </div>
@@ -138,7 +138,7 @@
                             <div class="card bg-success text-white">
                                 <div class="card-body text-center">
                                     <h5>Total Dimanche</h5>
-                                    <h3>{{ number_format($report['total_dimanche'], 0, ',', ' ') }} FCFA</h3>
+                                    <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_dimanche']) }}</h3>
                                     <small>Dimanche</small>
                                 </div>
                             </div>
@@ -147,7 +147,7 @@
                             <div class="card bg-info text-white">
                                 <div class="card-body text-center">
                                     <h5>Total Général</h5>
-                                    <h3>{{ number_format($report['total_general'], 0, ',', ' ') }} FCFA</h3>
+                                    <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_general']) }}</h3>
                                     <small>Semaine + Dimanche</small>
                                 </div>
                             </div>
@@ -184,13 +184,13 @@
                                             @foreach(['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'] as $jour)
                                                 <tr>
                                                     <td>{{ $joursLabels[$jour] }}</td>
-                                                    <td class="text-end">{{ number_format($report['details_semaine'][$jour]['montant'] ?? 0, 0, ',', ' ') }} FCFA</td>
+                                                    <td class="text-end">{{ \App\Helpers\ParoisseConfig::formatMontant($report['details_semaine'][$jour]['montant'] ?? 0) }}</td>
                                                     <td class="text-center">{{ $report['details_semaine'][$jour]['count'] ?? 0 }}</td>
                                                 </tr>
                                             @endforeach
                                             <tr class="table-primary fw-bold">
                                                 <td>TOTAL SEMAINE</td>
-                                                <td class="text-end">{{ number_format($report['total_semaine'], 0, ',', ' ') }} FCFA</td>
+                                                <td class="text-end">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_semaine']) }}</td>
                                                 <td class="text-center">{{ $report['revenues_semaine']->count() }}</td>
                                             </tr>
                                         </tbody>
@@ -216,12 +216,12 @@
                                         <tbody>
                                             <tr>
                                                 <td>Dimanche</td>
-                                                <td class="text-end">{{ number_format($report['total_dimanche'], 0, ',', ' ') }} FCFA</td>
+                                                <td class="text-end">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_dimanche']) }}</td>
                                                 <td class="text-center">{{ $report['details_dimanche']['count'] }}</td>
                                             </tr>
                                             <tr class="table-success fw-bold">
                                                 <td>TOTAL DIMANCHE</td>
-                                                <td class="text-end">{{ number_format($report['total_dimanche'], 0, ',', ' ') }} FCFA</td>
+                                                <td class="text-end">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_dimanche']) }}</td>
                                                 <td class="text-center">{{ $report['details_dimanche']['count'] }}</td>
                                             </tr>
                                         </tbody>
@@ -276,14 +276,14 @@
                                                 </td>
                                                 <td>{{ $revenue->methode_paiement ?? '—' }}</td>
                                                 <td>{{ $revenue->reference_paiement ?? '—' }}</td>
-                                                <td class="text-end">{{ number_format($revenue->montant, 0, ',', ' ') }} FCFA</td>
+                                                <td class="text-end">{{ \App\Helpers\ParoisseConfig::formatMontant($revenue->montant) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr class="table-info fw-bold">
                                             <td colspan="5">TOTAL GÉNÉRAL</td>
-                                            <td class="text-end">{{ number_format($report['total_general'], 0, ',', ' ') }} FCFA</td>
+                                            <td class="text-end">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_general']) }}</td>
                                         </tr>
                                     </tfoot>
                                 </table>

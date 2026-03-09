@@ -15,11 +15,12 @@ class DatabaseSeeder extends Seeder
             ParoisseSeeder::class,
             RolePermissionSeeder::class,
             AdminUserSeeder::class,
-            MemberSeeder::class,
+            // MemberSeeder::class,
             ClergySeeder::class,
             EventSeeder::class,
             RevenueCategorySeeder::class,
             RevenueTypeSeeder::class,
+            ConfigurationSeeder::class,
             // RevenueSeeder::class,
             // ExpenseSeeder::class,
         ]);

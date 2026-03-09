@@ -2,11 +2,8 @@
 <html lang="fr">
     @php
     $paroisseId = auth()->check() ? (auth()->user()->paroisse_id ?? null) : null;
-    $loaderActif = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_actif', true);
-    $loaderDureeMin = (int) \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_duree_min', 10);
-    $loaderAfficherLogo = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true);
-    $loaderStyle = \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style', 'logo_spinner');
-    $loaderLogoPath = \App\Helpers\ParoisseConfig::get($paroisseId, 'logo_path', '/images/logo-paroisse.svg');
+    $logoPath = \App\Helpers\ParoisseConfig::get($paroisseId, 'logo_path', '/images/logo-paroisse.svg');
+    $preloaderLogoPath = \App\Helpers\ParoisseConfig::get($paroisseId, 'preloader_logo_path', null) ?: $logoPath;
 @endphp
 <head>
     <meta charset="utf-8">
@@ -17,11 +14,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Système de gestion de paroisse catholique" />
     <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Gestion de Paroisse') - {{ config('app.name') }}</title>
+
+    @PwaHead
 
     <!-- Favicon -->
     {{-- <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('tpl/images/favicon.png') }}"> --}}
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset(ltrim($loaderLogoPath, '/')) }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset(ltrim($logoPath, '/')) }}">
 
     <!-- Styles du template -->
     <link rel="stylesheet" href="{{ asset('tpl/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
@@ -44,30 +47,14 @@
 </head>
 <body>
 
-    <!--*******************
-        Preloader start (paramétrable : Configuration > Loader)
-    ********************-->
-    <div id="preloader"
-         class="page-loader loader-style-{{ $loaderStyle }} {{ $loaderActif ? '' : 'loader-disabled' }}"
-         data-loader-actif="{{ $loaderActif ? '1' : '0' }}"
-         data-loader-duree-min="{{ $loaderDureeMin }}"
-         style="background: var(--loader-bg, #003366); color: var(--loader-text, #fff);">
-        <div class="page-loader-inner">
-            @if($loaderAfficherLogo && $loaderLogoPath)
-                <img src="{{ asset(ltrim($loaderLogoPath, '/')) }}" alt="Logo" class="page-loader-logo" width="120" height="120">
-            @endif
-            @if($loaderStyle !== 'logo_centre')
-                <div class="sk-three-bounce">
-                    <div class="sk-child sk-bounce1"></div>
-                    <div class="sk-child sk-bounce2"></div>
-                    <div class="sk-child sk-bounce3"></div>
-                </div>
-            @endif
+    <!-- Preloader -->
+    <div class="preloader" id="app-preloader">
+        <div class="preloader__logo">
+            <img src="{{ asset(ltrim($preloaderLogoPath, '/')) }}" alt="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'titre_paroisse', 'Paroisse') }}">
         </div>
+        <div class="preloader__spinner"></div>
+        <p class="preloader__label">Chargement…</p>
     </div>
-    <!--*******************
-        Preloader end
-    ********************-->
 
     <!--**********************************
         Main wrapper start
@@ -93,6 +80,23 @@
         <!--**********************************
             Nav header end
         ***********************************-->
+
+        {{-- Bandeau mode hors ligne --}}
+        <div id="offline-banner" class="offline-banner" style="display: none;">
+            <div class="d-flex align-items-center justify-content-center gap-2 py-2 px-3" style="background: #ff9800; color: #fff; font-weight: 600;">
+                <i class="fas fa-wifi" style="opacity: 0.7;"></i>
+                <span>Mode hors ligne — Les données seront synchronisées automatiquement</span>
+                <span id="offline-pending-count" class="badge bg-dark ms-1">0</span>
+            </div>
+        </div>
+        <div id="offline-pending-banner" class="offline-banner" style="display: none;">
+            <div class="d-flex align-items-center justify-content-between gap-2 py-2 px-3" style="background: #2196f3; color: #fff;">
+                <span><i class="fas fa-cloud-upload-alt me-1"></i> <span id="offline-pending-text">0</span> élément(s) en attente de synchronisation</span>
+                <button type="button" class="btn btn-sm btn-light" onclick="if(window.OfflineSync) window.OfflineSync.syncNow()">
+                    <i class="fas fa-sync-alt me-1"></i> Synchroniser
+                </button>
+            </div>
+        </div>
 
         <!--**********************************
             Header start
@@ -181,11 +185,31 @@
             Sidebar end
         ***********************************-->
 
+        {{-- Overlay mobile : fermer le menu au clic en dehors (smartphones/tablettes) --}}
+        <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
         <!--**********************************
             Content body start
         ***********************************-->
         <div class="content-body">
             <div class="container-fluid">
+                @hasSection('page-title')
+                <div class="page-titles mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <h4 class="page-titles__heading mb-2">@yield('page-title')</h4>
+                            @hasSection('breadcrumb')
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb page-titles__breadcrumb mb-0">
+                                    @yield('breadcrumb')
+                                </ol>
+                            </nav>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -251,48 +275,36 @@
     <script src="{{ asset('tpl/js/custom.min.js') }}"></script>
     <script src="{{ asset('tpl/js/deznav-init.js') }}"></script>
 
-    <!-- Script du loader : durée min (ex. 10s) + logo, puis masquage -->
+    <!-- Script du preloader -->
     <script>
         (function() {
-            var preloader = document.getElementById('preloader');
+            var preloader = document.getElementById('app-preloader');
             var mainWrapper = document.getElementById('main-wrapper');
-            if (!preloader || !mainWrapper) return;
+            if (!preloader) return;
 
-            var actif = preloader.getAttribute('data-loader-actif') === '1';
-            var dureeMinSec = parseInt(preloader.getAttribute('data-loader-duree-min'), 10) || 10;
-            var dureeMinMs = Math.max(1000, dureeMinSec * 1000);
-            var start = Date.now();
+            var startTime = Date.now();
+            var MIN_DELAY = 1500;
 
             function hidePreloader() {
-                if (typeof jQuery !== 'undefined') {
-                    jQuery(preloader).fadeOut(500);
-                    jQuery(mainWrapper).addClass('show');
-                } else {
+                var elapsed = Date.now() - startTime;
+                var remaining = Math.max(0, MIN_DELAY - elapsed);
+                setTimeout(function() {
+                    preloader.style.transition = 'opacity 0.6s ease';
                     preloader.style.opacity = '0';
-                    preloader.style.visibility = 'hidden';
-                    preloader.style.transition = 'opacity 0.5s ease, visibility 0.5s ease';
-                    mainWrapper.classList.add('show');
-                    setTimeout(function() { preloader.style.display = 'none'; }, 500);
-                }
+                    setTimeout(function() { preloader.style.display = 'none'; }, 600);
+                    if (mainWrapper) mainWrapper.classList.add('show');
+                }, remaining);
             }
 
-            if (!actif) {
-                preloader.style.display = 'none';
-                document.addEventListener('DOMContentLoaded', function() {
-                    mainWrapper.classList.add('show');
-                });
-                return;
+            if (document.readyState === 'complete') {
+                hidePreloader();
+            } else {
+                window.addEventListener('load', hidePreloader);
             }
-
-            window.addEventListener('load', function() {
-                var elapsed = Date.now() - start;
-                var remaining = Math.max(0, dureeMinMs - elapsed);
-                setTimeout(hidePreloader, remaining);
-            });
         })();
     </script>
 
-    <!-- Script pour garantir le fonctionnement du hamburger -->
+    <!-- Script pour garantir le fonctionnement du hamburger (mobile + desktop) -->
     <script>
         (function() {
             function toggleMenu() {
@@ -306,7 +318,7 @@
                 }
             }
 
-            // Utiliser la délégation d'événement au niveau du document pour garantir le fonctionnement
+            // Clic sur le hamburger pour ouvrir/fermer le menu (mobile + desktop)
             document.addEventListener('click', function(e) {
                 if (e.target.closest('.nav-control')) {
                     e.preventDefault();
@@ -315,17 +327,30 @@
                 }
             }, true);
 
+            // Fermer le menu en cliquant sur l'overlay (mobile)
+            document.addEventListener('click', function(e) {
+                if (e.target.id === 'sidebar-overlay') {
+                    var mainWrapper = document.querySelector('#main-wrapper');
+                    var hamburger = document.querySelector('.hamburger');
+                    if (mainWrapper && mainWrapper.classList.contains('menu-toggle')) {
+                        mainWrapper.classList.remove('menu-toggle');
+                        if (hamburger) hamburger.classList.remove('is-active');
+                    }
+                }
+            }, true);
+
             // Aussi avec jQuery pour compatibilité
             if (typeof jQuery !== 'undefined') {
                 jQuery(document).ready(function($) {
-                    // Délégation d'événement jQuery
                     $(document).off('click', '.nav-control').on('click', '.nav-control', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
                         toggleMenu();
                     });
-
-                    // Aussi directement sur l'élément
+                    $('#sidebar-overlay').on('click', function() {
+                        $('#main-wrapper').removeClass('menu-toggle');
+                        $('.hamburger').removeClass('is-active');
+                    });
                     setTimeout(function() {
                         $(".nav-control").off('click').on('click', function(e) {
                             e.preventDefault();
@@ -476,5 +501,32 @@
             confirmSubmitBtn.addEventListener('click', doSubmit);
         });
     </script>
+
+    <!-- PWA : enregistrement du Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(function () {})
+                    .catch(function () {});
+            });
+        }
+    </script>
+
+    {{-- Mode offline : synchronisation des recettes et dépenses --}}
+    @auth
+    <script src="{{ asset('js/offline-sync.js') }}"></script>
+    <script>
+        (function() {
+            function updateOfflineBanner() {
+                var banner = document.getElementById('offline-banner');
+                if (banner) banner.style.display = navigator.onLine ? 'none' : 'block';
+            }
+            window.addEventListener('online', updateOfflineBanner);
+            window.addEventListener('offline', updateOfflineBanner);
+            updateOfflineBanner();
+        })();
+    </script>
+    @endauth
 </body>
 </html>

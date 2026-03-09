@@ -1,89 +1,171 @@
 /* ============================================
-   LOADER / PRELOADER (chargement des pages - paramétrable)
+   PRELOADER (identique Paroisse2)
    ============================================ */
-#preloader.page-loader {
+.preloader,
+#app-preloader {
+    width: 100%;
+    height: 100%;
     position: fixed;
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 999999;
-    background: var(--loader-bg, #003366) !important;
-    color: var(--loader-text, #fff);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-}
-
-#preloader .page-loader-inner {
+    z-index: 99999;
+    background: var(--primary, #003366);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 16px;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-#preloader .page-loader-logo {
-    max-width: 140px;
-    max-height: 140px;
-    width: auto;
-    height: auto;
+.preloader__logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: white;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    animation: preloaderPulse 1.5s ease-in-out infinite;
+}
+
+.preloader__logo img {
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    filter: brightness(0) invert(1);
-    opacity: 0.95;
 }
 
-/* Style : logo seul centré */
-#preloader.loader-style-logo_centre .page-loader-inner {
-    gap: 0;
+.preloader__spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 215, 0, 0.25);
+    border-top-color: var(--secondary, #FFD700);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
 }
 
-#preloader.loader-style-logo_centre .page-loader-logo {
-    max-width: 160px;
-    max-height: 160px;
-}
-
-/* Style : logo + points animés */
-#preloader.loader-style-logo_spinner .sk-three-bounce {
+.preloader__label {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 400;
     margin: 0;
-    width: auto;
-    height: auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes preloaderPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+    50%       { transform: scale(1.04); box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
+}
+
+/* ============================================
+   PAGE TITLES & BREADCRUMB — Design professionnel (comme image référence)
+   Titre de page + fil d'Ariane dans un bloc soigné
+   ============================================ */
+.page-titles {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 51, 102, 0.08);
+    border-bottom: 3px solid var(--primary, #003366);
+}
+
+.page-titles__heading {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--titre-page, var(--primary, #003366));
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+
+.page-titles__breadcrumb,
+.page-titles .breadcrumb {
+    font-size: 13px;
+    padding: 0;
+    margin: 0;
     background: transparent;
 }
 
-#preloader.loader-style-logo_spinner .sk-three-bounce .sk-child,
-#preloader.loader-style-spinner_seul .sk-three-bounce .sk-child {
-    background-color: var(--loader-text, #fff) !important;
-    width: 14px;
-    height: 14px;
+.page-titles .breadcrumb-item {
+    color: #6c757d;
 }
 
-/* Style : points animés seuls */
-#preloader.loader-style-spinner_seul .page-loader-inner {
-    gap: 0;
+.page-titles .breadcrumb-item a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
-#preloader.loader-style-spinner_seul .sk-three-bounce .sk-child {
-    background-color: var(--loader-text, #fff) !important;
+.page-titles .breadcrumb-item a:hover {
+    color: var(--primary);
 }
 
-#preloader .sk-three-bounce {
-    margin: 0;
-    width: auto;
-    height: auto;
-    background: transparent;
+.page-titles .breadcrumb-item.active {
+    color: var(--primary);
+    font-weight: 600;
 }
 
-#preloader .sk-three-bounce .sk-child {
-    background-color: var(--loader-text, #fff) !important;
-    width: 14px;
-    height: 14px;
+.page-titles .breadcrumb-item + .breadcrumb-item::before {
+    color: #adb5bd;
+    font-weight: 300;
 }
 
-/* Loader désactivé (Configuration > Loader) */
-#preloader.loader-disabled {
-    display: none !important;
+/* ============================================
+   SELECT — Affichage correct des libellés sur tous les navigateurs
+   (Paroisse, Catégorie, Type de recette, etc.)
+   ============================================ */
+select.form-control,
+select.form-select,
+.content-body select.form-control,
+.card-body select.form-control {
+    font-size: 16px !important; /* Évite zoom iOS, lisibilité cross-browser */
+    color: #212529 !important;
+    font-weight: 500;
+    min-height: 42px;
+    padding: 8px 36px 8px 12px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+select.form-control option,
+select.form-select option {
+    font-size: 16px;
+    color: #212529;
+    padding: 10px;
+}
+
+/* Support navigateurs qui n'appliquent pas appearance:none */
+@supports (-webkit-appearance: none) or (appearance: none) {
+    select.form-control,
+    select.form-select {
+        padding-right: 40px;
+    }
+}
+
+/* Panneau d'aide pages create — couleur douce et agréable (revenues, expenses, etc.) */
+.revenue-create-help-panel,
+.create-help-panel {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+}
+
+.revenue-create-help-panel h6 {
+    color: #334155 !important;
+    font-weight: 600;
 }
 
 /* ============================================
@@ -966,8 +1048,211 @@ body .deznav {
 }
 
 /* ============================================
-   RESPONSIVE
-   ============================================ */
+   RESPONSIVE - Smartphones & Tablettes
+   ============================================
+   Breakpoint 1199px pour inclure les écrans type 1080x2436 (portrait)
+   où la largeur viewport peut être 1080px. */
+
+/* Sidebar mobile : overlay avec fond sombre, fermeture au clic extérieur */
+@media (max-width: 1199.98px) {
+    /* Position fixe pour que le menu s'affiche correctement sur smartphone */
+    #main-wrapper .deznav {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        height: 100vh !important;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+        z-index: 1050 !important;
+        width: 280px !important;
+    }
+
+    #main-wrapper.menu-toggle .deznav {
+        transform: translateX(0) !important;
+    }
+
+    /* Hamburger et nav-control toujours visibles sur mobile */
+    .nav-control,
+    .hamburger {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Overlay cliquable pour fermer le menu (voir layout app.blade.php #sidebar-overlay) */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1001;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+
+    #main-wrapper.menu-toggle .sidebar-overlay {
+        display: block;
+        opacity: 1;
+    }
+
+    .content-body {
+        margin-left: 0 !important;
+    }
+
+    .header {
+        padding-left: 5rem;
+    }
+
+    /* Sur appareil tactile en "version ordinateur" : vue large mais menu mobile */
+    @media (hover: none) and (pointer: coarse) and (max-width: 1399px) {
+        #main-wrapper .deznav {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            height: 100vh !important;
+            transform: translateX(-100%);
+            z-index: 1050 !important;
+        }
+        #main-wrapper.menu-toggle .deznav {
+            transform: translateX(0) !important;
+        }
+    }
+
+    /* Sur mobile/tablette : quand le menu est ouvert, sidebar large + texte lisible (pas de coupure) */
+    #main-wrapper.menu-toggle .deznav {
+        width: 85vw !important;
+        max-width: 320px !important;
+        overflow: visible !important;
+    }
+
+    #main-wrapper.menu-toggle .deznav .deznav-scroll,
+    #main-wrapper.menu-toggle .deznav .slimScrollDiv {
+        overflow-x: visible !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #main-wrapper.menu-toggle .deznav .nav-text {
+        display: inline-block !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        line-height: 1.35 !important;
+    }
+
+    #main-wrapper.menu-toggle .deznav .metismenu li a {
+        padding: 14px 16px !important;
+        text-align: left !important;
+        justify-content: flex-start;
+        align-items: center;
+        display: flex !important;
+        flex-wrap: nowrap;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        min-height: 48px;
+    }
+
+    #main-wrapper.menu-toggle .deznav .metismenu li a > i,
+    #main-wrapper.menu-toggle .deznav .metismenu li a > svg {
+        margin-right: 14px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Sous-menu : texte complet visible, alignement propre */
+    #main-wrapper.menu-toggle .deznav .metismenu li ul a {
+        padding: 12px 16px 12px 2.5rem !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        line-height: 1.4 !important;
+        display: block !important;
+    }
+
+    #main-wrapper.menu-toggle .deznav .metismenu .has-arrow:after {
+        display: block !important;
+        flex-shrink: 0 !important;
+    }
+
+    #main-wrapper.menu-toggle .deznav .copyright {
+        display: block !important;
+    }
+
+    /* Éviter toute troncature ou débordement caché */
+    #main-wrapper.menu-toggle .deznav .metismenu a {
+        overflow: visible !important;
+    }
+
+    /* Sous-menus en mode « dépliant » au tap (plus de fly-out au survol) */
+    #main-wrapper.menu-toggle .deznav .metismenu li > ul {
+        position: static !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        box-shadow: none !important;
+        padding-left: 1rem !important;
+        margin-top: 0 !important;
+        display: none;
+        background: rgba(0, 0, 0, 0.15) !important;
+        border-radius: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    #main-wrapper.menu-toggle .deznav .metismenu li.mm-active > ul,
+    #main-wrapper.menu-toggle .deznav .metismenu li .mm-show {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    #main-wrapper.menu-toggle .deznav .metismenu li > ul li > ul {
+        position: static !important;
+        left: auto !important;
+        padding-left: 1rem !important;
+    }
+
+    #main-wrapper.menu-toggle .deznav .metismenu li > ul li.mm-active > ul,
+    #main-wrapper.menu-toggle .deznav .metismenu li > ul li .mm-show,
+    #main-wrapper.menu-toggle .deznav .metismenu ul.mm-show {
+        display: block !important;
+    }
+
+    /* Zone de contenu : padding réduit sur mobile */
+    .content-body .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}
+
+/* Cibles tactiles minimales 44px (recommandation accessibilité) */
+@media (pointer: coarse) {
+    .deznav .metismenu a,
+    .nav-control,
+    .btn:not(.btn-sm),
+    .dropdown-toggle,
+    .page-link {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .deznav .metismenu a {
+        padding: 12px 20px;
+    }
+
+    .card-header .btn-sm {
+        min-height: 40px;
+        padding: 8px 14px;
+    }
+}
+
+/* Tablettes */
 @media (max-width: 768px) {
     .widget-stat .media-body h4 {
         font-size: 1.5rem;
@@ -979,6 +1264,106 @@ body .deznav {
 
     .card-body {
         padding: 16px;
+    }
+
+    .dashboard_bar span {
+        font-size: 0.95rem;
+    }
+
+    .header .navbar .header-right .nav-item .nav-link {
+        padding: 0.5rem;
+    }
+}
+
+/* Tableaux : défilement horizontal dès que l'écran est étroit (dont 1080px en contenu utile) */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
+/* Forcer le tableau à garder ses colonnes et à être scrollable horizontalement */
+@media (max-width: 1199.98px) {
+    .table-responsive {
+        margin-left: -0.75rem;
+        margin-right: -0.75rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-responsive.overflow-hidden {
+        overflow-x: auto !important;
+    }
+
+    .content-body .container-fluid .table-responsive {
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .table-responsive .table,
+    .table-responsive table.dataTable {
+        min-width: 600px;
+        width: 100% !important;
+    }
+
+    .table-responsive .table td,
+    .table-responsive .table th {
+        white-space: nowrap;
+    }
+
+    .table-responsive .table td:first-child,
+    .table-responsive .table th:first-child {
+        white-space: normal;
+        min-width: 140px;
+    }
+
+    .table-responsive .table td code,
+    .table-responsive .table td .badge {
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    /* DataTables : garder le scroll horizontal si le wrapper remplace table-responsive */
+    .dataTables_wrapper {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .dataTables_wrapper .dataTables_scrollBody {
+        overflow-x: auto !important;
+    }
+}
+
+/* Cartes et grilles : pleine largeur sur mobile */
+@media (max-width: 575.98px) {
+    .content-body .container-fluid {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .card-header .card-title {
+        font-size: 1.1rem;
+    }
+
+    .page-list .card-header .d-flex.gap-2,
+    .page-list .card-header .btn-action {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .footer .copyright {
+        font-size: 0.75rem;
+        text-align: center;
     }
 }
 
@@ -1211,4 +1596,53 @@ body .deznav {
         grid-template-columns: 1fr;
         gap: 6px;
     }
+}
+
+/* ============================================
+   ENHANCED UX — Design professionnel
+   Améliore l'attractivité et l'expérience utilisateur
+   ============================================ */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+    transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    box-shadow: 0 8px 32px rgba(0, 51, 102, 0.12) !important;
+}
+
+.btn {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.form-control:focus,
+.form-select:focus {
+    transition: transform 0.15s ease;
+}
+
+.form-control:focus {
+    transform: translateY(-1px);
+}
+
+.table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--secondary, #FFD700);
+    outline-offset: 2px;
 }

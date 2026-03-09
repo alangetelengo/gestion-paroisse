@@ -37,6 +37,7 @@ class RevenueTypeSeeder extends Seeder
             ['category_code' => 'procure', 'code' => 'dime', 'nom' => 'Dîme', 'description' => 'Dîmes', 'ordre' => 1],
             ['category_code' => 'procure', 'code' => 'denier_culte', 'nom' => 'Denier du Culte', 'description' => 'Denier du culte', 'ordre' => 2],
             ['category_code' => 'procure', 'code' => 'casuel_bapteme', 'nom' => 'Casuel (Baptêmes)', 'description' => 'Casuel pour les baptêmes des enfants', 'ordre' => 3],
+            ['category_code' => 'procure', 'code' => 'don', 'nom' => 'Don', 'description' => 'Don à la paroisse', 'ordre' => 4],
         ];
 
         $paroisses = Paroisse::all();

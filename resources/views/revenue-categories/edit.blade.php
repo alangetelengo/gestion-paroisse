@@ -7,11 +7,14 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h4 class="card-title mb-0">
                     <i class="fas fa-folder me-2"></i>
                     Modifier la catégorie
                 </h4>
+                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#revenueCategoryHelpModal" title="Aide">
+                    <i class="fas fa-info-circle me-1"></i> Aide
+                </button>
             </div>
             <div class="card-body">
                 @if ($errors->any())
@@ -60,4 +63,6 @@
         </div>
     </div>
 </div>
+
+@include('revenue-categories._help_modal')
 @endsection

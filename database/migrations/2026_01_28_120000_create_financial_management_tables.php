@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -122,9 +121,9 @@ return new class extends Migration
             $table->index('statut');
         });
 
-        // Données initiales
-        $this->seedRevenueCategories();
-        $this->seedRevenueTypes();
+        // Les catégories et types de recettes sont créés par les seeders uniquement
+        // (RevenueCategorySeeder, RevenueTypeSeeder) pour éviter les doublons.
+        // Exécuter : php artisan db:seed
 
         // ============================================
         // TABLE EXPENSES (Dépenses/Charges)
@@ -233,200 +232,6 @@ return new class extends Migration
         Schema::dropIfExists('revenues');
         Schema::dropIfExists('revenue_types');
         Schema::dropIfExists('revenue_categories');
-    }
-
-    /**
-     * Insérer les catégories de recettes par défaut.
-     */
-    private function seedRevenueCategories(): void
-    {
-        $categories = [
-            [
-                'code' => 'quete_ordinaire',
-                'nom' => 'Quête Ordinaire',
-                'description' => 'Messes de la semaine (Lundi à Samedi) et messe du dimanche',
-                'ordre' => 1,
-            ],
-            [
-                'code' => 'quete_extraordinaire',
-                'nom' => 'Quête Extraordinaire',
-                'description' => 'Mariage, obsèques, action de grâce, caritas, la grotte, etc.',
-                'ordre' => 2,
-            ],
-            [
-                'code' => 'location',
-                'nom' => 'Location',
-                'description' => 'Loyers (boutiques), salle de fête, chapiteaux, cour de la paroisse',
-                'ordre' => 3,
-            ],
-            [
-                'code' => 'popote_subvention',
-                'nom' => 'Popote / Subvention',
-                'description' => 'Subventions mensuelles récurrentes venant de la hiérarchie',
-                'ordre' => 4,
-            ],
-            [
-                'code' => 'procure',
-                'nom' => 'Procure',
-                'description' => 'Dîmes, denier du culte, casuel (baptêmes des enfants)',
-                'ordre' => 5,
-            ],
-        ];
-
-        foreach ($categories as $category) {
-            DB::table('revenue_categories')->insert(array_merge($category, [
-                'actif' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]));
-        }
-    }
-
-    /**
-     * Insérer les types de recettes par défaut.
-     */
-    private function seedRevenueTypes(): void
-    {
-        $queteOrdinaire = DB::table('revenue_categories')->where('code', 'quete_ordinaire')->first();
-        $queteExtraordinaire = DB::table('revenue_categories')->where('code', 'quete_extraordinaire')->first();
-        $location = DB::table('revenue_categories')->where('code', 'location')->first();
-        $popoteSubvention = DB::table('revenue_categories')->where('code', 'popote_subvention')->first();
-        $procure = DB::table('revenue_categories')->where('code', 'procure')->first();
-
-        $types = [
-            // Quête ordinaire
-            [
-                'revenue_category_id' => $queteOrdinaire->id,
-                'code' => 'messe_semaine',
-                'nom' => 'Messe Semaine',
-                'description' => 'Messes du lundi au samedi',
-                'ordre' => 1,
-            ],
-            [
-                'revenue_category_id' => $queteOrdinaire->id,
-                'code' => 'messe_dimanche',
-                'nom' => 'Messe Dimanche',
-                'description' => 'Messe du dimanche',
-                'ordre' => 2,
-            ],
-            // Quête extraordinaire
-            [
-                'revenue_category_id' => $queteExtraordinaire->id,
-                'code' => 'mariage',
-                'nom' => 'Mariage',
-                'description' => 'Recette de mariage',
-                'ordre' => 1,
-            ],
-            [
-                'revenue_category_id' => $queteExtraordinaire->id,
-                'code' => 'obseques',
-                'nom' => 'Obsèques',
-                'description' => 'Recette d\'obsèques',
-                'ordre' => 2,
-            ],
-            [
-                'revenue_category_id' => $queteExtraordinaire->id,
-                'code' => 'action_grace',
-                'nom' => 'Action de Grâce',
-                'description' => 'Action de grâce (anniversaire, etc.)',
-                'ordre' => 3,
-            ],
-            [
-                'revenue_category_id' => $queteExtraordinaire->id,
-                'code' => 'caritas',
-                'nom' => 'Caritas',
-                'description' => 'Recette Caritas',
-                'ordre' => 4,
-            ],
-            [
-                'revenue_category_id' => $queteExtraordinaire->id,
-                'code' => 'grotte',
-                'nom' => 'La Grotte',
-                'description' => 'Recette de la grotte',
-                'ordre' => 5,
-            ],
-            [
-                'revenue_category_id' => $queteExtraordinaire->id,
-                'code' => 'autre_extraordinaire',
-                'nom' => 'Autre Extraordinaire',
-                'description' => 'Autre recette extraordinaire',
-                'ordre' => 6,
-            ],
-            // Location
-            [
-                'revenue_category_id' => $location->id,
-                'code' => 'loyer_boutique',
-                'nom' => 'Loyer Boutique',
-                'description' => 'Loyer d\'une boutique',
-                'ordre' => 1,
-            ],
-            [
-                'revenue_category_id' => $location->id,
-                'code' => 'salle_fete',
-                'nom' => 'Salle de Fête',
-                'description' => 'Location de salle de fête',
-                'ordre' => 2,
-            ],
-            [
-                'revenue_category_id' => $location->id,
-                'code' => 'chapiteau',
-                'nom' => 'Chapiteau',
-                'description' => 'Location de chapiteau',
-                'ordre' => 3,
-            ],
-            [
-                'revenue_category_id' => $location->id,
-                'code' => 'cour_paroisse',
-                'nom' => 'Cour de la Paroisse',
-                'description' => 'Location de la cour de la paroisse',
-                'ordre' => 4,
-            ],
-            // Popote/Subvention
-            [
-                'revenue_category_id' => $popoteSubvention->id,
-                'code' => 'popote_mensuelle',
-                'nom' => 'Popote Mensuelle',
-                'description' => 'Popote mensuelle récurrente',
-                'ordre' => 1,
-            ],
-            [
-                'revenue_category_id' => $popoteSubvention->id,
-                'code' => 'autre_subvention',
-                'nom' => 'Autre Subvention',
-                'description' => 'Autre subvention',
-                'ordre' => 2,
-            ],
-            // Procure
-            [
-                'revenue_category_id' => $procure->id,
-                'code' => 'dime',
-                'nom' => 'Dîme',
-                'description' => 'Dîmes',
-                'ordre' => 1,
-            ],
-            [
-                'revenue_category_id' => $procure->id,
-                'code' => 'denier_culte',
-                'nom' => 'Denier du Culte',
-                'description' => 'Denier du culte',
-                'ordre' => 2,
-            ],
-            [
-                'revenue_category_id' => $procure->id,
-                'code' => 'casuel_bapteme',
-                'nom' => 'Casuel (Baptêmes)',
-                'description' => 'Casuel pour les baptêmes des enfants',
-                'ordre' => 3,
-            ],
-        ];
-
-        foreach ($types as $type) {
-            DB::table('revenue_types')->insert(array_merge($type, [
-                'actif' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]));
-        }
     }
 };
 

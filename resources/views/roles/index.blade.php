@@ -73,7 +73,7 @@
                                 <td>
                                     <div class="d-flex justify-content-center gap-1">
                                         <a href="{{ route('roles.edit', $role) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         @if($role->name !== 'super_admin')
                                         <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline" data-confirm="Supprimer ce rôle ?">

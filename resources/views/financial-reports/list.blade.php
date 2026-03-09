@@ -107,17 +107,17 @@
                                         @endif
                                         <td class="text-end">
                                             <span class="text-success fw-bold">
-                                                {{ number_format($report->total_recettes, 0, ',', ' ') }} FCFA
+                                                {{ \App\Helpers\ParoisseConfig::formatMontant($report->total_recettes) }}
                                             </span>
                                         </td>
                                         <td class="text-end">
                                             <span class="text-danger fw-bold">
-                                                {{ number_format($report->total_depenses, 0, ',', ' ') }} FCFA
+                                                {{ \App\Helpers\ParoisseConfig::formatMontant($report->total_depenses) }}
                                             </span>
                                         </td>
                                         <td class="text-end">
                                             <span class="fw-bold {{ $report->solde >= 0 ? 'text-info' : 'text-warning' }}">
-                                                {{ number_format($report->solde, 0, ',', ' ') }} FCFA
+                                                {{ \App\Helpers\ParoisseConfig::formatMontant($report->solde) }}
                                             </span>
                                         </td>
                                         <td>

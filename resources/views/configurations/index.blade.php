@@ -26,7 +26,7 @@
 @section('content')
 <div class="page-config">
 <div class="row">
-    <div class="col-12">
+    <div class="col-lg-9">
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title mb-0 d-flex align-items-center">
@@ -86,6 +86,11 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="loader-tab" data-bs-toggle="tab" data-bs-target="#loader" type="button" role="tab">
                             <i class="fas fa-spinner me-2"></i>Loader
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">
+                            <i class="fas fa-sign-in-alt me-2"></i>Page de connexion
                         </button>
                     </li>
                 </ul>
@@ -521,7 +526,7 @@
 
                             <div class="alert alert-info mb-4">
                                 <i class="fas fa-info-circle me-2"></i>
-                                Affiche un écran de chargement avec le logo de la paroisse pendant au moins la durée choisie.
+                                Écran de chargement affiché au démarrage des pages (logo + spinner).
                             </div>
 
                             <div class="row">
@@ -531,47 +536,38 @@
                                         <option value="1" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_actif', true))>Oui</option>
                                         <option value="0" @selected(!\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_actif', true))>Non</option>
                                     </select>
-                                    <small class="text-muted">Afficher l'écran de chargement au démarrage des pages</small>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Durée minimale (secondes)</label>
-                                    <input type="number" name="loader_duree_min" class="form-control"
-                                           value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_duree_min', 10) }}"
-                                           min="1" max="60" step="1">
-                                    <small class="text-muted">Le loader reste visible au moins ce nombre de secondes</small>
+                                    <label class="form-label">Logo du preloader</label>
+                                    <input type="text" name="preloader_logo_path" class="form-control"
+                                           value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'preloader_logo_path', '') }}"
+                                           placeholder="/images/logo-paroisse.svg">
+                                    <small class="text-muted">Vide = logo principal (Identité)</small>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Afficher le logo</label>
-                                    <select name="loader_afficher_logo" class="form-control">
-                                        <option value="1" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true))>Oui</option>
-                                        <option value="0" @selected(!\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_afficher_logo', true))>Non</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Style du loader</label>
-                                    <select name="loader_style" class="form-control">
-                                        <option value="logo_centre" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style') === 'logo_centre')>Logo seul (centré)</option>
-                                        <option value="logo_spinner" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style', 'logo_spinner') === 'logo_spinner')>Logo + points animés</option>
-                                        <option value="spinner_seul" @selected(\App\Helpers\ParoisseConfig::get($paroisseId, 'loader_style') === 'spinner_seul')>Points animés seuls</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Couleur de fond</label>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input type="color" name="loader_couleur_fond" class="form-control form-control-color"
-                                               value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_fond', '#003366') }}">
-                                        <input type="text" class="form-control" readonly style="flex: 1;"
-                                               value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_fond', '#003366') }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Couleur du texte / points</label>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input type="color" name="loader_couleur_texte" class="form-control form-control-color"
-                                               value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_texte', '#FFFFFF') }}">
-                                        <input type="text" class="form-control" readonly style="flex: 1;"
-                                               value="{{ \App\Helpers\ParoisseConfig::get($paroisseId, 'loader_couleur_texte', '#FFFFFF') }}">
-                                    </div>
+                            </div>
+
+                            <div class="section-divider text-end">
+                                <button type="submit" class="btn btn-primary btn-save">
+                                    <i class="fas fa-save me-2"></i>Enregistrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {{-- Section 9: Page de connexion (image de fond, config globale) --}}
+                    <div class="tab-pane fade" id="login" role="tabpanel">
+                        <form action="{{ route('configurations.update-bulk') }}" method="POST" class="config-section-form">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="section" value="login">
+
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label class="form-label">Image de fond de la page de connexion</label>
+                                    <input type="text" name="login_bg_image" class="form-control"
+                                           value="{{ \App\Helpers\ParoisseConfig::get(null, 'login_bg_image') }}"
+                                           placeholder="/images/fond-login.jpg">
+                                    <small class="text-muted">Chemin vers une image (ex: /images/fond-login.jpg). Laisser vide pour garder le dégradé par défaut.</small>
                                 </div>
                             </div>
 
@@ -583,6 +579,30 @@
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 mt-4 mt-lg-0">
+        <div class="card border-0 shadow-sm create-help-panel" style="background: #f8fafc;">
+            <div class="card-body p-4">
+                <h6 class="mb-3 d-flex align-items-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    En bref
+                </h6>
+                <p class="small text-muted mb-3">
+                    Personnalisez l'application selon votre paroisse. Chaque onglet modifie un aspect différent.
+                </p>
+                <ul class="list-unstyled small mb-0">
+                    <li class="mb-2"><strong>Identité</strong> — Nom et logo de la paroisse</li>
+                    <li class="mb-2"><strong>Couleurs</strong> — Charte graphique (titres, boutons)</li>
+                    <li class="mb-2"><strong>Boutons</strong> — Couleurs des boutons d'ajout</li>
+                    <li class="mb-2"><strong>Actions</strong> — Couleurs des icônes du tableau</li>
+                    <li class="mb-2"><strong>Généraux</strong> — Monnaie, format date, langue</li>
+                    <li class="mb-2"><strong>Téléphone</strong> — Format des numéros</li>
+                    <li class="mb-2"><strong>PDF</strong> — En-tête des rapports imprimés</li>
+                    <li class="mb-2"><strong>Loader</strong> — Écran de chargement au démarrage</li>
+                    <li class="mb-0"><strong>Connexion</strong> — Image de fond de la page login</li>
+                </ul>
             </div>
         </div>
     </div>

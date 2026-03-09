@@ -100,7 +100,7 @@
                                         </a>
                                         @can('manage_users')
                                         <a href="{{ route('users.edit', $user) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         @if($user->id !== auth()->id())
                                         <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline" data-confirm="Êtes-vous sûr de vouloir supprimer cet utilisateur ?">

@@ -109,7 +109,7 @@
                                     <div class="d-flex justify-content-center gap-1">
                                         @can('edit_groups')
                                         <a href="{{ route('groups.edit', $group) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         @endcan
                                         @can('delete_groups')

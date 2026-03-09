@@ -29,6 +29,7 @@ class ParoisseConfig
             'titre_paroisse' => 'Paroisse',
             'nom_paroisse' => 'SAINT-ESPRIT DE MOUNGALI',
             'logo_path' => '/images/logo-paroisse.svg',
+            'preloader_logo_path' => null, // Si null, utilise logo_path (logo paramétrable pour le preloader)
             // Couleurs officielles de l'Église catholique
             'couleur_primaire' => '#003366',        // Bleu marine - Vierge Marie
             'couleur_secondaire' => '#FFD700',     // Or - Papal
@@ -59,8 +60,11 @@ class ParoisseConfig
             'loader_duree_min' => 10,
             'loader_afficher_logo' => true,
             'loader_style' => 'logo_spinner',
+            'loader_position' => 'centre',
             'loader_couleur_fond' => '#003366',
             'loader_couleur_texte' => '#FFFFFF',
+            // Page de connexion (paroisse_id null = global)
+            'login_bg_image' => '',
         ];
 
         // Essayer de récupérer depuis la base de données
@@ -76,6 +80,31 @@ class ParoisseConfig
             // En cas d'erreur (table non créée, etc.), retourner les valeurs par défaut
             return $defaults[$cle] ?? $default;
         }
+    }
+
+    /**
+     * Formate un montant selon le standard de l'application : "35 000 FCFA"
+     * Espace comme séparateur de milliers, pas de décimales, monnaie paramétrable.
+     */
+    public static function formatMontant(?float $montant, ?int $paroisseId = null): string
+    {
+        if ($montant === null) {
+            return '—';
+        }
+        $monnaie = self::get($paroisseId, 'monnaie', 'FCFA');
+        return number_format(round($montant, 0), 0, ',', ' ') . ' ' . $monnaie;
+    }
+
+    /**
+     * Formate un montant pour affichage (sans la monnaie) : "35 000"
+     * Utile pour les champs de saisie pré-remplis.
+     */
+    public static function formatMontantSaisie(?float $montant): string
+    {
+        if ($montant === null || $montant === 0.0) {
+            return '';
+        }
+        return number_format(round($montant, 0), 0, ',', ' ');
     }
 
     /**

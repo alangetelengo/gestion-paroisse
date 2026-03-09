@@ -9,7 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Connexion au système de gestion de paroisse" />
     <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#6A1B9A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Connexion - Gestion de Paroisse</title>
+
+    <!-- PWA : manifest (installation sur téléphone / tablette) -->
+    <link rel="manifest" href="{{ url('/manifest.json') }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('tpl/images/favicon.png') }}">
@@ -35,11 +40,19 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+            @php
+                $loginBg = trim((string) \App\Helpers\ParoisseConfig::get(null, 'login_bg_image', ''));
+            @endphp
+            @if($loginBg)
+            background: url('{{ asset(ltrim($loginBg, '/')) }}') center center no-repeat;
+            background-size: cover;
+            @else
             background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #003366 50%, #001f3d 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
-            position: relative;
-            overflow: hidden;
+            @endif
         }
 
         @keyframes gradientShift {
@@ -72,16 +85,22 @@
         .authincation {
             position: relative;
             z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
         .authincation-content {
             background: rgba(255, 255, 255, 0.98);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             overflow: hidden;
             position: relative;
             animation: slideUp 0.6s ease-out;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
         @keyframes slideUp {
@@ -113,11 +132,11 @@
         }
 
         .auth-form {
-            padding: 60px 55px;
+            padding: 28px 24px;
         }
 
         .logo-container {
-            margin-bottom: 35px;
+            margin-bottom: 20px;
             animation: fadeIn 0.8s ease-out;
         }
 
@@ -127,7 +146,7 @@
         }
 
         .logo-container img {
-            max-width: 200px;
+            max-width: 100px;
             height: auto;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
             transition: transform 0.3s ease;
@@ -140,22 +159,22 @@
         .logo-container h3 {
             color: var(--primary);
             font-weight: 700;
-            font-size: 1.5rem;
-            margin-top: 15px;
+            font-size: 1.1rem;
+            margin-top: 10px;
             letter-spacing: -0.5px;
         }
 
         .auth-form h4 {
             color: #2d3748;
             font-weight: 600;
-            font-size: 1.5rem;
-            margin-bottom: 30px;
+            font-size: 1.2rem;
+            margin-bottom: 18px;
             text-align: center;
         }
 
         .form-group {
             position: relative;
-            margin-bottom: 25px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
@@ -173,21 +192,21 @@
 
         .input-wrapper i {
             position: absolute;
-            left: 18px;
+            left: 14px;
             top: 50%;
             transform: translateY(-50%);
             color: #a0aec0;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             transition: color 0.3s ease;
             z-index: 2;
         }
 
         .form-control {
             width: 100%;
-            padding: 14px 18px 14px 48px;
+            padding: 10px 14px 10px 42px;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 0.95rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
             background: #f8f9fa;
             color: #2d3748;
@@ -314,10 +333,10 @@
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             border: none;
             color: white;
-            padding: 14px 32px;
-            font-size: 1rem;
+            padding: 10px 24px;
+            font-size: 0.95rem;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 10px;
             width: 100%;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 51, 102, 0.3);
@@ -426,29 +445,33 @@
         /* Responsive */
         @media (max-width: 768px) {
             .auth-form {
-                padding: 40px 30px;
+                padding: 24px 20px;
+            }
+
+            .authincation-content {
+                max-width: 100%;
             }
 
             .logo-container img {
-                max-width: 140px;
+                max-width: 90px;
             }
 
             .auth-form h4 {
-                font-size: 1.3rem;
+                font-size: 1.1rem;
             }
 
             .form-control {
-                padding: 12px 16px 12px 44px;
+                padding: 10px 12px 10px 40px;
             }
         }
 
         @media (max-width: 480px) {
             .auth-form {
-                padding: 30px 20px;
+                padding: 20px 16px;
             }
 
             .logo-container h3 {
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
         }
 
@@ -481,9 +504,9 @@
 
 <body class="vh-100">
     <div class="authincation h-100">
-        <div class="container h-100">
-            <div class="row justify-content-center h-70 align-items-center">
-                <div class="col-md-12 col-lg-6 col-xl-6">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-11 col-sm-10 col-md-8 col-lg-5 col-xl-4">
                     <div class="authincation-content">
                         <div class="row no-gutters">
                             <div class="col-xl-12">
@@ -561,7 +584,7 @@
                                             @enderror
                                         </div>
 
-                                        <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
                                             <div class="form-check">
                                                 <input
                                                     type="checkbox"
@@ -579,7 +602,7 @@
                                             </a>
                                         </div>
 
-                                        <div class="text-center mt-4">
+                                        <div class="text-center mt-3">
                                             <button type="submit" class="btn btn-primary" id="submitBtn">
                                                 <span id="btnText">Se connecter</span>
                                             </button>
@@ -587,7 +610,7 @@
                                     </form>
 
                                     <div class="copyright">
-                                        <p class="mb-0">© {{ date('Y') }} - Gestion de Paroisse. Tous droits réservés.</p>
+                                        <p class="mb-0 small">© {{ date('Y') }} - Gestion de Paroisse</p>
                                     </div>
                                 </div>
                             </div>
@@ -647,6 +670,13 @@
                 this.parentElement.style.transform = 'scale(1)';
             });
         });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('{{ asset("sw.js") }}', { scope: '/' }).catch(function () {});
+            });
+        }
     </script>
 </body>
 </html>

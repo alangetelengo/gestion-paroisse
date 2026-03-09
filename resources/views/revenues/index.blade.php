@@ -143,13 +143,13 @@
                                         <br><small class="text-muted"><i class="fas fa-calendar-check me-1"></i>{{ $moisLabels[$moisNum] ?? $moisNum }} {{ $annee }}</small>
                                     @endif
                                 </td>
-                                <td class="text-end montant-cell">{{ number_format($revenue->montant, 2, ',', ' ') }} FCFA</td>
+                                <td class="text-end montant-cell">{{ \App\Helpers\ParoisseConfig::formatMontant($revenue->montant) }}</td>
                                 <td><span class="badge badge-methode">{{ ucfirst(str_replace('_', ' ', $revenue->methode_paiement)) }}</span></td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-1">
                                         @can('edit_revenues')
                                         <a href="{{ route('revenues.edit', $revenue) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i> 
                                         </a>
                                         @endcan
                                         @can('delete_revenues')

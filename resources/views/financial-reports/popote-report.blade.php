@@ -132,7 +132,7 @@
                                 <div class="card stat-card bg-success text-white">
                                     <div class="card-body text-center">
                                         <h5 class="mb-2"><i class="fas fa-coins me-2"></i>Subvention Popote reçue</h5>
-                                        <h3>{{ number_format($report['subvention_recue'], 0, ',', ' ') }} FCFA</h3>
+                                        <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['subvention_recue']) }}</h3>
                                         <small class="opacity-75">Période : {{ $report['date_debut']->format('d/m/Y') }} — {{ $report['date_fin']->format('d/m/Y') }}</small>
                                     </div>
                                 </div>
@@ -141,7 +141,7 @@
                                 <div class="card stat-card bg-danger text-white">
                                     <div class="card-body text-center">
                                         <h5 class="mb-2"><i class="fas fa-shopping-cart me-2"></i>Dépenses alimentation</h5>
-                                        <h3>{{ number_format($report['total_depenses_alimentation'], 0, ',', ' ') }} FCFA</h3>
+                                        <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_depenses_alimentation']) }}</h3>
                                         <small class="opacity-75">{{ $report['depenses_alimentation']->count() }} ligne(s)</small>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@
                                 <div class="card stat-card {{ $report['solde'] >= 0 ? 'bg-info' : 'bg-warning' }} text-white">
                                     <div class="card-body text-center">
                                         <h5 class="mb-2"><i class="fas fa-balance-scale me-2"></i>Solde</h5>
-                                        <h3>{{ number_format($report['solde'], 0, ',', ' ') }} FCFA</h3>
+                                        <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['solde']) }}</h3>
                                         <small class="opacity-75">{{ $report['solde'] >= 0 ? 'Reste subvention' : 'Dépassement' }}</small>
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@
                                                         <td>{{ $dep->date_depense?->format('d/m/Y') }}</td>
                                                         <td>{{ $joursLabels[$dep->jour_semaine] ?? $dep->jour_semaine ?? '—' }}</td>
                                                         <td>{{ $dep->libelle ?? '—' }}</td>
-                                                        <td class="text-end fw-semibold">{{ number_format($dep->montant, 0, ',', ' ') }} FCFA</td>
+                                                        <td class="text-end fw-semibold">{{ \App\Helpers\ParoisseConfig::formatMontant($dep->montant) }}</td>
                                                         <td><span class="badge bg-secondary">{{ ucfirst(str_replace('_', ' ', $dep->methode_paiement)) }}</span></td>
                                                     </tr>
                                                 @endforeach
@@ -189,7 +189,7 @@
                                             <tfoot>
                                                 <tr class="table-light fw-bold">
                                                     <td colspan="3" class="text-end">Total dépenses alimentation</td>
-                                                    <td class="text-end">{{ number_format($report['total_depenses_alimentation'], 0, ',', ' ') }} FCFA</td>
+                                                    <td class="text-end">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_depenses_alimentation']) }}</td>
                                                     <td></td>
                                                 </tr>
                                             </tfoot>

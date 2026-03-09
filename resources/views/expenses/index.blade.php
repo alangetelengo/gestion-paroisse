@@ -155,13 +155,13 @@
                                 </td>
                                 <td>{{ $types[$expense->type_charge] ?? $expense->type_charge }}</td>
                                 <td><span class="badge badge-info">{{ $expense->paroisse?->nom ?? 'N/A' }}</span></td>
-                                <td class="text-end montant-cell">{{ number_format($expense->montant, 2, ',', ' ') }} FCFA</td>
+                                <td class="text-end montant-cell">{{ \App\Helpers\ParoisseConfig::formatMontant($expense->montant) }}</td>
                                 <td>{{ $expense->categorie_charge === 'alimentation_popote' ? ($expense->libelle ?? '—') : ($expense->fournisseur ?? '—') }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-1">
                                         @can('edit_expenses')
                                         <a href="{{ route('expenses.edit', $expense) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         @endcan
                                         @can('delete_expenses')

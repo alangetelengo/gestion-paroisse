@@ -78,7 +78,7 @@
                     </span>
                     <div class="media-body">
                         <p class="mb-1">Recettes</p>
-                        <h4 class="mb-0">{{ number_format($statsFinances['recettes_mois'], 0, ',', ' ') }} <small style="font-size: 0.875rem;">{{ \App\Helpers\ParoisseConfig::get(null, 'monnaie', 'FCFA') }}</small></h4>
+                        <h4 class="mb-0">{{ \App\Helpers\ParoisseConfig::formatMontant($statsFinances['recettes_mois'] ?? 0) }}</h4>
                         <small class="text-muted">Ce mois</small>
                     </div>
                 </div>

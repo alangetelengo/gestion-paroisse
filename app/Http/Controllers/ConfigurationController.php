@@ -185,13 +185,21 @@ class ConfigurationController extends Controller
                 'loader_actif' => 'nullable|in:0,1',
                 'loader_duree_min' => 'nullable|integer|min:1|max:60',
                 'loader_afficher_logo' => 'nullable|in:0,1',
+                'preloader_logo_path' => 'nullable|string|max:255',
                 'loader_style' => 'nullable|in:logo_centre,logo_spinner,spinner_seul',
+                'loader_position' => 'nullable|in:centre,haut,bas',
                 'loader_couleur_fond' => 'nullable|string|max:7',
                 'loader_couleur_texte' => 'nullable|string|max:7',
+                // Page de connexion (image de fond, config globale)
+                'login_bg_image' => 'nullable|string|max:500',
             ]);
 
-            $paroisseId = auth()->check() ? (auth()->user()->paroisse_id ?? null) : null;
             $data = $request->except(['_token', '_method']);
+            $section = $data['section'] ?? null;
+            unset($data['section']);
+
+            // Page de connexion : config globale (paroisse_id null)
+            $paroisseId = ($section === 'login') ? null : (auth()->check() ? (auth()->user()->paroisse_id ?? null) : null);
 
             // Gérer les champs de couleur avec texte (priorité au champ texte)
             if (isset($data['pdf_header_bg_color_text']) && !empty($data['pdf_header_bg_color_text'])) {
@@ -209,7 +217,6 @@ class ConfigurationController extends Controller
                 $data['pdf_header_show_logo'] = $data['pdf_header_show_logo'] === '1';
             }
 
-            // Convertir loader_actif et loader_afficher_logo en boolean
             if (isset($data['loader_actif'])) {
                 $data['loader_actif'] = $data['loader_actif'] === '1';
             }
@@ -220,10 +227,12 @@ class ConfigurationController extends Controller
             $updatedKeys = [];
 
             foreach ($data as $cle => $valeur) {
-                // Traiter toutes les valeurs non-null (y compris les chaînes vides)
-                if ($valeur !== null && $valeur !== '') {
-                    $type = $this->detectType($valeur);
-                    Configuration::setValue($paroisseId, $cle, $valeur, $type);
+                $isLoginBg = ($section === 'login' && $cle === 'login_bg_image');
+                $hasValue = $valeur !== null && $valeur !== '';
+
+                if ($hasValue || $isLoginBg) {
+                    $type = $this->detectType($valeur ?? '');
+                    Configuration::setValue($paroisseId, $cle, $valeur ?? '', $type);
                     Cache::forget("config_{$paroisseId}_{$cle}");
                     $updatedKeys[] = $cle;
                 }

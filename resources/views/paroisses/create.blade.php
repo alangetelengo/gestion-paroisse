@@ -2,13 +2,21 @@
 
 @section('title', 'Créer une paroisse')
 @section('page-title', 'Créer une paroisse')
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('paroisses.index') }}">Paroisses</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Créer</li>
+@endsection
 
 @section('content')
 <div class="row">
-    <div class="col-12">
+    <div class="col-lg-9">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Nouvelle paroisse</h4>
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-church me-2"></i>
+                    Nouvelle paroisse
+                </h4>
             </div>
             <div class="card-body">
                 <form action="{{ route('paroisses.store') }}" method="POST">
@@ -94,6 +102,20 @@
                         <button type="submit" class="btn btn-primary">Créer</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 mt-4 mt-lg-0">
+        <div class="card border-0 shadow-sm create-help-panel">
+            <div class="card-body p-4">
+                <h6 class="mb-3 d-flex align-items-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    En bref
+                </h6>
+                <ul class="list-unstyled small mb-0">
+                    <li class="mb-2">1. Renseigner le <strong>nom</strong> et le <strong>code</strong>.</li>
+                    <li class="mb-0">2. Adresse et coordonnées sont optionnels.</li>
+                </ul>
             </div>
         </div>
     </div>

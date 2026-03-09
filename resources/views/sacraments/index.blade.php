@@ -109,7 +109,7 @@
                                         @endcan
                                         @can(\App\Http\Controllers\SacramentController::TYPE_PERMISSIONS[$type]['edit'] ?? 'edit_baptisms')
                                         <a href="{{ route('sacraments.edit', $sacrament) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         @endcan
                                         @can(\App\Http\Controllers\SacramentController::TYPE_PERMISSIONS[$type]['delete'] ?? 'delete_baptisms')

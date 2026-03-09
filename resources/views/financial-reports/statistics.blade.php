@@ -6,6 +6,7 @@
 @section('content')
 @php
     $currency = \App\Helpers\ParoisseConfig::get(null, 'monnaie', 'FCFA');
+    $fmt = fn($n) => \App\Helpers\ParoisseConfig::formatMontant($n);
 @endphp
 <div class="row">
     <div class="col-12">
@@ -59,31 +60,46 @@
                 </form>
 
                 @if($stats)
-                    <div class="row mb-4">
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Règle comptable :</strong> Seules les dépenses <strong>Popote / Alimentation</strong> (subvention) sont déduites des recettes pour le solde.
+                        Les charges fixes, variables et exceptionnelles sont enregistrées pour <strong>informer la hiérarchie</strong> ; elles ne sont pas déduites d'aucun revenu.
+                    </div>
+                    <div class="row mb-4 g-3">
                         <div class="col-md-4">
-                            <div class="card bg-success text-white">
+                            <div class="card bg-success text-white h-100">
                                 <div class="card-body text-center">
                                     <h5>Total Recettes {{ $selectedYear }}</h5>
-                                    <h3>{{ number_format($stats['total_recettes'], 0, ',', ' ') }} {{ $currency }}</h3>
+                                    <h3>{{ $fmt($stats['total_recettes']) }}</h3>
                                     <small>Toutes catégories</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card bg-danger text-white">
+                            <div class="card bg-danger text-white h-100">
                                 <div class="card-body text-center">
-                                    <h5>Total Dépenses {{ $selectedYear }}</h5>
-                                    <h3>{{ number_format($stats['total_depenses'], 0, ',', ' ') }} {{ $currency }}</h3>
-                                    <small>Toutes catégories</small>
+                                    <h5>Dépenses Popote / Alimentation</h5>
+                                    <h3>{{ $fmt($stats['depenses_popote']) }}</h3>
+                                    <small>Déduites des recettes</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card {{ $stats['solde'] >= 0 ? 'bg-info' : 'bg-warning' }} text-white">
+                            <div class="card {{ $stats['solde'] >= 0 ? 'bg-info' : 'bg-warning' }} text-white h-100">
                                 <div class="card-body text-center">
                                     <h5>Solde {{ $selectedYear }}</h5>
-                                    <h3>{{ number_format($stats['solde'], 0, ',', ' ') }} {{ $currency }}</h3>
-                                    <small>{{ $stats['solde'] >= 0 ? 'Excédent' : 'Déficit' }}</small>
+                                    <h3>{{ $fmt($stats['solde']) }}</h3>
+                                    <small>{{ $stats['solde'] >= 0 ? 'Excédent' : 'Déficit' }} (Recettes − Popote)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body d-flex align-items-center gap-2">
+                                    <i class="fas fa-file-alt text-secondary"></i>
+                                    <span><strong>Autres dépenses</strong> (charges fixes, variables, exceptionnelles) :</span>
+                                    <strong>{{ $fmt($stats['depenses_autres']) }}</strong>
+                                    <small class="text-muted">— Pour rapports hiérarchie (non déduites des recettes)</small>
                                 </div>
                             </div>
                         </div>
@@ -92,6 +108,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h5>Répartition par mois</h5>
+                            <small class="text-muted">Solde = Recettes − Dépenses Popote/Alimentation</small>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -100,7 +117,8 @@
                                         <tr>
                                             <th>Mois</th>
                                             <th class="text-end">Recettes</th>
-                                            <th class="text-end">Dépenses</th>
+                                            <th class="text-end">Dép. Popote</th>
+                                            <th class="text-end">Autres dép.</th>
                                             <th class="text-end">Solde</th>
                                         </tr>
                                     </thead>
@@ -108,10 +126,11 @@
                                         @foreach($byMonth ?? [] as $m => $row)
                                             <tr>
                                                 <td>{{ $row['nom'] }}</td>
-                                                <td class="text-end">{{ number_format($row['recettes'], 0, ',', ' ') }} {{ $currency }}</td>
-                                                <td class="text-end">{{ number_format($row['depenses'], 0, ',', ' ') }} {{ $currency }}</td>
+                                                <td class="text-end">{{ $fmt($row['recettes']) }}</td>
+                                                <td class="text-end">{{ $fmt($row['depenses_popote']) }}</td>
+                                                <td class="text-end text-muted">{{ $fmt($row['depenses_autres']) }}</td>
                                                 <td class="text-end {{ $row['solde'] >= 0 ? 'text-success' : 'text-danger' }}">
-                                                    {{ number_format($row['solde'], 0, ',', ' ') }} {{ $currency }}
+                                                    {{ $fmt($row['solde']) }}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -120,10 +139,11 @@
                                         <tfoot class="fw-bold">
                                             <tr>
                                                 <td>Total {{ $selectedYear }}</td>
-                                                <td class="text-end">{{ number_format($stats['total_recettes'], 0, ',', ' ') }} {{ $currency }}</td>
-                                                <td class="text-end">{{ number_format($stats['total_depenses'], 0, ',', ' ') }} {{ $currency }}</td>
+                                                <td class="text-end">{{ $fmt($stats['total_recettes']) }}</td>
+                                                <td class="text-end">{{ $fmt($stats['depenses_popote']) }}</td>
+                                                <td class="text-end text-muted">{{ $fmt($stats['depenses_autres']) }}</td>
                                                 <td class="text-end {{ $stats['solde'] >= 0 ? 'text-success' : 'text-danger' }}">
-                                                    {{ number_format($stats['solde'], 0, ',', ' ') }} {{ $currency }}
+                                                    {{ $fmt($stats['solde']) }}
                                                 </td>
                                             </tr>
                                         </tfoot>

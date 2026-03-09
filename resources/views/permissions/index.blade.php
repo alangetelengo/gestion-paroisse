@@ -72,7 +72,7 @@
                                 <td>
                                     <div class="d-flex justify-content-center gap-1">
                                         <a href="{{ route('permissions.edit', $permission) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         <form action="{{ route('permissions.destroy', $permission) }}" method="POST" class="d-inline" data-confirm="Supprimer cette permission ?">
                                             @csrf

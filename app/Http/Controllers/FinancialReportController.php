@@ -260,16 +260,30 @@ class FinancialReportController extends Controller
                     ->whereDate('date_recette', '<=', $dateFin)
                     ->sum('montant');
 
-                $totalDepenses = Expense::query()
+                // Seules les dépenses Popote/Alimentation sont déduites des recettes.
+                // Les autres (charges fixes, variables, exceptionnelles) sont pour rapports hiérarchie.
+                $depensesPopote = Expense::query()
                     ->where('paroisse_id', $selectedParoisseId)
+                    ->where('categorie_charge', 'alimentation_popote')
                     ->whereDate('date_depense', '>=', $dateDebut)
                     ->whereDate('date_depense', '<=', $dateFin)
                     ->sum('montant');
 
+                $depensesAutres = Expense::query()
+                    ->where('paroisse_id', $selectedParoisseId)
+                    ->whereIn('categorie_charge', ['charge_fixe', 'charge_variable', 'charge_exceptionnelle'])
+                    ->whereDate('date_depense', '>=', $dateDebut)
+                    ->whereDate('date_depense', '<=', $dateFin)
+                    ->sum('montant');
+
+                $totalDepenses = $depensesPopote + $depensesAutres;
+
                 $stats = [
                     'total_recettes' => $totalRecettes,
                     'total_depenses' => $totalDepenses,
-                    'solde' => $totalRecettes - $totalDepenses,
+                    'depenses_popote' => $depensesPopote,
+                    'depenses_autres' => $depensesAutres,
+                    'solde' => $totalRecettes - $depensesPopote,
                 ];
 
                 $moisNoms = [
@@ -285,16 +299,25 @@ class FinancialReportController extends Controller
                         ->whereDate('date_recette', '>=', $debutMois)
                         ->whereDate('date_recette', '<=', $finMois)
                         ->sum('montant');
-                    $depensesMois = Expense::query()
+                    $depensesPopoteMois = Expense::query()
                         ->where('paroisse_id', $selectedParoisseId)
+                        ->where('categorie_charge', 'alimentation_popote')
+                        ->whereDate('date_depense', '>=', $debutMois)
+                        ->whereDate('date_depense', '<=', $finMois)
+                        ->sum('montant');
+                    $depensesAutresMois = Expense::query()
+                        ->where('paroisse_id', $selectedParoisseId)
+                        ->whereIn('categorie_charge', ['charge_fixe', 'charge_variable', 'charge_exceptionnelle'])
                         ->whereDate('date_depense', '>=', $debutMois)
                         ->whereDate('date_depense', '<=', $finMois)
                         ->sum('montant');
                     $byMonth[$m] = [
                         'nom' => $moisNoms[$m],
                         'recettes' => $recettesMois,
-                        'depenses' => $depensesMois,
-                        'solde' => $recettesMois - $depensesMois,
+                        'depenses_popote' => $depensesPopoteMois,
+                        'depenses_autres' => $depensesAutresMois,
+                        'depenses' => $depensesPopoteMois + $depensesAutresMois,
+                        'solde' => $recettesMois - $depensesPopoteMois,
                     ];
                 }
             }

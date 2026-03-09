@@ -2,13 +2,18 @@
 
 @section('title', 'Créer un groupe')
 @section('page-title', 'Créer un groupe')
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('groups.index') }}">Groupes</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Créer</li>
+@endsection
 
 @section('content')
 <div class="row">
-    <div class="col-12">
+    <div class="col-lg-9">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">
+                <h4 class="card-title mb-0">
                     <i class="fas fa-users me-2"></i>
                     Nouveau groupe
                 </h4>
@@ -35,6 +40,20 @@
                         <button type="submit" class="btn btn-primary">Créer</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 mt-4 mt-lg-0">
+        <div class="card border-0 shadow-sm create-help-panel">
+            <div class="card-body p-4">
+                <h6 class="mb-3 d-flex align-items-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    En bref
+                </h6>
+                <ul class="list-unstyled small mb-0">
+                    <li class="mb-2">1. Saisir le <strong>nom</strong> du groupe.</li>
+                    <li class="mb-0">2. Description et membres sont optionnels.</li>
+                </ul>
             </div>
         </div>
     </div>

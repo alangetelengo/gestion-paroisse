@@ -285,17 +285,17 @@
         <div class="summary-row">
             <div class="summary-box success">
                 <h4>Total Recettes</h4>
-                <div class="amount">{{ number_format($report['total_recettes'], 0, ',', ' ') }} FCFA</div>
+                <div class="amount">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_recettes']) }}</div>
                 <div class="label">Popote / Subvention</div>
             </div>
             <div class="summary-box danger">
                 <h4>Total Dépenses</h4>
-                <div class="amount">{{ number_format($report['total_depenses'], 0, ',', ' ') }} FCFA</div>
+                <div class="amount">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_depenses']) }}</div>
                 <div class="label">Toutes catégories</div>
             </div>
             <div class="summary-box {{ $report['solde'] >= 0 ? 'info' : 'warning' }}">
                 <h4>Solde</h4>
-                <div class="amount">{{ number_format($report['solde'], 0, ',', ' ') }} FCFA</div>
+                <div class="amount">{{ \App\Helpers\ParoisseConfig::formatMontant($report['solde']) }}</div>
                 <div class="label">{{ $report['solde'] >= 0 ? 'Excédent' : 'Déficit' }}</div>
             </div>
         </div>
@@ -319,13 +319,13 @@
                             @foreach($report['details_recettes'] as $detail)
                                 <tr>
                                     <td>{{ $detail['nom'] }}</td>
-                                    <td class="text-right">{{ number_format($detail['montant'], 0, ',', ' ') }} FCFA</td>
+                                    <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($detail['montant']) }}</td>
                                     <td class="text-center">{{ $detail['count'] }}</td>
                                 </tr>
                             @endforeach
                             <tr class="total-row">
                                 <td>TOTAL</td>
-                                <td class="text-right">{{ number_format($report['total_recettes'], 0, ',', ' ') }} FCFA</td>
+                                <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_recettes']) }}</td>
                                 <td class="text-center">{{ $report['revenues']->count() }}</td>
                             </tr>
                         </tbody>
@@ -348,19 +348,19 @@
                     <tbody>
                         <tr>
                             <td>Charges fixes</td>
-                            <td class="text-right">{{ number_format($report['details_depenses']['charge_fixe'], 0, ',', ' ') }} FCFA</td>
+                            <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($report['details_depenses']['charge_fixe']) }}</td>
                         </tr>
                         <tr>
                             <td>Charges variables</td>
-                            <td class="text-right">{{ number_format($report['details_depenses']['charge_variable'], 0, ',', ' ') }} FCFA</td>
+                            <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($report['details_depenses']['charge_variable']) }}</td>
                         </tr>
                         <tr>
                             <td>Charges exceptionnelles</td>
-                            <td class="text-right">{{ number_format($report['details_depenses']['charge_exceptionnelle'], 0, ',', ' ') }} FCFA</td>
+                            <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($report['details_depenses']['charge_exceptionnelle']) }}</td>
                         </tr>
                         <tr class="total-row">
                             <td>TOTAL</td>
-                            <td class="text-right">{{ number_format($report['total_depenses'], 0, ',', ' ') }} FCFA</td>
+                            <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_depenses']) }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -389,7 +389,7 @@
                             <td>{{ $revenue->type->nom ?? '—' }}</td>
                             <td>{{ $revenue->methode_paiement ?? '—' }}</td>
                             <td>{{ $revenue->reference_paiement ?? '—' }}</td>
-                            <td class="text-right">{{ number_format($revenue->montant, 0, ',', ' ') }} FCFA</td>
+                            <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($revenue->montant) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -445,7 +445,7 @@
                             </td>
                             <td>{{ $expense->fournisseur ?? '—' }}</td>
                             <td>{{ $expense->facture_reference ?? '—' }}</td>
-                            <td class="text-right">{{ number_format($expense->montant, 0, ',', ' ') }} FCFA</td>
+                            <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($expense->montant) }}</td>
                         </tr>
                     @endforeach
                 </tbody>

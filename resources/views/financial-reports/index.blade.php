@@ -39,6 +39,9 @@
                     Rapport mensuel de justification
                 </h4>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#financialReportHelpModal" title="Aide">
+                        <i class="fas fa-info-circle me-1"></i> Aide
+                    </button>
                     <a href="{{ route('financial-reports.popote') }}" class="btn btn-action btn-secondary-action">
                         <i class="fas fa-utensils"></i> Rapport Subvention Popote
                     </a>
@@ -107,7 +110,7 @@
                             <div class="card stat-card bg-success text-white">
                                 <div class="card-body text-center">
                                     <h5 class="mb-2"><i class="fas fa-arrow-up me-2"></i>Total Recettes</h5>
-                                    <h3>{{ number_format($report['total_recettes'], 0, ',', ' ') }} FCFA</h3>
+                                    <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_recettes']) }}</h3>
                                     <small class="opacity-75">Popote / Subvention</small>
                                 </div>
                             </div>
@@ -116,7 +119,7 @@
                             <div class="card stat-card bg-danger text-white">
                                 <div class="card-body text-center">
                                     <h5 class="mb-2"><i class="fas fa-arrow-down me-2"></i>Total Dépenses</h5>
-                                    <h3>{{ number_format($report['total_depenses'], 0, ',', ' ') }} FCFA</h3>
+                                    <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_depenses']) }}</h3>
                                     <small class="opacity-75">Toutes catégories</small>
                                 </div>
                             </div>
@@ -125,7 +128,7 @@
                             <div class="card stat-card {{ $report['solde'] >= 0 ? 'bg-info' : 'bg-warning' }} text-white">
                                 <div class="card-body text-center">
                                     <h5 class="mb-2"><i class="fas fa-balance-scale me-2"></i>Solde</h5>
-                                    <h3>{{ number_format($report['solde'], 0, ',', ' ') }} FCFA</h3>
+                                    <h3>{{ \App\Helpers\ParoisseConfig::formatMontant($report['solde']) }}</h3>
                                     <small class="opacity-75">{{ $report['solde'] >= 0 ? 'Excédent' : 'Déficit' }}</small>
                                 </div>
                             </div>
@@ -153,7 +156,7 @@
                                                 @foreach($report['details_recettes'] as $detail)
                                                     <tr>
                                                         <td>{{ $detail['nom'] }}</td>
-                                                        <td class="text-end fw-semibold">{{ number_format($detail['montant'], 0, ',', ' ') }} FCFA</td>
+                                                        <td class="text-end fw-semibold">{{ \App\Helpers\ParoisseConfig::formatMontant($detail['montant']) }}</td>
                                                         <td class="text-center"><span class="badge badge-info">{{ $detail['count'] }}</span></td>
                                                     </tr>
                                                 @endforeach
@@ -182,15 +185,15 @@
                                         <tbody>
                                             <tr>
                                                 <td>Charges fixes</td>
-                                                <td class="text-end fw-semibold">{{ number_format($report['details_depenses']['charge_fixe'], 0, ',', ' ') }} FCFA</td>
+                                                <td class="text-end fw-semibold">{{ \App\Helpers\ParoisseConfig::formatMontant($report['details_depenses']['charge_fixe']) }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Charges variables</td>
-                                                <td class="text-end fw-semibold">{{ number_format($report['details_depenses']['charge_variable'], 0, ',', ' ') }} FCFA</td>
+                                                <td class="text-end fw-semibold">{{ \App\Helpers\ParoisseConfig::formatMontant($report['details_depenses']['charge_variable']) }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Charges exceptionnelles</td>
-                                                <td class="text-end fw-semibold">{{ number_format($report['details_depenses']['charge_exceptionnelle'], 0, ',', ' ') }} FCFA</td>
+                                                <td class="text-end fw-semibold">{{ \App\Helpers\ParoisseConfig::formatMontant($report['details_depenses']['charge_exceptionnelle']) }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -245,7 +248,7 @@
                                                             <td><span class="badge" style="background: rgba(106, 27, 154, 0.12); color: var(--primary, #6A1B9A);">{{ $cats[$expense->categorie_charge] ?? $expense->categorie_charge }}</span></td>
                                                             <td>{{ $types[$expense->type_charge] ?? $expense->type_charge }}</td>
                                                             <td>{{ $expense->fournisseur ?? '—' }}</td>
-                                                            <td class="text-end fw-semibold" style="color: var(--primary, #6A1B9A);">{{ number_format($expense->montant, 0, ',', ' ') }} FCFA</td>
+                                                            <td class="text-end fw-semibold" style="color: var(--primary, #6A1B9A);">{{ \App\Helpers\ParoisseConfig::formatMontant($expense->montant) }}</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -284,4 +287,6 @@
     </div>
 </div>
 </div>
+
+@include('financial-reports._help_modal')
 @endsection

@@ -1,14 +1,19 @@
 @extends('layouts.app')
 
 @section('title', 'Ajouter une catégorie de recettes')
-@section('page-title', 'Ajouter une catégorie')
+@section('page-title', 'Ajouter une catégorie de recettes')
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('revenue-categories.index') }}">Catégories de recettes</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Ajouter</li>
+@endsection
 
 @section('content')
 <div class="row">
-    <div class="col-12">
+    <div class="col-lg-9">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">
+                <h4 class="card-title mb-0">
                     <i class="fas fa-folder me-2"></i>
                     Nouvelle catégorie de recettes
                 </h4>
@@ -69,6 +74,20 @@
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 mt-4 mt-lg-0">
+        <div class="card border-0 shadow-sm create-help-panel">
+            <div class="card-body p-4">
+                <h6 class="mb-3 d-flex align-items-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    En bref
+                </h6>
+                <ul class="list-unstyled small mb-0">
+                    <li class="mb-2">1. Saisir un <strong>code</strong> unique et un <strong>nom</strong>.</li>
+                    <li class="mb-0">2. Ordre et description sont optionnels.</li>
+                </ul>
             </div>
         </div>
     </div>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide utilisateur — Gestion de Paroisse</title>
+    <style>
+        :root {
+            --primary: #003366;
+            --primary-light: #1a4d7a;
+            --accent: #c9a227;
+            --bg: #f5f7fa;
+            --card: #fff;
+            --text: #2c3e50;
+            --text-muted: #6c757d;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            margin: 0;
+            padding: 0 1rem 3rem;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 {
+            color: var(--primary);
+            font-size: 1.75rem;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        h2 {
+            color: var(--primary-light);
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        h3 { font-size: 1.05rem; margin-top: 1rem; }
+        .intro {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .intro h1 { color: #fff; border-bottom-color: var(--accent); margin-top: 0; }
+        .intro p { margin: 0.5rem 0; opacity: 0.95; }
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.5rem; }
+        li { margin: 0.35rem 0; }
+        .menu-ref {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        code, .path { background: #e8eef4; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.9em; }
+        .tip {
+            background: #e8f4fd;
+            border-left: 4px solid var(--primary);
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning {
+            background: #fff8e6;
+            border-left: 4px solid var(--accent);
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        nav.toc {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        nav.toc ul { list-style: none; padding-left: 0; }
+        nav.toc li { margin: 0.4rem 0; }
+        nav.toc a { color: var(--primary); text-decoration: none; }
+        nav.toc a:hover { text-decoration: underline; }
+        .page-break { page-break-before: always; }
+        @media print {
+            body { background: #fff; }
+            .card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="intro">
+        <h1>Guide utilisateur — Gestion de Paroisse</h1>
+        <p><strong>Version de test</strong></p>
+        <p>Ce document décrit les principales fonctionnalités de l’application de gestion de paroisse catholique. Utilisez-le pour explorer l’interface et effectuer vos tests.</p>
+    </div>
+
+    <nav class="toc" aria-label="Sommaire">
+        <h2 style="margin-top: 0;">Sommaire</h2>
+        <ul>
+            <li><a href="#acces">1. Accès et connexion</a></li>
+            <li><a href="#dashboard">2. Tableau de bord</a></li>
+            <li><a href="#membres">3. Membres</a></li>
+            <li><a href="#sacrements">4. Sacrements</a></li>
+            <li><a href="#evenements">5. Événements</a></li>
+            <li><a href="#groupes">6. Groupes</a></li>
+            <li><a href="#finances">7. Finances</a></li>
+            <li><a href="#paroisses">8. Paroisses</a></li>
+            <li><a href="#gestion-utilisateur">9. Gestion utilisateur</a></li>
+            <li><a href="#configuration">10. Configuration</a></li>
+            <li><a href="#profil">11. Mon profil</a></li>
+            <li><a href="#tests">12. Conseils pour les tests</a></li>
+        </ul>
+    </nav>
+
+    <!-- 1. Accès et connexion -->
+    <h1 id="acces">1. Accès et connexion</h1>
+    <div class="card">
+        <p>Ouvrez l’application dans votre navigateur (l’URL vous sera communiquée). Vous arrivez sur la page de <strong>connexion</strong>.</p>
+        <ul>
+            <li><strong>Email :</strong> saisissez l’adresse fournie par l’administrateur.</li>
+            <li><strong>Mot de passe :</strong> saisissez le mot de passe reçu.</li>
+        </ul>
+        <p>Cliquez sur <strong>Se connecter</strong>. En cas d’erreur, un message s’affiche (identifiants incorrects, champ obligatoire, etc.).</p>
+    </div>
+    <div class="tip">Les identifiants de test vous seront envoyés séparément. Ne les partagez pas en dehors du cadre des tests.</div>
+
+    <!-- 2. Tableau de bord -->
+    <h1 id="dashboard">2. Tableau de bord</h1>
+    <p>Après connexion, vous accédez au <strong>Tableau de bord</strong> (menu <span class="menu-ref">Tableau de bord</span> ou page d’accueil).</p>
+    <div class="card">
+        <h3>Contenu affiché</h3>
+        <ul>
+            <li><strong>Membres :</strong> nombre total, actifs, inactifs, décédés, répartition par sexe.</li>
+            <li><strong>Événements :</strong> total, à venir, passés, ce mois-ci, par type (messe, célébration, activité).</li>
+            <li><strong>Finances :</strong> recettes et dépenses du mois, de l’année, soldes, éventuels graphiques (évolution, répartition).</li>
+            <li><strong>Groupes :</strong> nombre total et par type (chorale, catéchisme, mouvement, autre).</li>
+        </ul>
+        <p>Les chiffres sont calculés selon la paroisse de l’utilisateur connecté (sauf pour un super administrateur).</p>
+    </div>
+
+    <!-- 3. Membres -->
+    <h1 id="membres">3. Membres</h1>
+    <p>Menu <span class="menu-ref">Membres</span>.</p>
+    <div class="card">
+        <h3>Liste des membres</h3>
+        <p>Affiche les membres de la paroisse : nom, prénom, coordonnées, statut, etc. Vous pouvez rechercher, filtrer et consulter le détail d’un membre.</p>
+        <h3>Ajouter un membre</h3>
+        <p>Formulaire pour créer un nouveau membre : nom, prénom, sexe, date de naissance, adresse, téléphone, email, statut (actif, inactif, décédé), etc. Renseignez les champs obligatoires puis enregistrez.</p>
+    </div>
+    <div class="tip">Les actions (voir, modifier, supprimer) dépendent des permissions de votre compte. Si un bouton n’apparaît pas, vous n’avez pas le droit d’effectuer l’action.</div>
+
+    <!-- 4. Sacrements -->
+    <h1 id="sacrements">4. Sacrements</h1>
+    <p>Menu <span class="menu-ref">Sacrements</span>. Sous-menus selon vos droits :</p>
+    <div class="card">
+        <ul>
+            <li><strong>Baptêmes</strong></li>
+            <li><strong>Confirmations</strong></li>
+            <li><strong>Communions</strong></li>
+            <li><strong>Mariages</strong></li>
+            <li><strong>Obsèques</strong></li>
+        </ul>
+        <p>Chaque section liste les actes du type concerné. Vous pouvez ajouter, modifier et consulter les enregistrements selon vos permissions.</p>
+    </div>
+
+    <!-- 5. Événements -->
+    <h1 id="evenements">5. Événements</h1>
+    <p>Menu <span class="menu-ref">Événements</span>.</p>
+    <div class="card">
+        <h3>Options</h3>
+        <ul>
+            <li><strong>Tous les événements</strong> : liste complète.</li>
+            <li><strong>Messes</strong> / <strong>Célébrations</strong> / <strong>Activités</strong> : filtres par type.</li>
+            <li><strong>Créer un événement</strong> : formulaire (date, heure, type, lieu, description, etc.).</li>
+        </ul>
+    </div>
+
+    <!-- 6. Groupes -->
+    <h1 id="groupes">6. Groupes</h1>
+    <p>Menu <span class="menu-ref">Groupes</span>.</p>
+    <div class="card">
+        <ul>
+            <li><strong>Tous les groupes</strong> : liste des groupes (chorale, catéchisme, mouvement, autre).</li>
+            <li><strong>Ajouter un groupe</strong> : création (nom, type, description, etc.).</li>
+        </ul>
+    </div>
+
+    <!-- 7. Finances -->
+    <h1 id="finances">7. Finances</h1>
+    <p>Menu <span class="menu-ref">Finances</span> — sous-menus principaux :</p>
+    <div class="card">
+        <h3>Recettes</h3>
+        <ul>
+            <li><strong>Toutes les recettes</strong> : liste avec dates, montants, catégories.</li>
+            <li><strong>Ajouter une recette</strong> : date, montant, catégorie/type, libellé, etc.</li>
+        </ul>
+        <h3>Dépenses</h3>
+        <ul>
+            <li><strong>Toutes les dépenses</strong> : liste des dépenses.</li>
+            <li><strong>Ajouter une dépense</strong> : date, montant, catégorie (fixe, variable, exceptionnelle), libellé.</li>
+        </ul>
+        <h3>Rapports</h3>
+        <ul>
+            <li><strong>Générer un rapport</strong> : création d’un rapport financier sur une période.</li>
+            <li><strong>Rapports enregistrés</strong> : liste des rapports déjà générés.</li>
+            <li><strong>Rapport Quête ordinaire</strong> : rapport des quêtes, avec possibilité d’impression / PDF.</li>
+            <li><strong>Rapport Subvention Popote</strong> : rapport pour la subvention « Popote » (impression / PDF).</li>
+            <li><strong>Rapport Charges fixes</strong> : synthèse des charges fixes.</li>
+            <li><strong>Statistiques</strong> : vues statistiques sur les finances.</li>
+        </ul>
+        <h3>Paramètres (Finances)</h3>
+        <ul>
+            <li><strong>Catégories recettes</strong> : gestion des catégories de recettes.</li>
+            <li><strong>Types recettes</strong> : gestion des types de recettes.</li>
+        </ul>
+    </div>
+
+    <!-- 8. Paroisses -->
+    <h1 id="paroisses">8. Paroisses</h1>
+    <p>Visible uniquement si votre compte a la permission <strong>Gérer les paroisses</strong>. Menu <span class="menu-ref">Paroisses</span>.</p>
+    <div class="card">
+        <ul>
+            <li><strong>Liste des paroisses</strong> : consulter et gérer les paroisses.</li>
+            <li><strong>Ajouter une paroisse</strong> : créer une nouvelle paroisse (nom, adresse, etc.).</li>
+        </ul>
+    </div>
+
+    <!-- 9. Gestion utilisateur -->
+    <h1 id="gestion-utilisateur">9. Gestion utilisateur</h1>
+    <p>Visible si vous avez l’un des droits : gérer les utilisateurs, les rôles ou les permissions. Menu <span class="menu-ref">Gestion utilisateur</span>.</p>
+    <div class="card">
+        <ul>
+            <li><strong>Utilisateurs</strong> : liste des comptes, ajout, modification, désactivation. Association à une paroisse et à des rôles.</li>
+            <li><strong>Rôles</strong> : création et modification des rôles (ex. : secrétaire, trésorier, admin).</li>
+            <li><strong>Permissions</strong> : liste des permissions (ex. : view_members, create_events, manage_users) et attribution aux rôles.</li>
+        </ul>
+    </div>
+
+    <!-- 10. Configuration -->
+    <h1 id="configuration">10. Configuration</h1>
+    <p>Menu <span class="menu-ref">Configuration</span>.</p>
+    <div class="card">
+        <h3>Paramètres généraux</h3>
+        <p>Page regroupant les options de personnalisation de l’application, par exemple :</p>
+        <ul>
+            <li>Nom et titre de la paroisse, logo.</li>
+            <li>Apparence de la page de connexion (image de fond, couleurs).</li>
+            <li><strong>Loader (écran de chargement)</strong> : activer/désactiver, durée minimale d’affichage, style (logo + spinner, logo seul, etc.), position.</li>
+            <li>Couleurs du thème (couleur primaire, etc.).</li>
+        </ul>
+        <p>Les modifications sont enregistrées via le bouton prévu sur la page. Certaines options peuvent être regroupées en « Enregistrer tout » ou par section.</p>
+        <p>Si vous avez le droit de gérer les paroisses, un lien vers <strong>Paroisses</strong> peut aussi apparaître dans cette section.</p>
+    </div>
+
+    <!-- 11. Mon profil -->
+    <h1 id="profil">11. Mon profil</h1>
+    <p>En haut à droite, cliquez sur votre nom (ou avatar) pour ouvrir le menu utilisateur, puis <strong>Mon profil</strong>.</p>
+    <div class="card">
+        <ul>
+            <li><strong>Modifier le profil</strong> : nom, email, etc.</li>
+            <li><strong>Changer le mot de passe</strong> : mot de passe actuel, nouveau mot de passe, confirmation.</li>
+        </ul>
+        <p>Utilisez <strong>Déconnexion</strong> dans ce même menu pour quitter l’application en toute sécurité.</p>
+    </div>
+
+    <!-- 12. Conseils pour les tests -->
+    <h1 id="tests">12. Conseils pour les tests</h1>
+    <div class="card">
+        <ul>
+            <li>Testez d’abord la <strong>connexion</strong> avec les identifiants fournis.</li>
+            <li>Parcourez le <strong>tableau de bord</strong> et vérifiez que les chiffres correspondent à ce que vous attendez (ou à des données de test).</li>
+            <li>Pour chaque menu auquel vous avez accès : ouvrez les listes, créez un enregistrement de test, modifiez-le, puis supprimez-le si possible (en respectant les messages de confirmation).</li>
+            <li>Vérifiez les <strong>formulaires</strong> : champs obligatoires, formats (email, téléphone, dates), messages d’erreur.</li>
+            <li>Testez les <strong>rapports financiers</strong> (quête, Popote, charges fixes) : génération, impression, export PDF si disponible.</li>
+            <li>Si vous avez accès à la <strong>Configuration</strong>, testez le changement de logo, couleurs et loader, puis rechargez la page pour vérifier la prise en compte.</li>
+            <li>Sur mobile ou tablette, ouvrez le menu via l’icône <strong>hamburger</strong> (trois barres) en haut à gauche.</li>
+        </ul>
+    </div>
+    <div class="warning">
+        <strong>Remarque :</strong> les droits affichés (menus et boutons) dépendent de votre rôle. Si une section n’apparaît pas, c’est qu’elle n’est pas autorisée pour votre compte. Pour tester d’autres rôles, demandez des comptes supplémentaires à l’administrateur.
+    </div>
+
+    <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+        Document généré pour les besoins des tests utilisateur — Gestion de Paroisse.
+    </p>
+</div>
+</body>
+</html>

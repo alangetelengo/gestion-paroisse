@@ -20,6 +20,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'admin@paroisse.cg'],
             [
                 'name' => 'Super Administrateur',
+                'username' => 'admin',
                 'password' => Hash::make('password'),
                 'paroisse_id' => null, // Super admin n'a pas de paroisse spécifique
             ]
@@ -37,6 +38,7 @@ class AdminUserSeeder extends Seeder
                 ['email' => 'paroisse@paroisse.cg'],
                 [
                     'name' => 'Administrateur Paroisse',
+                    'username' => 'paroisse',
                     'password' => Hash::make('password'),
                     'paroisse_id' => $paroisse->id,
                 ]

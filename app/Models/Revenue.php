@@ -26,6 +26,8 @@ class Revenue extends Model
         'reference_paiement',
         'statut',
         'notes',
+        'donateur_nom',
+        'donateur_telephone',
         'created_by',
         'validated_by',
         'validated_at',

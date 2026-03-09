@@ -18,6 +18,9 @@ use App\Http\Controllers\SacramentController;
 use App\Http\Controllers\FinancialReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Api\SyncController;
+use App\Http\Controllers\InventaireMagasinController;
+use App\Http\Controllers\InventairePatrimoineController;
 
 // Routes publiques
 Route::get('/', function () {
@@ -38,11 +41,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     // Configuration
-    // Route bulk définie AVANT la route resource pour éviter les conflits
-    // Accepte PUT (méthode spoofing) et POST direct
     Route::match(['put', 'post'], 'configurations/bulk', [ConfigurationController::class, 'updateBulk'])
         ->name('configurations.update-bulk');
-
     Route::resource('configurations', ConfigurationController::class);
 
     // Utilisateurs (nécessite permission manage_users)
@@ -63,6 +63,9 @@ Route::middleware(['auth'])->group(function () {
     // Sacrements (Baptêmes, Confirmations, Communions, Mariages, Obsèques)
     Route::resource('sacraments', SacramentController::class);
 
+    // API sync pour mode offline (recettes et dépenses)
+    Route::post('api/sync', [SyncController::class, 'store'])->name('api.sync');
+
     // Finances - Recettes
     Route::resource('revenues', RevenueController::class);
 
@@ -72,6 +75,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Finances - Dépenses
     Route::resource('expenses', ExpenseController::class);
+
+    // Inventaire (produits alimentaires et patrimoine)
+    Route::resource('inventaire-magasin', InventaireMagasinController::class)->except(['show']);
+    Route::resource('inventaire-patrimoine', InventairePatrimoineController::class)->except(['show']);
 
     // Finances - Rapports financiers
     // Routes spécifiques AVANT les routes avec paramètres pour éviter les conflits

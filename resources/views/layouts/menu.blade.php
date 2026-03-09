@@ -147,6 +147,20 @@
         </ul>
     </li>
 
+    {{-- Inventaire --}}
+    <li>
+        <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="fas fa-boxes-stacked"></i>
+            <span class="nav-text">Inventaire</span>
+        </a>
+        <ul aria-expanded="false">
+            <li><a href="{{ route('inventaire-magasin.index') }}">Produits alimentaires</a></li>
+            <li><a href="{{ route('inventaire-magasin.create') }}">Ajouter un article alimentaire</a></li>
+            <li><a href="{{ route('inventaire-patrimoine.index') }}">Patrimoine</a></li>
+            <li><a href="{{ route('inventaire-patrimoine.create') }}">Ajouter un bien patrimonial</a></li>
+        </ul>
+    </li>
+
     {{-- Paroisses --}}
     @can('manage_paroisses')
     <li>

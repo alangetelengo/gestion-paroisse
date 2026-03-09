@@ -129,7 +129,7 @@
                                         </a>
                                         @can('edit_events')
                                         <a href="{{ route('events.edit', $event) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         @endcan
                                         @can('delete_events')

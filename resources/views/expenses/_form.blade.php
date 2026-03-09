@@ -126,7 +126,7 @@
                name="montant"
                class="form-control @error('montant') is-invalid @enderror"
                inputmode="decimal"
-               value="{{ old('montant', $expense?->montant ? number_format($expense->montant, 0, ',', '.') : '') }}"
+               value="{{ old('montant', \App\Helpers\ParoisseConfig::formatMontantSaisie($expense?->montant)) }}"
                required>
         @error('montant')
         <div class="invalid-feedback">{{ $message }}</div>
@@ -300,11 +300,11 @@
                 const parts = [];
                 while (value.length > 3) { parts.unshift(value.slice(-3)); value = value.slice(0, -3); }
                 if (value.length) parts.unshift(value);
-                montantInput.value = parts.join('.');
+                montantInput.value = parts.join(' ');
             }
             montantInput.addEventListener('input', formatMontant);
             if (form) form.addEventListener('submit', function () {
-                if (montantInput.value) montantInput.value = montantInput.value.replace(/\./g, '');
+                if (montantInput.value) montantInput.value = montantInput.value.replace(/\s/g, '');
             });
         }
     });

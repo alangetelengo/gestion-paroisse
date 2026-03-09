@@ -85,7 +85,7 @@ class RevenueController extends Controller
 
             $paroisseIdFilter = $request->filled('paroisse_id') ? $request->integer('paroisse_id') : $user->paroisse_id;
             $categories = $paroisseIdFilter
-                ? RevenueCategory::where('paroisse_id', $paroisseIdFilter)->orderBy('ordre')->get()
+                ? RevenueCategory::where('paroisse_id', $paroisseIdFilter)->orderBy('ordre')->get()->unique('code')->values()
                 : RevenueCategory::orderBy('ordre')->get();
 
             return view('revenues.index', [
@@ -117,7 +117,7 @@ class RevenueController extends Controller
             ? $request->integer('paroisse_id')
             : $user->paroisse_id;
         $categories = $paroisseId
-            ? RevenueCategory::with('types')->where('paroisse_id', $paroisseId)->orderBy('ordre')->get()
+            ? RevenueCategory::with('types')->where('paroisse_id', $paroisseId)->orderBy('ordre')->get()->unique('code')->values()
             : RevenueCategory::with('types')->orderBy('ordre')->get();
 
         return view('revenues.create', [
@@ -139,12 +139,27 @@ class RevenueController extends Controller
                 'date_recette' => ['required', 'date'],
                 'montant' => ['required', 'numeric', 'min:0'],
                 'methode_paiement' => ['required', 'in:especes,cheque,virement,carte,mobile_money'],
-                'reference_paiement' => ['nullable', 'string', 'max:255'],
                 'notes' => ['nullable', 'string'],
+                'donateur_nom' => ['nullable', 'string', 'max:255'],
+                'donateur_telephone' => ['nullable', 'string', 'max:50'],
             ]);
 
             $category = RevenueCategory::find($validated['revenue_category_id']);
             $revenueType = RevenueType::find($validated['revenue_type_id']);
+
+            // Procure : champs donateur optionnels (sinon on les vide)
+            if (! $category || $category->code !== 'procure') {
+                $validated['donateur_nom'] = null;
+                $validated['donateur_telephone'] = null;
+            } else {
+                // Nom en majuscules, téléphone avec préfixe 242
+                if (! empty($validated['donateur_nom'])) {
+                    $validated['donateur_nom'] = mb_strtoupper($validated['donateur_nom'], 'UTF-8');
+                }
+                if (! empty($validated['donateur_telephone'])) {
+                    $validated['donateur_telephone'] = self::normalizePhone242($validated['donateur_telephone']);
+                }
+            }
 
             // Quête ordinaire : gestion du jour de la semaine
             if ($category && $category->code === 'quete_ordinaire') {
@@ -190,9 +205,8 @@ class RevenueController extends Controller
                 $validated['paroisse_id'] = $user->paroisse_id;
             }
 
-            if (empty($validated['reference_paiement'])) {
-                $validated['reference_paiement'] = 'REV-' . now()->format('YmdHis') . '-' . strtoupper(str()->random(4));
-            }
+            // Référence paiement générée automatiquement par le contrôleur
+            $validated['reference_paiement'] = 'REV-' . now()->format('YmdHis') . '-' . strtoupper(str()->random(4));
 
             $validated['created_by'] = $user->id;
 
@@ -200,7 +214,8 @@ class RevenueController extends Controller
 
             FlashAlert::success('Recette enregistrée avec succès.');
 
-            return redirect()->route('revenues.index');
+            // return redirect()->route('revenues.index');
+            return redirect()->back();
         } catch (Throwable $e) {
             $this->logError($e, 'Erreur lors de la création de la recette', ['data' => $request->all()]);
             FlashAlert::error('Une erreur est survenue lors de l\'enregistrement de la recette.');
@@ -225,7 +240,7 @@ class RevenueController extends Controller
 
         $paroisseId = $revenue->paroisse_id;
         $categories = $paroisseId
-            ? RevenueCategory::with('types')->where('paroisse_id', $paroisseId)->orderBy('ordre')->get()
+            ? RevenueCategory::with('types')->where('paroisse_id', $paroisseId)->orderBy('ordre')->get()->unique('code')->values()
             : RevenueCategory::with('types')->orderBy('ordre')->get();
 
         return view('revenues.edit', [
@@ -253,12 +268,27 @@ class RevenueController extends Controller
                 'date_recette' => ['required', 'date'],
                 'montant' => ['required', 'numeric', 'min:0'],
                 'methode_paiement' => ['required', 'in:especes,cheque,virement,carte,mobile_money'],
-                'reference_paiement' => ['nullable', 'string', 'max:255'],
                 'notes' => ['nullable', 'string'],
+                'donateur_nom' => ['nullable', 'string', 'max:255'],
+                'donateur_telephone' => ['nullable', 'string', 'max:50'],
             ]);
 
             $category = RevenueCategory::find($validated['revenue_category_id']);
             $revenueType = RevenueType::find($validated['revenue_type_id']);
+
+            // Procure : champs donateur optionnels (sinon on les vide)
+            if (! $category || $category->code !== 'procure') {
+                $validated['donateur_nom'] = null;
+                $validated['donateur_telephone'] = null;
+            } else {
+                // Nom en majuscules, téléphone avec préfixe 242
+                if (! empty($validated['donateur_nom'])) {
+                    $validated['donateur_nom'] = mb_strtoupper($validated['donateur_nom'], 'UTF-8');
+                }
+                if (! empty($validated['donateur_telephone'])) {
+                    $validated['donateur_telephone'] = self::normalizePhone242($validated['donateur_telephone']);
+                }
+            }
 
             // Quête ordinaire : gestion du jour de la semaine
             if ($category && $category->code === 'quete_ordinaire') {
@@ -303,7 +333,8 @@ class RevenueController extends Controller
                 $validated['paroisse_id'] = $user->paroisse_id;
             }
 
-            if (empty($validated['reference_paiement']) && ! $revenue->reference_paiement) {
+            // Référence paiement : générer uniquement si pas encore définie
+            if (empty($revenue->reference_paiement)) {
                 $validated['reference_paiement'] = 'REV-' . now()->format('YmdHis') . '-' . strtoupper(str()->random(4));
             }
 
@@ -340,6 +371,22 @@ class RevenueController extends Controller
         }
 
         return redirect()->route('revenues.index');
+    }
+
+    /**
+     * Normalise le numéro de téléphone avec le préfixe 242 (Congo).
+     */
+    private static function normalizePhone242(string $phone): string
+    {
+        $digits = preg_replace('/\D/', '', $phone);
+        if ($digits === '') {
+            return '';
+        }
+        if (str_starts_with($digits, '242')) {
+            return '242' . substr($digits, 3);
+        }
+
+        return '242' . $digits;
     }
 }
 

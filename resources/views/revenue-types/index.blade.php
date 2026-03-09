@@ -100,7 +100,7 @@
                                     <div class="d-flex justify-content-center gap-1">
                                         @can('edit_revenues')
                                         <a href="{{ route('revenue-types.edit', $type) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         @endcan
                                         @can('delete_revenues')

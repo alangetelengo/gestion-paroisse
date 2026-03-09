@@ -100,7 +100,7 @@
                                         </a>
                                         @can('manage_paroisses')
                                         <a href="{{ route('paroisses.edit', $paroisse) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         <form action="{{ route('paroisses.destroy', $paroisse) }}" method="POST" class="d-inline" data-confirm="Êtes-vous sûr de vouloir désactiver cette paroisse ?">
                                             @csrf

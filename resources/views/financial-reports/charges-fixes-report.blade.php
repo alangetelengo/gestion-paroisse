@@ -96,7 +96,7 @@
                                             <h5 class="mb-1"><i class="fas fa-calculator me-2 text-secondary"></i>Total charges fixes</h5>
                                             <small class="text-muted">Période : {{ $report['date_debut']->format('d/m/Y') }} — {{ $report['date_fin']->format('d/m/Y') }} · {{ $report['expenses']->count() }} enregistrement(s)</small>
                                         </div>
-                                        <h3 class="mb-0 text-secondary">{{ number_format($report['total'], 0, ',', ' ') }} FCFA</h3>
+                                        <h3 class="mb-0 text-secondary">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total']) }}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                                                         <td><span class="badge bg-secondary">{{ $typeLabels[$exp->type_charge] ?? $exp->type_charge }}</span></td>
                                                         <td>{{ $exp->facture_reference ?? '—' }}</td>
                                                         <td>{{ $exp->fournisseur ?? '—' }}</td>
-                                                        <td class="text-end fw-semibold">{{ number_format($exp->montant, 0, ',', ' ') }} FCFA</td>
+                                                        <td class="text-end fw-semibold">{{ \App\Helpers\ParoisseConfig::formatMontant($exp->montant) }}</td>
                                                         <td><span class="badge bg-light text-dark">{{ ucfirst(str_replace('_', ' ', $exp->methode_paiement)) }}</span></td>
                                                     </tr>
                                                 @endforeach
@@ -136,7 +136,7 @@
                                             <tfoot>
                                                 <tr class="table-light fw-bold">
                                                     <td colspan="4" class="text-end">Total</td>
-                                                    <td class="text-end">{{ number_format($report['total'], 0, ',', ' ') }} FCFA</td>
+                                                    <td class="text-end">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total']) }}</td>
                                                     <td></td>
                                                 </tr>
                                             </tfoot>

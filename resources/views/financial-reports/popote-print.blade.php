@@ -182,17 +182,17 @@
         <div class="summary">
             <div class="summary-box success">
                 <h4>Subvention Popote reçue</h4>
-                <div class="amount">{{ number_format($report['subvention_recue'], 0, ',', ' ') }} FCFA</div>
+                <div class="amount">{{ \App\Helpers\ParoisseConfig::formatMontant($report['subvention_recue']) }}</div>
                 <div class="label">Période sélectionnée</div>
             </div>
             <div class="summary-box danger">
                 <h4>Dépenses alimentation</h4>
-                <div class="amount">{{ number_format($report['total_depenses_alimentation'], 0, ',', ' ') }} FCFA</div>
+                <div class="amount">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_depenses_alimentation']) }}</div>
                 <div class="label">{{ $report['depenses_alimentation']->count() }} ligne(s)</div>
             </div>
             <div class="summary-box {{ $report['solde'] >= 0 ? 'info' : 'warning' }}">
                 <h4>Solde</h4>
-                <div class="amount">{{ number_format($report['solde'], 0, ',', ' ') }} FCFA</div>
+                <div class="amount">{{ \App\Helpers\ParoisseConfig::formatMontant($report['solde']) }}</div>
                 <div class="label">{{ $report['solde'] >= 0 ? 'Reste subvention' : 'Dépassement' }}</div>
             </div>
         </div>
@@ -217,7 +217,7 @@
                                 <td>{{ $dep->date_depense?->format('d/m/Y') }}</td>
                                 <td>{{ $joursLabels[$dep->jour_semaine] ?? $dep->jour_semaine ?? '—' }}</td>
                                 <td>{{ $dep->libelle ?? '—' }}</td>
-                                <td class="text-right">{{ number_format($dep->montant, 0, ',', ' ') }} FCFA</td>
+                                <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($dep->montant) }}</td>
                                 <td>{{ ucfirst(str_replace('_', ' ', $dep->methode_paiement)) }}</td>
                             </tr>
                         @endforeach
@@ -225,7 +225,7 @@
                     <tfoot>
                         <tr class="total-row">
                             <td colspan="3" class="text-right">Total dépenses alimentation</td>
-                            <td class="text-right">{{ number_format($report['total_depenses_alimentation'], 0, ',', ' ') }} FCFA</td>
+                            <td class="text-right">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total_depenses_alimentation']) }}</td>
                             <td></td>
                         </tr>
                     </tfoot>

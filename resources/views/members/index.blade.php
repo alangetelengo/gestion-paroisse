@@ -144,7 +144,7 @@
                                         </a>
                                         @can('edit_members')
                                         <a href="{{ route('members.edit', $member) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i> Modifier
+                                            <i class="fas fa-pen"></i>
                                         </a>
                                         @endcan
                                         @can('delete_members')
