@@ -27,10 +27,11 @@ class FinancialReportController extends Controller
     {
         $this->middleware('permission:view_financial_reports')->only([
             'index', 'list', 'show', 'statistics', 'revenuesWeekly', 'revenuesWeeklyPrint',
-            'popoteReport', 'popotePrint', 'chargesFixesReport',
+            'popoteReport', 'popotePrint', 'chargesFixesReport', 'revenuesByCategory',
         ]);
         $this->middleware('permission:generate_financial_reports')->only([
             'store', 'downloadPdf', 'downloadRevenuesWeeklyPdf', 'downloadPopotePdf',
+            'storeRevenuesByCategory', 'downloadRevenuesByCategoryPdf',
         ]);
     }
 
@@ -355,9 +356,19 @@ class FinancialReportController extends Controller
                 return redirect()->route('financial-reports.list');
             }
 
-            // Recalculer les détails pour affichage complet
             $dateDebut = $financialReport->date_debut;
             $dateFin = $financialReport->date_fin;
+
+            if ($financialReport->periode_type === 'revenues_by_category') {
+                $details = $financialReport->details_recettes ?? [];
+                $categoryId = $details['revenue_category_id'] ?? null;
+                $report = $this->calculateRevenuesByCategoryReport($financialReport->paroisse_id, $dateDebut, $dateFin, $categoryId);
+
+                return view('financial-reports.show-revenues-by-category', [
+                    'financialReport' => $financialReport,
+                    'report' => $report,
+                ]);
+            }
 
             $report = $this->calculateReport($financialReport->paroisse_id, $dateDebut, $dateFin);
 
@@ -385,13 +396,32 @@ class FinancialReportController extends Controller
                 return redirect()->route('financial-reports.list');
             }
 
-            // Recalculer les détails pour affichage complet
             $dateDebut = $financialReport->date_debut;
             $dateFin = $financialReport->date_fin;
 
+            if ($financialReport->periode_type === 'revenues_by_category') {
+                $details = $financialReport->details_recettes ?? [];
+                $categoryId = $details['revenue_category_id'] ?? null;
+                $report = $this->calculateRevenuesByCategoryReport($financialReport->paroisse_id, $dateDebut, $dateFin, $categoryId);
+                $paroisse = $financialReport->paroisse;
+                $headerConfig = $this->getHeaderConfig($financialReport->paroisse_id);
+
+                $pdf = Pdf::loadView('financial-reports.revenues-by-category-pdf', [
+                    'report' => $report,
+                    'paroisse' => $paroisse,
+                    'headerConfig' => $headerConfig,
+                    'dateDebut' => $dateDebut,
+                    'dateFin' => $dateFin,
+                    'selectedCategoryId' => $categoryId,
+                ])->setPaper('a4', 'landscape');
+
+                $filename = 'rapport-recettes-par-categorie-' . \Illuminate\Support\Str::slug($paroisse->nom) . '-' . $dateDebut->format('Y-m-d') . '-' . $dateFin->format('Y-m-d') . '.pdf';
+
+                return $pdf->download($filename);
+            }
+
             $report = $this->calculateReport($financialReport->paroisse_id, $dateDebut, $dateFin);
 
-            // Récupérer les configurations d'en-tête
             $paroisse = $financialReport->paroisse;
             $headerConfig = $this->getHeaderConfig($financialReport->paroisse_id);
 
@@ -907,6 +937,209 @@ class FinancialReportController extends Controller
                 'report' => null,
             ]);
         }
+    }
+
+    /**
+     * Rapport par catégories de recettes — Filtres : paroisse, période, catégorie.
+     */
+    public function revenuesByCategory(Request $request): View
+    {
+        try {
+            $user = $request->user();
+
+            $paroisses = $user->hasRole('super_admin')
+                ? Paroisse::orderBy('nom')->get()
+                : Paroisse::whereKey($user->paroisse_id)->get();
+
+            $selectedParoisseId = $request->integer('paroisse_id', $user->hasRole('super_admin') ? null : $user->paroisse_id);
+            $dateDebut = $request->filled('date_debut') ? Carbon::parse($request->date_debut)->startOfDay() : null;
+            $dateFin = $request->filled('date_fin') ? Carbon::parse($request->date_fin)->endOfDay() : null;
+            $selectedCategoryId = $request->filled('revenue_category_id') ? (int) $request->revenue_category_id : null;
+
+            $categories = collect();
+            $report = null;
+            if ($selectedParoisseId) {
+                $categories = RevenueCategory::with('types')
+                    ->where('paroisse_id', $selectedParoisseId)
+                    ->where('actif', true)
+                    ->orderBy('ordre')
+                    ->orderBy('nom')
+                    ->get();
+
+                if ($dateDebut && $dateFin) {
+                    $report = $this->calculateRevenuesByCategoryReport($selectedParoisseId, $dateDebut, $dateFin, $selectedCategoryId);
+                }
+            }
+
+            return view('financial-reports.revenues-by-category', [
+                'paroisses' => $paroisses,
+                'categories' => $categories,
+                'selectedParoisseId' => $selectedParoisseId,
+                'dateDebut' => $dateDebut?->format('Y-m-d'),
+                'dateFin' => $dateFin?->format('Y-m-d'),
+                'selectedCategoryId' => $selectedCategoryId,
+                'report' => $report,
+            ]);
+        } catch (Throwable $e) {
+            $this->logError($e, 'Erreur rapport par catégories de recettes');
+            FlashAlert::error('Une erreur est survenue lors du chargement du rapport.');
+
+            return view('financial-reports.revenues-by-category', [
+                'paroisses' => collect(),
+                'categories' => collect(),
+                'selectedParoisseId' => null,
+                'dateDebut' => null,
+                'dateFin' => null,
+                'selectedCategoryId' => null,
+                'report' => null,
+            ]);
+        }
+    }
+
+    public function storeRevenuesByCategory(Request $request): RedirectResponse
+    {
+        try {
+            $user = $request->user();
+
+            $validated = $request->validate([
+                'paroisse_id' => ['required', 'exists:paroisses,id'],
+                'date_debut' => ['required', 'date'],
+                'date_fin' => ['required', 'date', 'after_or_equal:date_debut'],
+                'revenue_category_id' => ['nullable', 'exists:revenue_categories,id'],
+            ]);
+
+            if (! $user->hasRole('super_admin') && (int) $validated['paroisse_id'] !== (int) $user->paroisse_id) {
+                FlashAlert::error('Vous ne pouvez générer des rapports que pour votre paroisse.');
+
+                return redirect()->route('financial-reports.revenues-by-category');
+            }
+
+            $dateDebut = Carbon::parse($validated['date_debut'])->startOfDay();
+            $dateFin = Carbon::parse($validated['date_fin'])->endOfDay();
+            $categoryId = $validated['revenue_category_id'] ?? null;
+
+            $report = $this->calculateRevenuesByCategoryReport((int) $validated['paroisse_id'], $dateDebut, $dateFin, $categoryId);
+
+            FinancialReport::create([
+                'paroisse_id' => $validated['paroisse_id'],
+                'periode_type' => 'revenues_by_category',
+                'date_debut' => $dateDebut,
+                'date_fin' => $dateFin,
+                'total_recettes' => $report['total_general'],
+                'total_depenses' => 0,
+                'solde' => $report['total_general'],
+                'details_recettes' => [
+                    'revenue_category_id' => $categoryId,
+                    'by_category' => $report['by_category'],
+                    'revenues' => $report['revenues']->map(fn ($r) => [
+                        'id' => $r->id,
+                        'date' => $r->date_recette?->format('Y-m-d'),
+                        'category' => $r->category?->nom,
+                        'type' => $r->type?->nom,
+                        'montant' => (float) $r->montant,
+                    ])->toArray(),
+                ],
+                'details_depenses' => [],
+                'created_by' => $user->id,
+            ]);
+
+            FlashAlert::success('Rapport par catégories de recettes enregistré avec succès.');
+
+            return redirect()->route('financial-reports.list');
+        } catch (Throwable $e) {
+            $this->logError($e, 'Erreur enregistrement rapport par catégories', ['data' => $request->all()]);
+            FlashAlert::error('Une erreur est survenue lors de l\'enregistrement du rapport.');
+
+            return redirect()->back()->withInput();
+        }
+    }
+
+    public function downloadRevenuesByCategoryPdf(Request $request): Response|RedirectResponse
+    {
+        try {
+            $user = $request->user();
+
+            $validated = $request->validate([
+                'paroisse_id' => ['required', 'exists:paroisses,id'],
+                'date_debut' => ['required', 'date'],
+                'date_fin' => ['required', 'date', 'after_or_equal:date_debut'],
+                'revenue_category_id' => ['nullable', 'exists:revenue_categories,id'],
+            ]);
+
+            if (! $user->hasRole('super_admin') && (int) $validated['paroisse_id'] !== (int) $user->paroisse_id) {
+                FlashAlert::error('Vous ne pouvez générer des rapports que pour votre paroisse.');
+
+                return redirect()->back();
+            }
+
+            $dateDebut = Carbon::parse($validated['date_debut'])->startOfDay();
+            $dateFin = Carbon::parse($validated['date_fin'])->endOfDay();
+            $report = $this->calculateRevenuesByCategoryReport(
+                (int) $validated['paroisse_id'],
+                $dateDebut,
+                $dateFin,
+                $validated['revenue_category_id'] ?? null
+            );
+
+            $paroisse = Paroisse::find($validated['paroisse_id']);
+            $headerConfig = $this->getHeaderConfig($validated['paroisse_id']);
+
+            $pdf = Pdf::loadView('financial-reports.revenues-by-category-pdf', [
+                'report' => $report,
+                'paroisse' => $paroisse,
+                'headerConfig' => $headerConfig,
+                'dateDebut' => $dateDebut,
+                'dateFin' => $dateFin,
+                'selectedCategoryId' => $validated['revenue_category_id'] ?? null,
+            ])->setPaper('a4', 'landscape');
+
+            $filename = 'rapport-recettes-par-categorie-' . \Illuminate\Support\Str::slug($paroisse->nom) . '-' . $dateDebut->format('Y-m-d') . '-' . $dateFin->format('Y-m-d') . '.pdf';
+
+            return $pdf->download($filename);
+        } catch (Throwable $e) {
+            $this->logError($e, 'Erreur génération PDF rapport recettes par catégorie', ['data' => $request->all()]);
+            FlashAlert::error('Une erreur est survenue lors de la génération du PDF.');
+
+            return redirect()->back();
+        }
+    }
+
+    private function calculateRevenuesByCategoryReport(int $paroisseId, Carbon $dateDebut, Carbon $dateFin, ?int $categoryId = null): array
+    {
+        $query = Revenue::query()
+            ->with(['category', 'type'])
+            ->where('paroisse_id', $paroisseId)
+            ->whereDate('date_recette', '>=', $dateDebut)
+            ->whereDate('date_recette', '<=', $dateFin)
+            ->where('statut', 'valide');
+
+        if ($categoryId) {
+            $query->where('revenue_category_id', $categoryId);
+        }
+
+        $revenues = $query->orderBy('date_recette')->orderBy('id')->get();
+
+        $byCategory = [];
+        foreach ($revenues->groupBy('revenue_category_id') as $catId => $items) {
+            $cat = $items->first()->category;
+            $byCategory[$catId] = [
+                'nom' => $cat?->nom ?? 'Sans catégorie',
+                'code' => $cat?->code ?? '',
+                'montant' => $items->sum('montant'),
+                'count' => $items->count(),
+                'revenues' => $items,
+            ];
+        }
+
+        $totalGeneral = $revenues->sum('montant');
+
+        return [
+            'revenues' => $revenues,
+            'by_category' => $byCategory,
+            'total_general' => $totalGeneral,
+            'date_debut' => $dateDebut,
+            'date_fin' => $dateFin,
+        ];
     }
 
     private function calculateChargesFixesReport(int $paroisseId, Carbon $dateDebut, Carbon $dateFin): array

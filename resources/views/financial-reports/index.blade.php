@@ -42,6 +42,9 @@
                     <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#financialReportHelpModal" title="Aide">
                         <i class="fas fa-info-circle me-1"></i> Aide
                     </button>
+                    <a href="{{ route('financial-reports.revenues-by-category') }}" class="btn btn-action btn-secondary-action">
+                        <i class="fas fa-layer-group"></i> Rapport par catégories
+                    </a>
                     <a href="{{ route('financial-reports.popote') }}" class="btn btn-action btn-secondary-action">
                         <i class="fas fa-utensils"></i> Rapport Subvention Popote
                     </a>

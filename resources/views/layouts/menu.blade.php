@@ -118,22 +118,6 @@
                 </ul>
             </li>
             @endcan
-
-            {{-- Sous-menu Rapports --}}
-            @can('view_financial_reports')
-            <li>
-                <a class="has-arrow" href="javascript:void()" aria-expanded="false">Rapports</a>
-                <ul aria-expanded="false">
-                    <li><a href="{{ route('financial-reports.index') }}">Générer un rapport</a></li>
-                    <li><a href="{{ route('financial-reports.list') }}">Rapports enregistrés</a></li>
-                    <li><a href="{{ route('financial-reports.revenues-weekly') }}">Rapport Quête ordinaire</a></li>
-                    <li><a href="{{ route('financial-reports.popote') }}">Rapport Subvention Popote</a></li>
-                    <li><a href="{{ route('financial-reports.charges-fixes') }}">Rapport Charges fixes</a></li>
-                    <li><a href="{{ route('financial-reports.statistics') }}">Statistiques</a></li>
-                </ul>
-            </li>
-            @endcan
-
             {{-- Sous-menu Paramètres --}}
             @can('view_revenues')
             <li>
@@ -146,6 +130,24 @@
             @endcan
         </ul>
     </li>
+       {{-- Sous-menu Rapports --}}
+       @can('view_financial_reports')
+       <li>
+        <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="fas fa-file-alt"></i>
+            <span class="nav-text">Rapports</span>
+        </a>
+         <ul aria-expanded="false">
+               <li><a href="{{ route('financial-reports.index') }}">Générer un rapport</a></li>
+               <li><a href="{{ route('financial-reports.list') }}">Rapports enregistrés</a></li>
+               <li><a href="{{ route('financial-reports.revenues-weekly') }}">Rapport Quête ordinaire</a></li>
+               {{-- <li><a href="{{ route('financial-reports.revenues-by-category') }}">Rapport par catégories</a></li> --}}
+               <li><a href="{{ route('financial-reports.popote') }}">Rapport Subvention Popote</a></li>
+               <li><a href="{{ route('financial-reports.charges-fixes') }}">Rapport Charges fixes</a></li>
+               <li><a href="{{ route('financial-reports.statistics') }}">Statistiques</a></li>
+           </ul>
+       </li>
+       @endcan
 
     {{-- Inventaire --}}
     <li>

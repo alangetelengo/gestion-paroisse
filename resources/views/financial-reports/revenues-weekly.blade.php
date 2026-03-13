@@ -70,13 +70,14 @@
 
                         <div class="col-md-3" id="week-container">
                             <label class="form-label">Semaine <span class="text-danger">*</span></label>
+                            <small class="text-muted">Date de début (lundi)</small>
                             <input type="date"
                                    name="week_start"
                                    id="week-start"
                                    class="form-control"
                                    value="{{ $selectedWeekStart ?? now()->startOfWeek()->format('Y-m-d') }}"
                                    required>
-                            <small class="text-muted">Date de début (lundi)</small>
+
                         </div>
 
                         <div class="col-md-3" id="month-container" style="display: none;">

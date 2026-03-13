@@ -92,6 +92,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('financial-reports/popote/print', [FinancialReportController::class, 'popotePrint'])->name('financial-reports.popote-print');
     Route::post('financial-reports/popote/pdf', [FinancialReportController::class, 'downloadPopotePdf'])->name('financial-reports.popote-pdf');
     Route::get('financial-reports/charges-fixes', [FinancialReportController::class, 'chargesFixesReport'])->name('financial-reports.charges-fixes');
+    Route::get('financial-reports/revenues-by-category', [FinancialReportController::class, 'revenuesByCategory'])->name('financial-reports.revenues-by-category');
+    Route::post('financial-reports/revenues-by-category/store', [FinancialReportController::class, 'storeRevenuesByCategory'])->name('financial-reports.revenues-by-category.store');
+    Route::get('financial-reports/revenues-by-category/pdf', [FinancialReportController::class, 'downloadRevenuesByCategoryPdf'])->name('financial-reports.revenues-by-category.pdf');
 
     // Routes avec paramètres (doivent être après les routes spécifiques)
     Route::get('financial-reports/{financialReport}/pdf', [FinancialReportController::class, 'downloadPdf'])->name('financial-reports.download-pdf');

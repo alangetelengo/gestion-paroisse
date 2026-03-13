@@ -6,14 +6,25 @@
 @push('styles')
 <style>
 .page-list .card { border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: none; }
-.page-list .card-header { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); color: #fff; border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem; }
+.page-list .card-header { background: linear-gradient(135deg, var(--titre-page, #003366) 0%, var(--titre-page-dark, #002244) 100%); color: #fff; border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem; }
 .page-list .card-title { font-weight: 600; font-size: 1.2rem; }
 .page-list .filters-card { background: #f8f9fa; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; }
 .page-list .form-control { border-radius: 8px; }
-.page-list .btn-filter { padding: 10px 24px; border-radius: 8px; font-weight: 600; }
+.page-list .period-btn { border: 1px solid var(--danger, #DC143C); color: #333; }
+.page-list .period-btn:hover { border-color: var(--danger); color: var(--danger); }
+.page-list .period-btn.active { background: var(--danger, #DC143C); color: #fff; border-color: var(--danger); }
 .page-list .stat-card { border-radius: 12px; overflow: hidden; }
-.page-list .table-list thead th { background: #495057; color: #fff; font-weight: 600; padding: 14px 16px; }
+.page-list .stat-card .text-secondary { color: var(--danger, #DC143C) !important; }
+.page-list .detail-card .card-header { background: linear-gradient(135deg, var(--titre-page, #003366) 0%, var(--titre-page-dark, #002244) 100%); color: #fff; border: none; }
+.page-list .table-list thead th { background: var(--titre-page, #003366); color: #fff; font-weight: 600; padding: 14px 16px; }
 .page-list .table-list td { padding: 14px 16px; vertical-align: middle; }
+.page-list .table-list tbody tr:hover { background: var(--rgba-primary-1, rgba(0,51,102,0.1)); }
+.page-list .btn-action-view { background: var(--bouton-ajout, #FFEA00) !important; border: 1px solid var(--bouton-ajout-hover, #FFD200) !important; color: #1a1a1a !important; font-weight: 600; }
+.page-list .btn-action-view:hover { background: var(--bouton-ajout-hover, #FFD200) !important; border-color: var(--bouton-ajout-hover, #FFD200) !important; color: #1a1a1a !important; }
+.page-list .btn-action-view *, .page-list .btn-action-view i { color: #1a1a1a !important; }
+.page-list .card-header .btn-retour { background: #fff !important; color: #1a1a1a !important; border: 1px solid rgba(255,255,255,0.5); }
+.page-list .card-header .btn-retour:hover { background: rgba(255,255,255,0.9) !important; color: #1a1a1a !important; border-color: #fff; }
+.page-list .card-header .btn-retour, .page-list .card-header .btn-retour * { color: #1a1a1a !important; }
 </style>
 @endpush
 
@@ -27,7 +38,7 @@
                         <i class="fas fa-file-invoice-dollar me-3" style="font-size: 1.4rem;"></i>
                         Rapport des charges fixes
                     </h4>
-                    <a href="{{ route('financial-reports.index') }}" class="btn btn-light btn-sm">
+                    <a href="{{ route('financial-reports.index') }}" class="btn btn-retour btn-sm">
                         <i class="fas fa-arrow-left me-1"></i> Retour rapports
                     </a>
                 </div>
@@ -54,9 +65,9 @@
 
                                 <div class="col-md-2">
                                     <label class="form-label fw-semibold small text-muted">Période</label>
-                                    <div class="btn-group w-100">
-                                        <button type="button" class="btn btn-outline-secondary btn-sm period-btn {{ $periodType === 'month' ? 'active' : '' }}" data-period="month">Mensuel</button>
-                                        <button type="button" class="btn btn-outline-secondary btn-sm period-btn {{ $periodType === 'year' ? 'active' : '' }}" data-period="year">Annuel</button>
+                                    <div class="btn-group w-100" role="group">
+                                        <button type="button" class="btn btn-sm period-btn {{ $periodType === 'month' ? 'active' : '' }}" data-period="month">Mensuel</button>
+                                        <button type="button" class="btn btn-sm period-btn {{ $periodType === 'year' ? 'active' : '' }}" data-period="year">Annuel</button>
                                     </div>
                                 </div>
 
@@ -79,7 +90,7 @@
                                 </div>
 
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-secondary btn-filter w-100">
+                                    <button type="submit" class="btn btn-action-view w-100">
                                         <i class="fas fa-list me-1"></i> Voir le rapport
                                     </button>
                                 </div>
@@ -89,14 +100,14 @@
 
                     @if($report)
                         <div class="row mb-4">
-                            <div class="col-md-12">
+                                <div class="col-md-12">
                                 <div class="card stat-card bg-light border">
                                     <div class="card-body d-flex justify-content-between align-items-center">
                                         <div>
-                                            <h5 class="mb-1"><i class="fas fa-calculator me-2 text-secondary"></i>Total charges fixes</h5>
+                                            <h5 class="mb-1"><i class="fas fa-file-invoice-dollar me-2" style="color: var(--danger, #DC143C);"></i>Total charges fixes</h5>
                                             <small class="text-muted">Période : {{ $report['date_debut']->format('d/m/Y') }} — {{ $report['date_fin']->format('d/m/Y') }} · {{ $report['expenses']->count() }} enregistrement(s)</small>
                                         </div>
-                                        <h3 class="mb-0 text-secondary">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total']) }}</h3>
+                                        <h3 class="mb-0" style="color: var(--danger, #DC143C); font-weight: 700;">{{ \App\Helpers\ParoisseConfig::formatMontant($report['total']) }}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +136,7 @@
                                                 @foreach($report['expenses'] as $exp)
                                                     <tr>
                                                         <td>{{ $exp->date_depense?->format('d/m/Y') }}</td>
-                                                        <td><span class="badge bg-secondary">{{ $typeLabels[$exp->type_charge] ?? $exp->type_charge }}</span></td>
+                                                        <td><span class="badge" style="background: var(--rgba-primary-1); color: var(--primary, #003366);">{{ $typeLabels[$exp->type_charge] ?? $exp->type_charge }}</span></td>
                                                         <td>{{ $exp->facture_reference ?? '—' }}</td>
                                                         <td>{{ $exp->fournisseur ?? '—' }}</td>
                                                         <td class="text-end fw-semibold">{{ \App\Helpers\ParoisseConfig::formatMontant($exp->montant) }}</td>
