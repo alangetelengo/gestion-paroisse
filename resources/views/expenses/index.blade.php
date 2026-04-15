@@ -3,201 +3,161 @@
 @section('title', 'Dépenses')
 @section('page-title', 'Gestion des dépenses')
 
-@push('styles')
-<style>
-.page-list .card { border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: none; }
-.page-list .card-header { background: linear-gradient(135deg, var(--primary, #6A1B9A) 0%, #552586 100%); color: #fff; border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem; }
-.page-list .card-title { font-weight: 600; font-size: 1.2rem; }
-.page-list .filters-card { background: #f8f9fa; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; }
-.page-list .form-control, .page-list .form-select { border-radius: 8px; border: 1px solid #dee2e6; }
-.page-list .table-list { font-size: 0.95rem; }
-.page-list .table-list thead th { background: var(--primary, #6A1B9A); color: #fff; font-weight: 600; padding: 14px 16px; border: none; }
-.page-list .table-list thead th:first-child { border-radius: 8px 0 0 0; }
-.page-list .table-list thead th:last-child { border-radius: 0 8px 0 0; }
-.page-list .table-list tbody tr { transition: background 0.2s; }
-.page-list .table-list tbody tr:hover { background: rgba(106, 27, 154, 0.04); }
-.page-list .table-list td { padding: 14px 16px; vertical-align: middle; }
-.page-list .badge-cat { padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 500; }
-.page-list .montant-cell { font-weight: 700; color: var(--primary, #6A1B9A); font-size: 1rem; }
-.page-list .empty-state { padding: 4rem 2rem; }
-.page-list .empty-state .empty-icon { font-size: 5rem; color: #dee2e6; margin-bottom: 1rem; }
-.page-list .pagination { gap: 4px; }
-.page-list .pagination .page-link { border-radius: 8px !important; }
-</style>
-@endpush
+@section('btn-create')
+<div class="flex flex-wrap items-center gap-2">
+    <a href="{{ route('expenses.index') }}" class="adventiste-btn-secondary">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        Rafraîchir
+    </a>
+    @can('create_expenses')
+    <a href="{{ route('expenses.create') }}" class="adventiste-btn-primary">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        Ajouter une dépense
+    </a>
+    @endcan
+</div>
+@endsection
+
+@section('content-container-class', 'max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8')
 
 @section('content')
-<div class="page-list">
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
-                <h4 class="card-title mb-0 d-flex align-items-center">
-                    <i class="fas fa-money-bill-wave me-3" style="font-size: 1.4rem; opacity: 0.9;"></i>
-                    Liste des dépenses
-                </h4>
-                <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('expenses.index') }}" class="btn btn-action btn-refresh">
-                        <i class="fas fa-sync-alt"></i> Rafraîchir
-                    </a>
-                    @can('create_expenses')
-                    <a href="{{ route('expenses.create') }}" class="btn btn-action btn-add">
-                        <i class="fas fa-plus"></i> Ajouter une dépense
-                    </a>
-                    @endcan
-                </div>
-            </div>
-            <div class="card-body">
-                {{-- Filtres --}}
-                <div class="filters-card">
-                    <form method="GET" action="{{ route('expenses.index') }}">
-                        <div class="row g-3 align-items-end">
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold small text-muted">Catégorie</label>
-                                @php
-                                    $categorie = request('categorie_charge');
-                                    $categories = [
-                                        'charge_fixe' => 'Charge fixe',
-                                        'charge_variable' => 'Charge variable',
-                                        'charge_exceptionnelle' => 'Charge exceptionnelle',
-                                        'alimentation_popote' => 'Alimentation (Subvention Popote)',
-                                    ];
-                                @endphp
-                                <select name="categorie_charge" class="form-control">
-                                    <option value="">Toutes</option>
-                                    @foreach($categories as $value => $label)
-                                        <option value="{{ $value }}" @selected($categorie === $value)>{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold small text-muted">Date du</label>
-                                <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold small text-muted">Au</label>
-                                <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
-                            </div>
-                            @if(isset($paroisses) && $paroisses->count() > 0)
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold small text-muted">Paroisse</label>
-                                <select name="paroisse_id" class="form-control">
-                                    <option value="">Toutes</option>
-                                    @foreach($paroisses as $paroisse)
-                                        <option value="{{ $paroisse->id }}" @selected((string) request('paroisse_id') === (string) $paroisse->id)>{{ $paroisse->nom }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @endif
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold small text-muted">Recherche</label>
-                                <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Fournisseur, facture...">
-                            </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary btn-filter w-100" type="submit">
-                                    <i class="fas fa-filter me-1"></i> Filtrer
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                @if($expenses->count() > 0)
-                {{-- Tableau --}}
-                <div class="table-responsive rounded overflow-hidden">
-                    <table class="table table-list table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Catégorie</th>
-                                <th>Type</th>
-                                <th>Paroisse</th>
-                                <th class="text-end">Montant</th>
-                                <th>Fournisseur</th>
-                                <th class="text-center" style="width: 140px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $types = [
-                                    'carburant' => 'Carburant',
-                                    'hosties' => 'Hosties',
-                                    'internet' => 'Internet',
-                                    'maintenance_materiel' => 'Maintenance matériel',
-                                    'gaz' => 'Gaz',
-                                    'eau' => 'Eau',
-                                    'electricite' => 'Électricité',
-                                    'gardiennage' => 'Gardiennage',
-                                    'salaire_ouvrier' => 'Salaire ouvrier',
-                                    'autre' => 'Autre',
-                                    'alimentation' => 'Alimentation',
-                                ];
-                                $joursLabels = ['lundi'=>'Lun','mardi'=>'Mar','mercredi'=>'Mer','jeudi'=>'Jeu','vendredi'=>'Ven','samedi'=>'Sam','dimanche'=>'Dim'];
-                                $catLabels = [
-                                    'charge_fixe' => 'Charge fixe',
-                                    'charge_variable' => 'Charge variable',
-                                    'charge_exceptionnelle' => 'Charge exceptionnelle',
-                                    'alimentation_popote' => 'Alimentation (Popote)',
-                                ];
-                            @endphp
-                            @foreach($expenses as $expense)
-                            <tr>
-                                <td>
-                                    <span class="text-nowrap">{{ $expense->date_depense?->format('d/m/Y') ?? '—' }}</span>
-                                    @if($expense->categorie_charge === 'alimentation_popote' && $expense->jour_semaine)
-                                        <br><small class="text-muted">{{ $joursLabels[$expense->jour_semaine] ?? $expense->jour_semaine }}</small>
-                                    @endif
-                                </td>
-                                <td>
-                                    <span class="badge badge-cat" style="background: rgba(106, 27, 154, 0.12); color: var(--primary, #6A1B9A);">
-                                        {{ $catLabels[$expense->categorie_charge] ?? $expense->categorie_charge }}
-                                    </span>
-                                </td>
-                                <td>{{ $types[$expense->type_charge] ?? $expense->type_charge }}</td>
-                                <td><span class="badge badge-info">{{ $expense->paroisse?->nom ?? 'N/A' }}</span></td>
-                                <td class="text-end montant-cell">{{ \App\Helpers\ParoisseConfig::formatMontant($expense->montant) }}</td>
-                                <td>{{ $expense->categorie_charge === 'alimentation_popote' ? ($expense->libelle ?? '—') : ($expense->fournisseur ?? '—') }}</td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-1">
-                                        @can('edit_expenses')
-                                        <a href="{{ route('expenses.edit', $expense) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i>
-                                        </a>
-                                        @endcan
-                                        @can('delete_expenses')
-                                        <form action="{{ route('expenses.destroy', $expense) }}" method="POST" class="d-inline" data-confirm="Êtes-vous sûr de vouloir supprimer cette dépense ?">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
-                                        @endcan
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4 d-flex justify-content-center">
-                    {{ $expenses->withQueryString()->links() }}
-                </div>
-                @else
-                <div class="empty-state text-center">
-                    <i class="fas fa-money-bill-wave empty-icon d-block"></i>
-                    <h5 class="text-muted mb-2">Aucune dépense trouvée</h5>
-                    <p class="text-muted mb-4">Commencez par ajouter votre première dépense pour suivre vos charges.</p>
-                    @can('create_expenses')
-                    <a href="{{ route('expenses.create') }}" class="btn btn-add btn-action">
-                        <i class="fas fa-plus"></i> Ajouter une dépense
-                    </a>
-                    @endcan
-                </div>
-                @endif
-            </div>
+@php
+    $categorie = request('categorie_charge');
+    $categories = [
+        'charge_fixe' => 'Charge fixe',
+        'charge_variable' => 'Charge variable',
+        'charge_exceptionnelle' => 'Charge exceptionnelle',
+        'alimentation_popote' => 'Alimentation (Subvention Popote)',
+    ];
+@endphp
+<div class="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden mb-6">
+    <form method="GET" action="{{ route('expenses.index') }}" class="px-6 py-4 flex flex-wrap items-end gap-4 border-b border-slate-200/80 dark:border-slate-600/60 bg-slate-50/80 dark:bg-slate-900/40">
+        <div class="min-w-40">
+            <label for="f_cat" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Catégorie</label>
+            <select name="categorie_charge" id="f_cat" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
+                <option value="">Toutes</option>
+                @foreach($categories as $value => $label)
+                    <option value="{{ $value }}" @selected($categorie === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
         </div>
+        <div class="min-w-36">
+            <label for="f_df" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Date du</label>
+            <input type="date" name="date_from" id="f_df" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35" value="{{ request('date_from') }}">
+        </div>
+        <div class="min-w-36">
+            <label for="f_dt" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Au</label>
+            <input type="date" name="date_to" id="f_dt" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35" value="{{ request('date_to') }}">
+        </div>
+        @if(isset($paroisses) && $paroisses->count() > 0)
+        <div class="min-w-44">
+            <label for="f_p" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Paroisse</label>
+            <select name="paroisse_id" id="f_p" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
+                <option value="">Toutes</option>
+                @foreach($paroisses as $paroisse)
+                    <option value="{{ $paroisse->id }}" @selected((string) request('paroisse_id') === (string) $paroisse->id)>{{ $paroisse->nom }}</option>
+                @endforeach
+            </select>
+        </div>
+        @endif
+        <div class="min-w-48 flex-1 max-w-xs">
+            <label for="f_q" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Recherche</label>
+            <input type="text" name="q" id="f_q" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35" value="{{ request('q') }}" placeholder="Fournisseur, facture…">
+        </div>
+        <div class="flex gap-2">
+            <button type="submit" class="adventiste-btn-primary">Filtrer</button>
+            @if (request()->hasAny(['categorie_charge', 'date_from', 'date_to', 'paroisse_id', 'q']))
+            <a href="{{ route('expenses.index') }}" class="adventiste-btn-secondary">Réinitialiser</a>
+            @endif
+        </div>
+    </form>
+
+    @if($expenses->count() > 0)
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-linear-to-r from-slate-50 to-slate-100/80 dark:from-slate-700/80 dark:to-slate-800/80 border-b-2 border-slate-200 dark:border-slate-600">
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Date</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Catégorie</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Type</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest hidden lg:table-cell">Paroisse</th>
+                    <th class="px-6 py-4 text-right text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Montant</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest hidden md:table-cell">Fournisseur</th>
+                    <th class="px-6 py-4 text-right text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-700/80 text-slate-800 dark:text-slate-100">
+                @php
+                    $types = [
+                        'carburant' => 'Carburant',
+                        'hosties' => 'Hosties',
+                        'internet' => 'Internet',
+                        'maintenance_materiel' => 'Maintenance matériel',
+                        'gaz' => 'Gaz',
+                        'eau' => 'Eau',
+                        'electricite' => 'Électricité',
+                        'gardiennage' => 'Gardiennage',
+                        'salaire_ouvrier' => 'Salaire ouvrier',
+                        'autre' => 'Autre',
+                        'alimentation' => 'Alimentation',
+                    ];
+                    $joursLabels = ['lundi'=>'Lun','mardi'=>'Mar','mercredi'=>'Mer','jeudi'=>'Jeu','vendredi'=>'Ven','samedi'=>'Sam','dimanche'=>'Dim'];
+                    $catLabels = [
+                        'charge_fixe' => 'Charge fixe',
+                        'charge_variable' => 'Charge variable',
+                        'charge_exceptionnelle' => 'Charge exceptionnelle',
+                        'alimentation_popote' => 'Alimentation (Popote)',
+                    ];
+                @endphp
+                @foreach($expenses as $expense)
+                <tr class="group hover:bg-emerald-50/50 dark:hover:bg-slate-700/40 transition-colors duration-200">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {{ $expense->date_depense?->format('d/m/Y') ?? '—' }}
+                        @if($expense->categorie_charge === 'alimentation_popote' && $expense->jour_semaine)
+                            <span class="block text-xs text-slate-500 dark:text-slate-400">{{ $joursLabels[$expense->jour_semaine] ?? $expense->jour_semaine }}</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex rounded-lg px-2.5 py-0.5 text-xs font-medium bg-violet-500/10 text-violet-800 dark:text-violet-200 ring-1 ring-violet-500/20">{{ $catLabels[$expense->categorie_charge] ?? $expense->categorie_charge }}</span>
+                    </td>
+                    <td class="px-6 py-4">{{ $types[$expense->type_charge] ?? $expense->type_charge }}</td>
+                    <td class="px-6 py-4 hidden lg:table-cell">
+                        <span class="inline-flex rounded-lg bg-sky-500/10 text-sky-800 dark:text-sky-200 px-2 py-0.5 text-xs font-medium">{{ $expense->paroisse?->nom ?? 'N/A' }}</span>
+                    </td>
+                    <td class="px-6 py-4 text-right font-bold text-emerald-700 dark:text-emerald-300 tabular-nums">{{ \App\Helpers\ParoisseConfig::formatMontant($expense->montant) }}</td>
+                    <td class="px-6 py-4 hidden md:table-cell">{{ $expense->categorie_charge === 'alimentation_popote' ? ($expense->libelle ?? '—') : ($expense->fournisseur ?? '—') }}</td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="inline-flex flex-wrap justify-end gap-1.5">
+                            @can('edit_expenses')
+                            <x-action-button variant="edit" href="{{ route('expenses.edit', $expense) }}" />
+                            @endcan
+                            @can('delete_expenses')
+                            <x-action-button variant="delete" action="{{ route('expenses.destroy', $expense) }}" method="DELETE" confirm-message="Supprimer cette dépense ?" />
+                            @endcan
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-</div>
+    @if($expenses->hasPages())
+    <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/40 flex justify-center">
+        {{ $expenses->withQueryString()->links() }}
+    </div>
+    @endif
+    @else
+    <div class="px-6 py-16 text-center">
+        <i class="fas fa-money-bill-wave text-5xl text-slate-200 dark:text-slate-600 mb-4 block" aria-hidden="true"></i>
+        <h3 class="text-slate-600 dark:text-slate-400 font-medium mb-2">Aucune dépense trouvée</h3>
+        <p class="text-sm text-slate-500 mb-6">Commencez par ajouter votre première dépense pour suivre vos charges.</p>
+        @can('create_expenses')
+        <a href="{{ route('expenses.create') }}" class="adventiste-btn-primary inline-flex">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+            Ajouter une dépense
+        </a>
+        @endcan
+    </div>
+    @endif
 </div>
 @endsection

@@ -3,176 +3,126 @@
 @section('title', 'Types de recettes')
 @section('page-title', 'Types de recettes')
 
-@push('styles')
-<link href="{{ asset('tpl/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
-<style>
-.page-list .card { border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: none; }
-.page-list .card-header { background: linear-gradient(135deg, var(--primary, #6A1B9A) 0%, #552586 100%); color: #fff; border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem; }
-.page-list .card-title { font-weight: 600; font-size: 1.2rem; }
-.page-list .header-select { border: 1px solid rgba(255,255,255,0.4) !important; background-color: rgba(255,255,255,0.15) !important; color: #fff !important; border-radius: 8px; padding: 8px 12px; min-width: 160px; }
-.page-list .header-select:focus { border-color: #FFD700 !important; box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25); }
-.page-list .header-select option { color: #212529; background: #fff; }
-.page-list .table-list { font-size: 0.95rem; }
-.page-list .table-list thead th { background: var(--primary, #6A1B9A); color: #fff; font-weight: 600; padding: 14px 16px; border: none; }
-.page-list .table-list thead th:first-child { border-radius: 8px 0 0 0; }
-.page-list .table-list thead th:last-child { border-radius: 0 8px 0 0; }
-.page-list .table-list tbody tr { transition: background 0.2s; }
-.page-list .table-list tbody tr:hover { background: rgba(106, 27, 154, 0.04); }
-.page-list .table-list td { padding: 14px 16px; vertical-align: middle; }
-.page-list .badge-cat { padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 500; background: rgba(106, 27, 154, 0.12); color: var(--primary, #6A1B9A); }
-.page-list .empty-state { padding: 4rem 2rem; }
-.page-list .empty-state .empty-icon { font-size: 5rem; color: #dee2e6; margin-bottom: 1rem; }
-</style>
-@endpush
+@section('btn-create')
+<div class="flex flex-wrap items-center gap-2">
+    <a href="{{ route('revenue-types.index', request()->only(['paroisse_id', 'revenue_category_id'])) }}" class="adventiste-btn-secondary">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        Rafraîchir
+    </a>
+    @can('create_revenues')
+    <a href="{{ route('revenue-types.create', $paroisseId ? ['paroisse_id' => $paroisseId] : []) }}" class="adventiste-btn-primary">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        Ajouter un type
+    </a>
+    @endcan
+</div>
+@endsection
+
+@section('content-container-class', 'max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8')
 
 @section('content')
-<div class="page-list">
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
-                <h4 class="card-title mb-0 d-flex align-items-center">
-                    <i class="fas fa-tags me-3" style="font-size: 1.4rem; opacity: 0.9;"></i>
-                    Types de recettes
-                </h4>
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    <a href="{{ route('revenue-types.index') }}" class="btn btn-action btn-refresh">
-                        <i class="fas fa-sync-alt"></i> Rafraîchir
-                    </a>
-                    @if($paroisses->count() > 0)
-                    <form method="GET" action="{{ route('revenue-types.index') }}" class="d-inline">
-                        <input type="hidden" name="revenue_category_id" value="{{ request('revenue_category_id') }}">
-                        <select name="paroisse_id" class="form-control form-control-sm header-select" onchange="this.form.submit()">
-                            @foreach($paroisses as $p)
-                                <option value="{{ $p->id }}" @selected($paroisseId == $p->id)>{{ $p->nom }}</option>
-                            @endforeach
-                        </select>
-                    </form>
-                    @endif
-                    @if($categories->count() > 0)
-                    <form method="GET" action="{{ route('revenue-types.index') }}" class="d-inline">
-                        @if($paroisseId)<input type="hidden" name="paroisse_id" value="{{ $paroisseId }}">@endif
-                        <select name="revenue_category_id" class="form-control form-control-sm header-select" onchange="this.form.submit()" style="min-width: 180px;">
-                            <option value="">Toutes les catégories</option>
-                            @foreach($categories as $c)
-                                <option value="{{ $c->id }}" @selected(request('revenue_category_id') == $c->id)>{{ $c->nom }}</option>
-                            @endforeach
-                        </select>
-                    </form>
-                    @endif
-                    @can('create_revenues')
-                    <a href="{{ route('revenue-types.create', $paroisseId ? ['paroisse_id' => $paroisseId] : []) }}" class="btn btn-action btn-add">
-                        <i class="fas fa-plus"></i> Ajouter un type
-                    </a>
-                    @endcan
-                </div>
-            </div>
-            <div class="card-body">
-                @if($types->count() > 0)
-                {{-- Tableau --}}
-                <div class="table-responsive rounded overflow-hidden">
-                    <table class="table table-list table-hover mb-0" id="revenueTypesTable">
-                        <thead>
-                            <tr>
-                                <th>Ordre</th>
-                                <th>Code</th>
-                                <th>Nom</th>
-                                <th>Catégorie</th>
-                                <th>Actif</th>
-                                <th class="text-center" style="width: 180px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($types as $type)
-                            <tr>
-                                <td>{{ $type->ordre }}</td>
-                                <td><code class="bg-light px-2 py-1 rounded">{{ $type->code }}</code></td>
-                                <td><strong>{{ $type->nom }}</strong></td>
-                                <td><span class="badge badge-cat">{{ $type->category?->nom ?? '—' }}</span></td>
-                                <td>
-                                    @if($type->actif)
-                                        <span class="badge badge-success"><i class="fas fa-check me-1"></i>Oui</span>
-                                    @else
-                                        <span class="badge badge-danger"><i class="fas fa-times me-1"></i>Non</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-1">
-                                        @can('edit_revenues')
-                                        <a href="{{ route('revenue-types.edit', $type) }}" class="btn btn-edit btn-warning btn-sm" title="Modifier">
-                                            <i class="fas fa-pen"></i>
-                                        </a>
-                                        @endcan
-                                        @can('delete_revenues')
-                                        <form action="{{ route('revenue-types.destroy', $type) }}" method="POST" class="d-inline" data-confirm="Supprimer ce type ?">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-delete btn-danger btn-sm" title="Supprimer">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
-                                        @endcan
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @else
-                <div class="empty-state text-center">
-                    <i class="fas fa-tags empty-icon d-block"></i>
-                    <h5 class="text-muted mb-2">Aucun type trouvé</h5>
-                    <p class="text-muted mb-4">Choisissez une paroisse ou créez un nouveau type de recette.</p>
-                    @can('create_revenues')
-                    <a href="{{ route('revenue-types.create', $paroisseId ? ['paroisse_id' => $paroisseId] : []) }}" class="btn btn-add btn-action">
-                        <i class="fas fa-plus"></i> Ajouter un type
-                    </a>
-                    @endcan
-                </div>
-                @endif
-            </div>
+<div class="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden mb-6">
+    <form method="GET" action="{{ route('revenue-types.index') }}" class="px-6 py-4 flex flex-wrap items-end gap-4 border-b border-slate-200/80 dark:border-slate-600/60 bg-slate-50/80 dark:bg-slate-900/40">
+        @if($paroisses->count() > 0)
+        <div class="min-w-48">
+            <label for="f_paroisse_rt" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Paroisse</label>
+            <select name="paroisse_id" id="f_paroisse_rt" onchange="this.form.submit()" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
+                <option value="" @selected(empty($paroisseId))>Toutes les paroisses</option>
+                @foreach($paroisses as $p)
+                    <option value="{{ $p->id }}" @selected((int) $paroisseId === (int) $p->id)>{{ $p->nom }}</option>
+                @endforeach
+            </select>
         </div>
+        @endif
+        @if($categories->count() > 0)
+        <div class="min-w-52">
+            <label for="f_cat_rt" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Catégorie</label>
+            <select name="revenue_category_id" id="f_cat_rt" onchange="this.form.submit()" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
+                <option value="">Toutes les catégories</option>
+                @foreach($categories as $c)
+                    <option value="{{ $c->id }}" @selected(request('revenue_category_id') == $c->id)>{{ $c->nom }}</option>
+                @endforeach
+            </select>
+        </div>
+        @endif
+    </form>
+
+    @if($types->count() > 0)
+    <div class="px-6 py-3 border-b border-slate-100 dark:border-slate-700/80 flex justify-end">
+        <input type="search" id="rt-search" placeholder="Filtrer les types…" class="w-full max-w-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
     </div>
-</div>
+    <div class="overflow-x-auto">
+        <table id="revenue-types-table" class="w-full text-sm">
+            <thead>
+                <tr class="bg-linear-to-r from-slate-50 to-slate-100/80 dark:from-slate-700/80 dark:to-slate-800/80 border-b-2 border-slate-200 dark:border-slate-600">
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Ordre</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Code</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Nom</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Catégorie</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Actif</th>
+                    <th class="px-6 py-4 text-right text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-700/80 text-slate-800 dark:text-slate-100">
+                @foreach($types as $type)
+                <tr class="group hover:bg-emerald-50/50 dark:hover:bg-slate-700/40 transition-colors duration-200 rt-row">
+                    <td class="px-6 py-4 tabular-nums">{{ $type->ordre }}</td>
+                    <td class="px-6 py-4"><code class="text-xs rounded-md bg-slate-100 dark:bg-slate-900 px-2 py-1">{{ $type->code }}</code></td>
+                    <td class="px-6 py-4 font-medium">{{ $type->nom }}</td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex rounded-lg bg-violet-500/10 text-violet-800 dark:text-violet-200 px-2 py-0.5 text-xs font-medium">{{ $type->category?->nom ?? '—' }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        @if($type->actif)
+                            <span class="inline-flex rounded-full bg-emerald-500/15 text-emerald-800 dark:text-emerald-200 px-2 py-0.5 text-xs font-semibold">Oui</span>
+                        @else
+                            <span class="inline-flex rounded-full bg-rose-500/15 text-rose-800 dark:text-rose-200 px-2 py-0.5 text-xs font-semibold">Non</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="inline-flex flex-wrap items-center justify-end gap-1.5" role="group" aria-label="Actions">
+                            @can('edit_revenues')
+                            <x-action-button variant="edit" href="{{ route('revenue-types.edit', $type) }}" />
+                            @endcan
+                            @can('delete_revenues')
+                            <x-action-button variant="delete" action="{{ route('revenue-types.destroy', $type) }}" method="DELETE" confirm-message="Supprimer ce type ?" />
+                            @endcan
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @else
+    <div class="px-6 py-16 text-center">
+        <i class="fas fa-tags text-5xl text-slate-200 dark:text-slate-600 mb-4 block" aria-hidden="true"></i>
+        <h3 class="text-slate-600 dark:text-slate-400 font-medium mb-2">Aucun type trouvé</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-500 mb-6">Choisissez une paroisse ou créez un nouveau type de recette.</p>
+        @can('create_revenues')
+        <a href="{{ route('revenue-types.create', $paroisseId ? ['paroisse_id' => $paroisseId] : []) }}" class="adventiste-btn-primary inline-flex">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+            Ajouter un type
+        </a>
+        @endcan
+    </div>
+    @endif
 </div>
 @endsection
 
 @push('scripts')
-<script src="{{ asset('tpl/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var table = document.getElementById('revenueTypesTable');
-        if (table && window.jQuery && !jQuery.fn.dataTable.isDataTable('#revenueTypesTable')) {
-            jQuery('#revenueTypesTable').DataTable({
-                pageLength: 10,
-                lengthChange: true,
-                searching: true,
-                ordering: true,
-                order: [[0, 'asc']],
-                language: {
-                    processing:     'Traitement en cours...',
-                    search:         'Rechercher :',
-                    lengthMenu:     'Afficher _MENU_ éléments',
-                    info:           'Affichage de _START_ à _END_ sur _TOTAL_ éléments',
-                    infoEmpty:      'Affichage de 0 à 0 sur 0 élément',
-                    infoFiltered:   '(filtré de _MAX_ éléments au total)',
-                    loadingRecords: 'Chargement...',
-                    zeroRecords:    'Aucun élément à afficher',
-                    emptyTable:     'Aucune donnée disponible',
-                    paginate: {
-                        first:      'Premier',
-                        previous:   'Précédent',
-                        next:       'Suivant',
-                        last:       'Dernier'
-                    },
-                    aria: {
-                        sortAscending:  ': tri croissant',
-                        sortDescending: ': tri décroissant'
-                    }
-                }
-            });
-        }
+document.addEventListener('DOMContentLoaded', function () {
+    var input = document.getElementById('rt-search');
+    var table = document.getElementById('revenue-types-table');
+    if (!input || !table) return;
+    var rows = Array.from(table.querySelectorAll('tbody tr.rt-row'));
+    input.addEventListener('input', function () {
+        var q = this.value.toLowerCase();
+        rows.forEach(function (row) {
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
     });
+});
 </script>
 @endpush

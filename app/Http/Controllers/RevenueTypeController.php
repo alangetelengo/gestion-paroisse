@@ -27,7 +27,9 @@ class RevenueTypeController extends Controller
     public function index(Request $request): View
     {
         $user = $request->user();
-        $paroisseId = $request->integer('paroisse_id') ?: $user->paroisse_id;
+        $paroisseId = $request->filled('paroisse_id')
+            ? $request->integer('paroisse_id')
+            : ($user->hasRole('super_admin') ? null : $user->paroisse_id);
 
         $query = RevenueType::query()->with(['paroisse', 'category'])
             ->orderBy('ordre')->orderBy('nom');
@@ -61,7 +63,9 @@ class RevenueTypeController extends Controller
     public function create(Request $request): View
     {
         $user = $request->user();
-        $paroisseId = $request->integer('paroisse_id') ?: $user->paroisse_id;
+        $paroisseId = $request->filled('paroisse_id')
+            ? $request->integer('paroisse_id')
+            : ($user->hasRole('super_admin') ? null : $user->paroisse_id);
 
         $paroisses = $user->hasRole('super_admin')
             ? Paroisse::orderBy('nom')->get()

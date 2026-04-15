@@ -26,7 +26,9 @@ class RevenueCategoryController extends Controller
     public function index(Request $request): View
     {
         $user = $request->user();
-        $paroisseId = $request->integer('paroisse_id') ?: $user->paroisse_id;
+        $paroisseId = $request->filled('paroisse_id')
+            ? $request->integer('paroisse_id')
+            : ($user->hasRole('super_admin') ? null : $user->paroisse_id);
 
         $query = RevenueCategory::query()->with('paroisse')->orderBy('ordre')->orderBy('nom');
 

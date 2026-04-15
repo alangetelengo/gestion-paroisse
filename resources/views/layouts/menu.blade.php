@@ -144,8 +144,13 @@
                {{-- <li><a href="{{ route('financial-reports.revenues-by-category') }}">Rapport par catégories</a></li> --}}
                <li><a href="{{ route('financial-reports.popote') }}">Rapport Subvention Popote</a></li>
                <li><a href="{{ route('financial-reports.charges-fixes') }}">Rapport Charges fixes</a></li>
-               <li><a href="{{ route('financial-reports.statistics') }}">Statistiques</a></li>
            </ul>
+       </li>
+       <li>
+           <a href="{{ route('financial-reports.statistics') }}" class="ai-icon">
+               <i class="fas fa-chart-line"></i>
+               <span class="nav-text">Statistiques</span>
+           </a>
        </li>
        @endcan
 

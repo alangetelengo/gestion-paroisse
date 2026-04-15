@@ -1,15 +1,19 @@
 @php
     /** @var \App\Models\Revenue|null $revenue */
     $revenue = $revenue ?? null;
-    // Par défaut, on ne force pas la paroisse ici : on récupère la monnaie globale (ou celle de la paroisse si tu ajustes plus tard)
     $currency = \App\Helpers\ParoisseConfig::get(null, 'monnaie', 'FCFA');
 @endphp
 
-<div class="row">
+@php
+    $inputBase = 'w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35';
+    $inputErr = 'border-rose-500 dark:border-rose-500 ring-rose-500/25';
+@endphp
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     @if(isset($paroisses) && $paroisses->count() > 0)
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Paroisse</label>
-            <select name="paroisse_id" class="form-control @error('paroisse_id') is-invalid @enderror">
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="paroisse_id_rev">Paroisse</label>
+            <select name="paroisse_id" id="paroisse_id_rev" class="{{ $inputBase }} @error('paroisse_id') {{ $inputErr }} @enderror">
                 @foreach($paroisses as $paroisse)
                     <option value="{{ $paroisse->id }}"
                         @selected((string) old('paroisse_id', $revenue?->paroisse_id) === (string) $paroisse->id)>
@@ -17,27 +21,22 @@
                     </option>
                 @endforeach
             </select>
-            @error('paroisse_id')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+            @error('paroisse_id')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
         </div>
     @endif
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Date de la recette <span class="text-danger">*</span></label>
-        <input type="date"
-               name="date_recette"
-               class="form-control @error('date_recette') is-invalid @enderror"
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="date_recette">Date de la recette <span class="text-rose-500">*</span></label>
+        <input type="date" name="date_recette" id="date_recette"
+               class="{{ $inputBase }} @error('date_recette') {{ $inputErr }} @enderror"
                value="{{ old('date_recette', $revenue?->date_recette?->format('Y-m-d') ?? now()->format('Y-m-d')) }}"
                required>
-        @error('date_recette')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('date_recette')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Catégorie <span class="text-danger">*</span></label>
-        <select name="revenue_category_id" id="revenue-category" class="form-control @error('revenue_category_id') is-invalid @enderror" required>
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="revenue-category">Catégorie <span class="text-rose-500">*</span></label>
+        <select name="revenue_category_id" id="revenue-category" class="{{ $inputBase }} @error('revenue_category_id') {{ $inputErr }} @enderror" required>
             <option value="">Sélectionner...</option>
             @foreach($categories as $categorie)
                 <option value="{{ $categorie->id }}"
@@ -47,14 +46,12 @@
                 </option>
             @endforeach
         </select>
-        @error('revenue_category_id')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('revenue_category_id')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Type de recette <span class="text-danger">*</span></label>
-        <select name="revenue_type_id" id="revenue-type" class="form-control @error('revenue_type_id') is-invalid @enderror" required>
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="revenue-type">Type de recette <span class="text-rose-500">*</span></label>
+        <select name="revenue_type_id" id="revenue-type" class="{{ $inputBase }} @error('revenue_type_id') {{ $inputErr }} @enderror" required>
             <option value="">Sélectionner...</option>
             @foreach($categories as $categorie)
                 @foreach($categorie->types as $type)
@@ -68,86 +65,66 @@
                 @endforeach
             @endforeach
         </select>
-        @error('revenue_type_id')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('revenue_type_id')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    {{-- Informations du donateur (dîme / don — catégorie Procure) --}}
-    <div class="col-12 mb-3" id="donateur-container" style="display: none;">
-        <div class="card border-primary">
-            <div class="card-header bg-light">
-                <strong><i class="fas fa-user me-1"></i> Informations de la personne (dîme / don)</strong>
+    <div class="md:col-span-2 hidden" id="donateur-container">
+        <div class="rounded-2xl border border-emerald-200/80 dark:border-emerald-800/60 bg-emerald-50/40 dark:bg-emerald-950/20 overflow-hidden">
+            <div class="px-4 py-3 border-b border-emerald-200/60 dark:border-emerald-800/50 bg-emerald-50/80 dark:bg-emerald-950/40 text-sm font-semibold text-emerald-900 dark:text-emerald-100">
+                <i class="fas fa-user mr-1" aria-hidden="true"></i> Informations de la personne (dîme / don)
             </div>
-            <div class="card-body row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Nom du donateur</label>
-                    <input type="text"
-                           name="donateur_nom"
-                           class="form-control text-uppercase @error('donateur_nom') is-invalid @enderror"
+            <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="donateur_nom">Nom du donateur</label>
+                    <input type="text" name="donateur_nom" id="donateur_nom"
+                           class="{{ $inputBase }} uppercase @error('donateur_nom') {{ $inputErr }} @enderror"
                            style="text-transform: uppercase;"
                            value="{{ old('donateur_nom', $revenue?->donateur_nom) }}"
                            placeholder="Nom et prénom (en majuscules)">
-                    @error('donateur_nom')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    @error('donateur_nom')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Téléphone du donateur</label>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="donateur_telephone">Téléphone du donateur</label>
                     @php
                         $donateurPhone = old('donateur_telephone', $revenue?->donateur_telephone);
                         $donateurPhoneDigits = $donateurPhone ? preg_replace('/\D/', '', $donateurPhone) : '';
                         $donateurPhoneSuffix = ($donateurPhoneDigits !== '' && str_starts_with($donateurPhoneDigits, '242'))
                             ? substr($donateurPhoneDigits, 3) : $donateurPhoneDigits;
                     @endphp
-                    <div class="input-group">
-                        <span class="input-group-text">242</span>
-                        <input type="text"
-                               name="donateur_telephone"
-                               class="form-control @error('donateur_telephone') is-invalid @enderror"
+                    <div class="flex rounded-lg border border-slate-200 dark:border-slate-600 overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500/35">
+                        <span class="shrink-0 inline-flex items-center px-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium border-r border-slate-200 dark:border-slate-600">242</span>
+                        <input type="text" name="donateur_telephone" id="donateur_telephone"
+                               class="flex-1 min-w-0 border-0 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:ring-0 @error('donateur_telephone') {{ $inputErr }} @enderror"
                                value="{{ $donateurPhoneSuffix }}"
                                placeholder="06 123 45 67"
                                inputmode="tel">
                     </div>
-                    <small class="text-muted">Le préfixe 242 (Congo) est ajouté automatiquement.</small>
-                    @error('donateur_telephone')
-                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
+                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Le préfixe 242 (Congo) est ajouté automatiquement.</p>
+                    @error('donateur_telephone')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6 mb-3" id="jour-semaine-container">
-        <label class="form-label">Jour de la semaine (quête ordinaire)</label>
+    <div id="jour-semaine-container" class="hidden">
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="jour-semaine-display">Jour de la semaine (quête ordinaire)</label>
         @php
             $jour = old('jour_semaine', $revenue?->jour_semaine);
             $jours = [
-                'lundi' => 'Lundi',
-                'mardi' => 'Mardi',
-                'mercredi' => 'Mercredi',
-                'jeudi' => 'Jeudi',
-                'vendredi' => 'Vendredi',
-                'samedi' => 'Samedi',
-                'dimanche' => 'Dimanche',
+                'lundi' => 'Lundi', 'mardi' => 'Mardi', 'mercredi' => 'Mercredi', 'jeudi' => 'Jeudi',
+                'vendredi' => 'Vendredi', 'samedi' => 'Samedi', 'dimanche' => 'Dimanche',
             ];
             $jourLabel = $jour ? ($jours[$jour] ?? ucfirst($jour)) : '';
         @endphp
-        <input type="text"
-               id="jour-semaine-display"
-               class="form-control @error('jour_semaine') is-invalid @enderror"
-               value="{{ $jourLabel }}"
-               readonly
-               placeholder="Jour calculé automatiquement">
+        <input type="text" id="jour-semaine-display"
+               class="{{ $inputBase }} bg-slate-50 dark:bg-slate-900/50 @error('jour_semaine') {{ $inputErr }} @enderror"
+               value="{{ $jourLabel }}" readonly placeholder="Jour calculé automatiquement">
         <input type="hidden" name="jour_semaine" id="jour-semaine" value="{{ $jour }}">
-        @error('jour_semaine')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('jour_semaine')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    {{-- Mois de location (pour loyer boutique) --}}
-    <div class="col-md-6 mb-3" id="mois-location-container" style="display: none;">
-        <label class="form-label">Mois de paiement du loyer <span class="text-danger">*</span></label>
+    <div class="hidden" id="mois-location-container">
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Mois de paiement du loyer <span class="text-rose-500">*</span></label>
         @php
             $moisLocation = old('mois_location', $revenue?->mois_location);
             $moisLabels = [
@@ -158,70 +135,54 @@
             $currentYear = now()->year;
             $currentMonth = now()->format('m');
         @endphp
-        <div class="row">
-            <div class="col-6">
-                <select name="mois_location_mois" id="mois-location-mois" class="form-control @error('mois_location') is-invalid @enderror">
-                    @foreach($moisLabels as $num => $label)
-                        <option value="{{ $num }}" @selected($moisLocation ? substr($moisLocation, 5, 2) === $num : $num === $currentMonth)>{{ $label }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-6">
-                <select name="mois_location_annee" id="mois-location-annee" class="form-control">
-                    @for($y = $currentYear - 1; $y <= $currentYear + 1; $y++)
-                        <option value="{{ $y }}" @selected($moisLocation ? (int)substr($moisLocation, 0, 4) === $y : $y === $currentYear)>{{ $y }}</option>
-                    @endfor
-                </select>
-            </div>
+        <div class="grid grid-cols-2 gap-3">
+            <select name="mois_location_mois" id="mois-location-mois" class="{{ $inputBase }} @error('mois_location') {{ $inputErr }} @enderror">
+                @foreach($moisLabels as $num => $label)
+                    <option value="{{ $num }}" @selected($moisLocation ? substr($moisLocation, 5, 2) === $num : $num === $currentMonth)>{{ $label }}</option>
+                @endforeach
+            </select>
+            <select name="mois_location_annee" id="mois-location-annee" class="{{ $inputBase }}">
+                @for($y = $currentYear - 1; $y <= $currentYear + 1; $y++)
+                    <option value="{{ $y }}" @selected($moisLocation ? (int)substr($moisLocation, 0, 4) === $y : $y === $currentYear)>{{ $y }}</option>
+                @endfor
+            </select>
         </div>
         <input type="hidden" name="mois_location" id="mois-location" value="{{ $moisLocation }}">
-        <small class="text-muted">Sélectionnez le mois pour lequel ce loyer est payé</small>
-        @error('mois_location')
-        <div class="invalid-feedback d-block">{{ $message }}</div>
-        @enderror
+        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Sélectionnez le mois pour lequel ce loyer est payé</p>
+        @error('mois_location')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Montant ({{ $currency }}) <span class="text-danger">*</span></label>
-        <input type="text"
-               name="montant"
-               class="form-control @error('montant') is-invalid @enderror"
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="montant_rev">Montant ({{ $currency }}) <span class="text-rose-500">*</span></label>
+        <input type="text" name="montant" id="montant_rev"
+               class="{{ $inputBase }} @error('montant') {{ $inputErr }} @enderror"
                inputmode="decimal"
                value="{{ old('montant', \App\Helpers\ParoisseConfig::formatMontantSaisie($revenue?->montant)) }}"
                required>
-        @error('montant')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('montant')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Méthode de paiement <span class="text-danger">*</span></label>
-        <select name="methode_paiement" class="form-control @error('methode_paiement') is-invalid @enderror" required>
-            @php
-                $methode = old('methode_paiement', $revenue?->methode_paiement ?? 'especes');
-                $methodes = [
-                    'especes' => 'Espèces',
-                    'cheque' => 'Chèque',
-                    'virement' => 'Virement',
-                    'carte' => 'Carte',
-                    'mobile_money' => 'Mobile money',
-                ];
-            @endphp
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="methode_paiement">Méthode de paiement <span class="text-rose-500">*</span></label>
+        @php
+            $methode = old('methode_paiement', $revenue?->methode_paiement ?? 'especes');
+            $methodes = [
+                'especes' => 'Espèces', 'cheque' => 'Chèque', 'virement' => 'Virement',
+                'carte' => 'Carte', 'mobile_money' => 'Mobile money',
+            ];
+        @endphp
+        <select name="methode_paiement" id="methode_paiement" class="{{ $inputBase }} @error('methode_paiement') {{ $inputErr }} @enderror" required>
             @foreach($methodes as $value => $label)
                 <option value="{{ $value }}" @selected($methode === $value)>{{ $label }}</option>
             @endforeach
         </select>
-        @error('methode_paiement')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('methode_paiement')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    <div class="col-12 mb-3">
-        <label class="form-label">Notes</label>
-        <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="3">{{ old('notes', $revenue?->notes) }}</textarea>
-        @error('notes')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+    <div class="md:col-span-2">
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="notes_rev">Notes</label>
+        <textarea name="notes" id="notes_rev" rows="3" class="{{ $inputBase }} @error('notes') {{ $inputErr }} @enderror">{{ old('notes', $revenue?->notes) }}</textarea>
+        @error('notes')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 </div>
 
@@ -235,41 +196,38 @@
         const jourDisplay = document.getElementById('jour-semaine-display');
         const dateInput = document.querySelector('input[name="date_recette"]');
         const montantInput = document.querySelector('input[name="montant"]');
-
-        // Éléments pour mois_location
         const moisLocationContainer = document.getElementById('mois-location-container');
         const moisLocationMois = document.getElementById('mois-location-mois');
         const moisLocationAnnee = document.getElementById('mois-location-annee');
         const moisLocationHidden = document.getElementById('mois-location');
         const donateurContainer = document.getElementById('donateur-container');
 
+        function setHidden(el, hidden) {
+            if (!el) return;
+            el.classList.toggle('hidden', hidden);
+        }
+
         if (categorySelect && typeSelect) {
             function filterTypes() {
                 const categoryId = categorySelect.value;
                 Array.from(typeSelect.options).forEach(function (opt) {
-                    if (!opt.value) {
-                        opt.hidden = false;
-                        return;
-                    }
-                    const belongs = opt.getAttribute('data-category') === categoryId;
-                    opt.hidden = !belongs;
+                    if (!opt.value) { opt.hidden = false; return; }
+                    opt.hidden = opt.getAttribute('data-category') !== categoryId;
                 });
                 updateFieldsVisibility();
             }
 
             function updateFieldsVisibility() {
-                // Donateur : visible pour catégorie Procure (dîme, don, etc.)
                 var categoryOption = categorySelect.selectedOptions[0];
                 var selectedCategoryCode = categoryOption ? categoryOption.getAttribute('data-category-code') : null;
                 if (donateurContainer) {
-                    donateurContainer.style.display = selectedCategoryCode === 'procure' ? '' : 'none';
+                    setHidden(donateurContainer, selectedCategoryCode !== 'procure');
                 }
 
                 const selectedOption = typeSelect.options[typeSelect.selectedIndex];
                 if (!selectedOption || !selectedOption.value) {
-                    // Cacher tous les champs conditionnels
-                    if (jourContainer) jourContainer.style.display = 'none';
-                    if (moisLocationContainer) moisLocationContainer.style.display = 'none';
+                    if (jourContainer) setHidden(jourContainer, true);
+                    if (moisLocationContainer) setHidden(moisLocationContainer, true);
                     if (jourHidden) jourHidden.value = '';
                     if (jourDisplay) jourDisplay.value = '';
                     if (moisLocationHidden) moisLocationHidden.value = '';
@@ -279,35 +237,30 @@
                 const categoryCode = selectedOption.getAttribute('data-category-code');
                 const typeCode = selectedOption.getAttribute('data-code');
 
-                // Jour semaine : visible uniquement pour quête ordinaire
                 if (jourContainer && jourHidden && jourDisplay) {
                     if (categoryCode === 'quete_ordinaire') {
-                        jourContainer.style.display = '';
+                        setHidden(jourContainer, false);
                         syncJourWithDate(true);
                     } else {
-                        jourContainer.style.display = 'none';
+                        setHidden(jourContainer, true);
                         jourHidden.value = '';
                         jourDisplay.value = '';
                     }
                 }
 
-                // Mois location : visible pour catégorie "location" et type "loyer_boutique"
                 if (moisLocationContainer && moisLocationHidden) {
                     if (categoryCode === 'location' && typeCode === 'loyer_boutique') {
-                        moisLocationContainer.style.display = '';
+                        setHidden(moisLocationContainer, false);
                         syncMoisLocation();
                     } else {
-                        moisLocationContainer.style.display = 'none';
+                        setHidden(moisLocationContainer, true);
                         moisLocationHidden.value = '';
                     }
                 }
             }
 
-            function syncJourWithDate(force = false) {
-                if (!dateInput || !jourHidden || !jourDisplay || !jourContainer) return;
-                if (jourContainer.style.display === 'none') {
-                    return;
-                }
+            function syncJourWithDate(force) {
+                if (!dateInput || !jourHidden || !jourDisplay || !jourContainer || jourContainer.classList.contains('hidden')) return;
                 const value = dateInput.value;
                 if (!value) return;
                 const d = new Date(value);
@@ -316,15 +269,7 @@
                 const expected = weekdayMap[d.getDay()];
                 if (force || !jourHidden.value) {
                     jourHidden.value = expected;
-                    const labels = {
-                        'lundi': 'Lundi',
-                        'mardi': 'Mardi',
-                        'mercredi': 'Mercredi',
-                        'jeudi': 'Jeudi',
-                        'vendredi': 'Vendredi',
-                        'samedi': 'Samedi',
-                        'dimanche': 'Dimanche',
-                    };
+                    const labels = { lundi: 'Lundi', mardi: 'Mardi', mercredi: 'Mercredi', jeudi: 'Jeudi', vendredi: 'Vendredi', samedi: 'Samedi', dimanche: 'Dimanche' };
                     jourDisplay.value = labels[expected] || expected;
                 }
             }
@@ -333,70 +278,39 @@
                 if (!moisLocationMois || !moisLocationAnnee || !moisLocationHidden) return;
                 const mois = moisLocationMois.value;
                 const annee = moisLocationAnnee.value;
-                if (mois && annee) {
-                    moisLocationHidden.value = annee + '-' + mois;
-                }
+                if (mois && annee) moisLocationHidden.value = annee + '-' + mois;
             }
 
             categorySelect.addEventListener('change', filterTypes);
             typeSelect.addEventListener('change', updateFieldsVisibility);
-
-            if (moisLocationMois) {
-                moisLocationMois.addEventListener('change', syncMoisLocation);
-            }
-            if (moisLocationAnnee) {
-                moisLocationAnnee.addEventListener('change', syncMoisLocation);
-            }
+            if (moisLocationMois) moisLocationMois.addEventListener('change', syncMoisLocation);
+            if (moisLocationAnnee) moisLocationAnnee.addEventListener('change', syncMoisLocation);
 
             filterTypes();
-
             if (dateInput) {
-                dateInput.addEventListener('change', function() {
-                    syncJourWithDate(true);
-                });
+                dateInput.addEventListener('change', function() { syncJourWithDate(true); });
                 syncJourWithDate();
             }
-
-            // Sync initial mois_location si déjà visible
-            if (moisLocationContainer && moisLocationContainer.style.display !== 'none') {
-                syncMoisLocation();
-            }
+            if (moisLocationContainer && !moisLocationContainer.classList.contains('hidden')) syncMoisLocation();
         }
 
-        // Formatage du montant (empêche les lettres et ajoute les séparateurs de milliers)
         if (montantInput) {
             const form = montantInput.form;
-
             function formatMontant() {
                 let value = montantInput.value.replace(/[^\d]/g, '');
-                if (!value) {
-                    montantInput.value = '';
-                    return;
-                }
-                // Format 35 000 avec espaces comme séparateurs de milliers
+                if (!value) { montantInput.value = ''; return; }
                 const parts = [];
-                while (value.length > 3) {
-                    parts.unshift(value.slice(-3));
-                    value = value.slice(0, -3);
-                }
-                if (value.length) {
-                    parts.unshift(value);
-                }
+                while (value.length > 3) { parts.unshift(value.slice(-3)); value = value.slice(0, -3); }
+                if (value.length) parts.unshift(value);
                 montantInput.value = parts.join(' ');
             }
-
             montantInput.addEventListener('input', formatMontant);
-
             if (form) {
                 form.addEventListener('submit', function () {
-                    // enlever les espaces avant envoi au serveur
-                    if (montantInput.value) {
-                        montantInput.value = montantInput.value.replace(/\s/g, '');
-                    }
+                    if (montantInput.value) montantInput.value = montantInput.value.replace(/\s/g, '');
                 });
             }
         }
     });
 </script>
 @endpush
-

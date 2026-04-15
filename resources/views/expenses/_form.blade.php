@@ -2,13 +2,15 @@
     /** @var \App\Models\Expense|null $expense */
     $expense = $expense ?? null;
     $currency = \App\Helpers\ParoisseConfig::get(null, 'monnaie', 'FCFA');
+    $inputBase = 'w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35';
+    $inputErr = 'border-rose-500 dark:border-rose-500 ring-rose-500/25';
 @endphp
 
-<div class="row">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     @if(isset($paroisses) && $paroisses->count() > 0)
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Paroisse</label>
-            <select name="paroisse_id" class="form-control @error('paroisse_id') is-invalid @enderror">
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="paroisse_id_exp">Paroisse</label>
+            <select name="paroisse_id" id="paroisse_id_exp" class="{{ $inputBase }} @error('paroisse_id') {{ $inputErr }} @enderror">
                 @foreach($paroisses as $paroisse)
                     <option value="{{ $paroisse->id }}"
                         @selected((string) old('paroisse_id', $expense?->paroisse_id) === (string) $paroisse->id)>
@@ -16,26 +18,21 @@
                     </option>
                 @endforeach
             </select>
-            @error('paroisse_id')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+            @error('paroisse_id')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
         </div>
     @endif
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Date de la dépense <span class="text-danger">*</span></label>
-        <input type="date"
-               name="date_depense"
-               class="form-control @error('date_depense') is-invalid @enderror"
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="date_depense">Date de la dépense <span class="text-rose-500">*</span></label>
+        <input type="date" name="date_depense" id="date_depense"
+               class="{{ $inputBase }} @error('date_depense') {{ $inputErr }} @enderror"
                value="{{ old('date_depense', $expense?->date_depense?->format('Y-m-d') ?? now()->format('Y-m-d')) }}"
                required>
-        @error('date_depense')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('date_depense')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Catégorie de charge <span class="text-danger">*</span></label>
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="categorie-charge">Catégorie de charge <span class="text-rose-500">*</span></label>
         @php
             $categorie = old('categorie_charge', $expense?->categorie_charge ?? 'charge_fixe');
             $categories = [
@@ -45,183 +42,119 @@
                 'alimentation_popote' => 'Alimentation (Subvention Popote)',
             ];
         @endphp
-        <select name="categorie_charge" id="categorie-charge" class="form-control @error('categorie_charge') is-invalid @enderror" required>
+        <select name="categorie_charge" id="categorie-charge" class="{{ $inputBase }} @error('categorie_charge') {{ $inputErr }} @enderror" required>
             @foreach($categories as $value => $label)
                 <option value="{{ $value }}" @selected($categorie === $value)>{{ $label }}</option>
             @endforeach
         </select>
-        @error('categorie_charge')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('categorie_charge')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    <div class="col-md-6 mb-3" id="type-charge-container">
-        <label class="form-label">Type de charge <span class="text-danger">*</span></label>
+    <div id="type-charge-container">
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="type-charge">Type de charge <span class="text-rose-500">*</span></label>
         @php
             $type = old('type_charge', $expense?->type_charge ?? 'autre');
             $types = [
-                'carburant' => 'Carburant',
-                'hosties' => 'Hosties',
-                'internet' => 'Internet',
-                'maintenance_materiel' => 'Maintenance matériel',
-                'gaz' => 'Gaz',
-                'eau' => 'Eau',
-                'electricite' => 'Électricité',
-                'gardiennage' => 'Gardiennage',
-                'salaire_ouvrier' => 'Salaire ouvrier',
-                'autre' => 'Autre',
-                'alimentation' => 'Alimentation',
+                'carburant' => 'Carburant', 'hosties' => 'Hosties', 'internet' => 'Internet',
+                'maintenance_materiel' => 'Maintenance matériel', 'gaz' => 'Gaz', 'eau' => 'Eau',
+                'electricite' => 'Électricité', 'gardiennage' => 'Gardiennage', 'salaire_ouvrier' => 'Salaire ouvrier',
+                'autre' => 'Autre', 'alimentation' => 'Alimentation',
             ];
         @endphp
-        <select name="type_charge" id="type-charge" class="form-control @error('type_charge') is-invalid @enderror">
+        <select name="type_charge" id="type-charge" class="{{ $inputBase }} @error('type_charge') {{ $inputErr }} @enderror">
             @foreach($types as $value => $label)
                 <option value="{{ $value }}" @selected($type === $value)>{{ $label }}</option>
             @endforeach
         </select>
-        @error('type_charge')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('type_charge')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    {{-- Bloc Alimentation Popote : date, jour, libellé, montant --}}
-    <div class="col-md-6 mb-3" id="jour-depense-container" style="display: none;">
-        <label class="form-label">Jour <span class="text-danger">*</span></label>
+    <div id="jour-depense-container" style="display: none;">
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="jour-depense-display">Jour <span class="text-rose-500">*</span></label>
         @php
             $jourDep = old('jour_semaine', $expense?->jour_semaine);
             $joursLabels = ['lundi'=>'Lundi','mardi'=>'Mardi','mercredi'=>'Mercredi','jeudi'=>'Jeudi','vendredi'=>'Vendredi','samedi'=>'Samedi','dimanche'=>'Dimanche'];
         @endphp
-        <input type="text" id="jour-depense-display" class="form-control" value="{{ $jourDep ? ($joursLabels[$jourDep] ?? ucfirst($jourDep)) : '' }}" readonly placeholder="Calculé à partir de la date">
+        <input type="text" id="jour-depense-display" class="{{ $inputBase }} bg-slate-50 dark:bg-slate-900/50" value="{{ $jourDep ? ($joursLabels[$jourDep] ?? ucfirst($jourDep)) : '' }}" readonly placeholder="Calculé à partir de la date">
         <input type="hidden" name="jour_semaine" id="jour-depense" value="{{ $jourDep }}">
     </div>
 
-    <div class="col-12 mb-3" id="libelle-container" style="display: none;">
-        <label class="form-label">Libellé de l'alimentation achetée <span class="text-danger">*</span></label>
-        <input type="text" name="libelle" id="libelle" class="form-control @error('libelle') is-invalid @enderror" value="{{ old('libelle', $expense?->libelle) }}" placeholder="Ex : Riz, huile, légumes...">
-        @error('libelle')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+    <div class="md:col-span-2" id="libelle-container" style="display: none;">
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="libelle">Libellé de l'alimentation achetée <span class="text-rose-500">*</span></label>
+        <input type="text" name="libelle" id="libelle" class="{{ $inputBase }} @error('libelle') {{ $inputErr }} @enderror" value="{{ old('libelle', $expense?->libelle) }}" placeholder="Ex : Riz, huile, légumes...">
+        @error('libelle')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    {{-- Reçu justificatif (alimentation) — visible uniquement pour Alimentation Popote --}}
-    <div class="col-12 mb-3" id="piece-recu-alimentation-container" style="display: none;">
-        <label class="form-label">Reçu justificatif (alimentation achetée)</label>
-        <input type="file"
-               id="piece_recu_alimentation"
-               class="form-control @error('piece_recu') is-invalid @enderror"
-               accept=".pdf,image/*">
-        <small class="form-text text-muted">PDF ou image (JPG, PNG). Optionnel mais recommandé pour justifier la dépense.</small>
-        @error('piece_recu')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+    <div class="md:col-span-2" id="piece-recu-alimentation-container" style="display: none;">
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="piece_recu_alimentation">Reçu justificatif (alimentation achetée)</label>
+        <input type="file" id="piece_recu_alimentation" class="{{ $inputBase }} @error('piece_recu') {{ $inputErr }} @enderror file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 dark:file:bg-emerald-950 dark:file:text-emerald-300" accept=".pdf,image/*">
+        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">PDF ou image (JPG, PNG). Optionnel mais recommandé pour justifier la dépense.</p>
+        @error('piece_recu')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
         @if($expense?->piece_recu_path && $expense?->categorie_charge === 'alimentation_popote')
-            <small class="form-text text-muted mt-1">
-                Reçu actuel : <a href="{{ asset('storage/'.$expense->piece_recu_path) }}" target="_blank">Voir le fichier</a>
-            </small>
+            <p class="mt-1 text-xs text-slate-500">Reçu actuel : <a href="{{ asset('storage/'.$expense->piece_recu_path) }}" target="_blank" class="text-emerald-600 dark:text-emerald-400 underline">Voir le fichier</a></p>
         @endif
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Montant ({{ $currency }}) <span class="text-danger">*</span></label>
-        <input type="text"
-               name="montant"
-               class="form-control @error('montant') is-invalid @enderror"
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="montant_exp">Montant ({{ $currency }}) <span class="text-rose-500">*</span></label>
+        <input type="text" name="montant" id="montant_exp"
+               class="{{ $inputBase }} @error('montant') {{ $inputErr }} @enderror"
                inputmode="decimal"
                value="{{ old('montant', \App\Helpers\ParoisseConfig::formatMontantSaisie($expense?->montant)) }}"
                required>
-        @error('montant')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('montant')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    {{-- Bloc réservé aux charges (fixe, variable, exceptionnelle) — non affiché pour Alimentation Popote --}}
-    <div id="bloc-charges">
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Référence facture</label>
-            <input type="text"
-                   name="facture_reference"
-                   class="form-control @error('facture_reference') is-invalid @enderror"
-                   value="{{ old('facture_reference', $expense?->facture_reference) }}">
-            @error('facture_reference')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+    <div id="bloc-charges" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="facture_reference">Référence facture</label>
+            <input type="text" name="facture_reference" id="facture_reference" class="{{ $inputBase }} @error('facture_reference') {{ $inputErr }} @enderror" value="{{ old('facture_reference', $expense?->facture_reference) }}">
+            @error('facture_reference')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
         </div>
-
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Pièce jointe - Facture (PDF / image)</label>
-            <input type="file"
-                   name="piece_facture"
-                   class="form-control @error('piece_facture') is-invalid @enderror"
-                   accept=".pdf,image/*">
-            @error('piece_facture')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="piece_facture">Pièce jointe - Facture (PDF / image)</label>
+            <input type="file" name="piece_facture" id="piece_facture" class="{{ $inputBase }} @error('piece_facture') {{ $inputErr }} @enderror file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 dark:file:bg-slate-700 dark:file:text-slate-200" accept=".pdf,image/*">
+            @error('piece_facture')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
             @if($expense?->piece_facture_path)
-                <small class="form-text text-muted">
-                    Facture actuelle :
-                    <a href="{{ asset('storage/'.$expense->piece_facture_path) }}" target="_blank">Voir le fichier</a>
-                </small>
+                <p class="mt-1 text-xs text-slate-500">Facture actuelle : <a href="{{ asset('storage/'.$expense->piece_facture_path) }}" target="_blank" class="text-emerald-600 dark:text-emerald-400 underline">Voir le fichier</a></p>
             @endif
         </div>
-
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Fournisseur</label>
-            <input type="text"
-                   name="fournisseur"
-                   class="form-control @error('fournisseur') is-invalid @enderror"
-                   data-transform="title"
-                   value="{{ old('fournisseur', $expense?->fournisseur) }}">
-            @error('fournisseur')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="fournisseur">Fournisseur</label>
+            <input type="text" name="fournisseur" id="fournisseur" class="{{ $inputBase }} @error('fournisseur') {{ $inputErr }} @enderror" data-transform="title" value="{{ old('fournisseur', $expense?->fournisseur) }}">
+            @error('fournisseur')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
         </div>
-
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Pièce jointe - Reçu de paiement (PDF / image)</label>
-            <input type="file"
-                   name="piece_recu"
-                   id="piece_recu_charges"
-                   class="form-control @error('piece_recu') is-invalid @enderror"
-                   accept=".pdf,image/*">
-            @error('piece_recu')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="piece_recu_charges">Pièce jointe - Reçu de paiement (PDF / image)</label>
+            <input type="file" name="piece_recu" id="piece_recu_charges" class="{{ $inputBase }} @error('piece_recu') {{ $inputErr }} @enderror file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 dark:file:bg-slate-700 dark:file:text-slate-200" accept=".pdf,image/*">
+            @error('piece_recu')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
             @if($expense?->piece_recu_path)
-                <small class="form-text text-muted">
-                    Reçu actuel :
-                    <a href="{{ asset('storage/'.$expense->piece_recu_path) }}" target="_blank">Voir le fichier</a>
-                </small>
+                <p class="mt-1 text-xs text-slate-500">Reçu actuel : <a href="{{ asset('storage/'.$expense->piece_recu_path) }}" target="_blank" class="text-emerald-600 dark:text-emerald-400 underline">Voir le fichier</a></p>
             @endif
         </div>
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Méthode de paiement <span class="text-danger">*</span></label>
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="methode_paiement_exp">Méthode de paiement <span class="text-rose-500">*</span></label>
         @php
             $methode = old('methode_paiement', $expense?->methode_paiement ?? 'especes');
             $methodes = [
-                'especes' => 'Espèces',
-                'cheque' => 'Chèque',
-                'virement' => 'Virement',
-                'carte' => 'Carte',
-                'mobile_money' => 'Mobile money',
+                'especes' => 'Espèces', 'cheque' => 'Chèque', 'virement' => 'Virement',
+                'carte' => 'Carte', 'mobile_money' => 'Mobile money',
             ];
         @endphp
-        <select name="methode_paiement" class="form-control @error('methode_paiement') is-invalid @enderror" required>
+        <select name="methode_paiement" id="methode_paiement_exp" class="{{ $inputBase }} @error('methode_paiement') {{ $inputErr }} @enderror" required>
             @foreach($methodes as $value => $label)
                 <option value="{{ $value }}" @selected($methode === $value)>{{ $label }}</option>
             @endforeach
         </select>
-        @error('methode_paiement')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        @error('methode_paiement')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 
-    <div class="col-12 mb-3">
-        <label class="form-label">Notes</label>
-        <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="3">{{ old('notes', $expense?->notes) }}</textarea>
-        @error('notes')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+    <div class="md:col-span-2">
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" for="notes_exp">Notes</label>
+        <textarea name="notes" id="notes_exp" rows="3" class="{{ $inputBase }} @error('notes') {{ $inputErr }} @enderror">{{ old('notes', $expense?->notes) }}</textarea>
+        @error('notes')<p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
     </div>
 </div>
 
@@ -310,4 +243,3 @@
     });
 </script>
 @endpush
-

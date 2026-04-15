@@ -3,25 +3,28 @@
 @section('title', 'Ajouter une catégorie de recettes')
 @section('page-title', 'Ajouter une catégorie de recettes')
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Accueil</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('revenue-categories.index') }}">Catégories de recettes</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Ajouter</li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-emerald-600 dark:text-emerald-400 hover:underline">Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('revenue-categories.index') }}" class="text-emerald-600 dark:text-emerald-400 hover:underline">Catégories de recettes</a></li>
+    <li class="breadcrumb-item active text-slate-500 dark:text-slate-400" aria-current="page">Ajouter</li>
 @endsection
 
+@section('content-container-class', 'max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8')
+
 @section('content')
-<div class="row">
-    <div class="col-lg-9">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title mb-0">
-                    <i class="fas fa-folder me-2"></i>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="lg:col-span-9">
+        <div class="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200/80 dark:border-slate-600/60 bg-slate-50/80 dark:bg-slate-900/40">
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white m-0 flex items-center gap-2">
+                    <i class="fas fa-folder text-emerald-600 dark:text-emerald-400" aria-hidden="true"></i>
                     Nouvelle catégorie de recettes
-                </h4>
+                </h2>
             </div>
-            <div class="card-body">
+            <div class="p-6">
                 @if ($errors->any())
-                    <div class="alert alert-danger mb-4">
-                        <ul class="mb-0">
+                    <div class="mb-6 rounded-xl border border-rose-200 dark:border-rose-800 bg-rose-50/80 dark:bg-rose-950/30 px-4 py-3 text-sm text-rose-800 dark:text-rose-200">
+                        <p class="font-semibold mb-2">Erreurs de validation</p>
+                        <ul class="list-disc list-inside m-0 space-y-1">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -29,66 +32,62 @@
                     </div>
                 @endif
 
-                <form action="{{ route('revenue-categories.store') }}" method="POST">
+                <form action="{{ route('revenue-categories.store') }}" method="POST" class="space-y-6">
                     @csrf
                     @if(auth()->user()->hasRole('super_admin') && $paroisses->count() > 0)
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Paroisse <span class="text-danger">*</span></label>
-                            <select name="paroisse_id" class="form-control" required>
-                                @foreach($paroisses as $p)
-                                    <option value="{{ $p->id }}" @selected(old('paroisse_id', request('paroisse_id')) == $p->id)>{{ $p->nom }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div>
+                        <label for="paroisse_id_cat" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Paroisse <span class="text-rose-600 dark:text-rose-400">*</span></label>
+                        <select name="paroisse_id" id="paroisse_id_cat" required class="w-full max-w-md rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
+                            @foreach($paroisses as $p)
+                                <option value="{{ $p->id }}" @selected(old('paroisse_id', request('paroisse_id')) == $p->id)>{{ $p->nom }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     @else
                         <input type="hidden" name="paroisse_id" value="{{ auth()->user()->paroisse_id }}">
                     @endif
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Code <span class="text-danger">*</span></label>
-                            <input type="text" name="code" class="form-control" value="{{ old('code') }}" required placeholder="ex: quete_ordinaire">
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="code_cat" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Code <span class="text-rose-600 dark:text-rose-400">*</span></label>
+                            <input type="text" name="code" id="code_cat" value="{{ old('code') }}" required placeholder="ex: quete_ordinaire" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Nom <span class="text-danger">*</span></label>
-                            <input type="text" name="nom" class="form-control" value="{{ old('nom') }}" required>
+                        <div>
+                            <label for="nom_cat" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Nom <span class="text-rose-600 dark:text-rose-400">*</span></label>
+                            <input type="text" name="nom" id="nom_cat" value="{{ old('nom') }}" required class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Ordre</label>
-                            <input type="number" name="ordre" class="form-control" value="{{ old('ordre', 0) }}" min="0">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Description</label>
-                            <textarea name="description" class="form-control" rows="2">{{ old('description') }}</textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check">
-                                <input type="checkbox" name="actif" value="1" class="form-check-input" id="actif" @checked(old('actif', true))>
-                                <label class="form-check-label" for="actif">Actif</label>
-                            </div>
+                        <div>
+                            <label for="ordre_cat" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ordre</label>
+                            <input type="number" name="ordre" id="ordre_cat" value="{{ old('ordre', 0) }}" min="0" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">
                         </div>
                     </div>
-                    <div class="mt-4 pt-3 border-top">
-                        <a href="{{ route('revenue-categories.index') }}" class="btn btn-secondary">Annuler</a>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <div>
+                        <label for="desc_cat" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Description</label>
+                        <textarea name="description" id="desc_cat" rows="2" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/35">{{ old('description') }}</textarea>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="actif" value="1" id="actif_cat" @checked(old('actif', true)) class="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500/35">
+                        <label for="actif_cat" class="text-sm font-medium text-slate-700 dark:text-slate-300">Actif</label>
+                    </div>
+
+                    <div class="flex flex-wrap justify-end gap-2 pt-6 border-t border-slate-200 dark:border-slate-600">
+                        <a href="{{ route('revenue-categories.index', request()->only('paroisse_id')) }}" class="adventiste-btn-secondary no-underline">Annuler</a>
+                        <button type="submit" class="adventiste-btn-primary">Enregistrer</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <div class="col-lg-3 mt-4 mt-lg-0">
-        <div class="card border-0 shadow-sm create-help-panel">
-            <div class="card-body p-4">
-                <h6 class="mb-3 d-flex align-items-center">
-                    <i class="fas fa-info-circle me-2"></i>
-                    En bref
-                </h6>
-                <ul class="list-unstyled small mb-0">
-                    <li class="mb-2">1. Saisir un <strong>code</strong> unique et un <strong>nom</strong>.</li>
-                    <li class="mb-0">2. Ordre et description sont optionnels.</li>
-                </ul>
-            </div>
+    <div class="lg:col-span-3">
+        <div class="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm p-5">
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                <i class="fas fa-info-circle text-emerald-600 dark:text-emerald-400" aria-hidden="true"></i>
+                En bref
+            </h3>
+            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-2 m-0 pl-4 list-disc">
+                <li>Saisir un <strong>code</strong> unique et un <strong>nom</strong>.</li>
+                <li>Ordre et description sont optionnels.</li>
+            </ul>
         </div>
     </div>
 </div>

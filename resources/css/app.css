@@ -1,1648 +1,558 @@
-/* ============================================
-   PRELOADER (identique Paroisse2)
-   ============================================ */
-.preloader,
-#app-preloader {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 99999;
-    background: var(--primary, #003366);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Mélange charte adventiste (violet / or) + accent vert du gabarit E-Ged */
+    --color-church-purple-950: #100818;
+    --color-church-purple-900: #1a0f2e;
+    --color-church-purple-800: #2d1f4a;
+    --color-church-purple-700: #4a3570;
+    --color-church-gold: #d4a84b;
+    --color-church-gold-bright: #f0c85c;
+    --color-church-green: #00a86b;
+    --color-church-green-bright: #2ee8a8;
 }
 
-.preloader__logo {
-    width: 80px;
-    height: 80px;
-    border-radius: 14px;
-    overflow: hidden;
-    background: white;
-    padding: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-    animation: preloaderPulse 1.5s ease-in-out infinite;
+/* Surfaces principales (header latéral logo, barre du haut, menu) */
+.theme-nav-header {
+    background:
+        radial-gradient(ellipse 80% 80% at 20% 80%, rgba(0, 180, 100, 0.25), rgba(0, 180, 100, 0.12) 25%, transparent 50%),
+        linear-gradient(135deg, #0a1410 0%, #0d1a1a 25%, #0f2520 50%, #0d1a1a 75%, #0a1410 100%);
+    border-right: 2px solid rgba(0, 180, 100, 0.2);
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(0, 180, 100, 0.1);
 }
 
-.preloader__logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+.theme-header-bar {
+    background:
+        radial-gradient(ellipse 80% 80% at 20% 80%, rgba(0, 180, 100, 0.25), rgba(0, 180, 100, 0.12) 25%, transparent 50%),
+        linear-gradient(135deg, #0a0f15 0%, #0d1a1a 25%, #0f2520 50%, #0d1a1a 75%, #0a0f15 100%);
 }
 
-.preloader__spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid rgba(255, 215, 0, 0.25);
-    border-top-color: var(--secondary, #FFD700);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+.theme-sidebar {
+    /* Rappel E-Ged : sidebar sombre (avec une pointe de violet/vert) */
+    background:
+        radial-gradient(
+            ellipse 20% 80% at 20% 80%,
+            rgba(0, 180, 100, 0.25),
+            rgba(0, 180, 100, 0.12) 25%,
+            transparent 50%
+        ),
+        radial-gradient(
+            ellipse 35% 55% at 88% 12%,
+            rgba(120, 82, 168, 0.22),
+            rgba(120, 82, 168, 0.10) 30%,
+            transparent 50%
+        ),
+        linear-gradient(135deg, #0a0f15 0%, #0d1a1a 25%, #0f2520 50%, #0d1a1a 75%, #0a0f15 100%);
+    border-right: 2px solid rgba(0, 180, 100, 0.22);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
 }
 
-.preloader__label {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 11px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    font-weight: 400;
-    margin: 0;
+.theme-footer-bar {
+    background: linear-gradient(135deg, #f7f5ff 0%, #eefbf5 48%, #eef2ff 100%);
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-@keyframes preloaderPulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
-    50%       { transform: scale(1.04); box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
+.theme-preloader-bg {
+    background: linear-gradient(135deg, #0a1410, #0d1f18, #0f2820);
 }
 
-/* ============================================
-   PAGE TITLES & BREADCRUMB — Design professionnel (comme image référence)
-   Titre de page + fil d'Ariane dans un bloc soigné
-   ============================================ */
-.page-titles {
-    background: #fff;
-    border-radius: 12px;
-    padding: 18px 24px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    border: 1px solid rgba(0, 51, 102, 0.08);
-    border-bottom: 3px solid var(--primary, #003366);
+/* Lien menu actif : dégradé institutionnel violet → émeraude (rappel du template vert) */
+.sidebar a.nav-link-active {
+    background: linear-gradient(105deg, rgba(6, 162, 105, 0.55) 0%, rgba(28, 77, 59, 0.55) 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    border-color: rgba(212, 168, 75, 0.35) !important;
 }
 
-.page-titles__heading {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--titre-page, var(--primary, #003366));
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
+/* Gabarit type E-Ged : sidebar + header + contenu */
+:root {
+    --adventiste-header-height: 80px;
+    --adventiste-sidebar-width: 250px;
+    --adventiste-sidebar-width-collapsed: 80px;
 }
 
-.page-titles__breadcrumb,
-.page-titles .breadcrumb {
-    font-size: 13px;
-    padding: 0;
-    margin: 0;
-    background: transparent;
+.main-content {
+    margin-left: var(--adventiste-sidebar-width);
+    margin-top: var(--adventiste-header-height);
+    padding-top: 0;
+    position: relative;
+    z-index: 0;
 }
 
-.page-titles .breadcrumb-item {
-    color: #6c757d;
+.sidebar {
+    width: var(--adventiste-sidebar-width) !important;
+    min-width: var(--adventiste-sidebar-width) !important;
 }
-
-.page-titles .breadcrumb-item a {
-    color: #6c757d;
-    text-decoration: none;
-    transition: color 0.2s ease;
+.sidebar ul {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    padding-inline-start: 0 !important;
 }
-
-.page-titles .breadcrumb-item a:hover {
-    color: var(--primary);
+.sidebar ul li {
+    margin: 0 !important;
 }
-
-.page-titles .breadcrumb-item.active {
-    color: var(--primary);
-    font-weight: 600;
+.sidebar ul li + li {
+    margin-top: 0.25rem !important;
 }
-
-.page-titles .breadcrumb-item + .breadcrumb-item::before {
-    color: #adb5bd;
-    font-weight: 300;
-}
-
-/* ============================================
-   SELECT — Affichage correct des libellés sur tous les navigateurs
-   (Paroisse, Catégorie, Type de recette, etc.)
-   ============================================ */
-select.form-control,
-select.form-select,
-.content-body select.form-control,
-.card-body select.form-control {
-    font-size: 16px !important; /* Évite zoom iOS, lisibilité cross-browser */
-    color: #212529 !important;
-    font-weight: 500;
-    min-height: 42px;
-    padding: 8px 36px 8px 12px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: #fff;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-}
-
-select.form-control option,
-select.form-select option {
-    font-size: 16px;
-    color: #212529;
-    padding: 10px;
-}
-
-/* Support navigateurs qui n'appliquent pas appearance:none */
-@supports (-webkit-appearance: none) or (appearance: none) {
-    select.form-control,
-    select.form-select {
-        padding-right: 40px;
-    }
-}
-
-/* Panneau d'aide pages create — couleur douce et agréable (revenues, expenses, etc.) */
-.revenue-create-help-panel,
-.create-help-panel {
-    background: #f8fafc !important;
-    color: #475569 !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 12px !important;
-}
-
-.revenue-create-help-panel h6 {
-    color: #334155 !important;
-    font-weight: 600;
-}
-
-/* ============================================
-   CORRECTION AFFICHAGE BOUTONS ET HEADERS DE CARTES
-   Le template force .card-action > a à 30x30px, ce qui coupe le texte.
-   On surcharge ces styles pour afficher correctement les boutons.
-   ============================================ */
-.card-header {
+.sidebar a {
     display: flex !important;
-    flex-wrap: wrap !important;
     align-items: center !important;
-    justify-content: space-between !important;
     gap: 0.75rem !important;
+    text-decoration: none !important;
+}
+.sidebar .nav-text {
+    white-space: nowrap !important;
+    flex: 1 1 auto !important;
     overflow: visible !important;
 }
-.card-header .card-title {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-.card-header .card-action,
-.card-header .report-header-actions,
-.card-header .d-flex.gap-2 {
+.sidebar nav {
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-direction: column !important;
+}
+.sidebar .flex-shrink-0 {
+    flex-shrink: 0 !important;
+}
+.sidebar > div span.nav-text {
+    display: flex !important;
     align-items: center !important;
     gap: 0.5rem !important;
-    flex-shrink: 0 !important;
-}
-/* Surcharge du template : .card-action > a forcé à 30x30px → on rétablit l'affichage normal */
-.card-header .card-action > a,
-.card-header .card-action > button,
-.card-header .card-action .btn,
-.card-header .card-action form,
-.card-header .report-header-actions > a,
-.card-header .report-header-actions > button {
-    width: auto !important;
-    min-width: auto !important;
-    height: auto !important;
-    line-height: inherit !important;
-    padding: 0.375rem 0.75rem !important;
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    text-align: left !important;
-}
-.card-header .btn,
-.card-header a.btn {
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    width: auto !important;
-    min-width: auto !important;
-    height: auto !important;
 }
 
-/* ============================================
-   CHARTE DE COULEURS OFFICIELLE DE L'ÉGLISE CATHOLIQUE
-   ============================================
-   - Primaire (#003366) : Bleu marine - Couleur de la Vierge Marie
-   - Secondaire (#FFD700) : Or - Couleur papale et symbolique
-   - Succès (#2D5016) : Vert foncé - Espérance et croissance
-   - Info (#4A90E2) : Bleu clair - Confiance et sérénité
-   - Avertissement (#FF8C00) : Orange - Vigilance
-   - Danger (#DC143C) : Rouge - Sang du Christ, sacrifice
-   ============================================ */
-
-:root {
-    /* Couleurs officielles de l'Église catholique */
-    --primary: #003366;        /* Bleu marine - Vierge Marie */
-    --secondary: #FFD700;      /* Or - Papal */
-    --success: #2D5016;        /* Vert foncé - Espérance */
-    --info: #4A90E2;          /* Bleu clair - Confiance */
-    --warning: #FF8C00;        /* Orange - Vigilance */
-    --danger: #DC143C;         /* Rouge - Sang du Christ */
-    --purple: #800080;         /* Violet - Liturgie */
-
-    /* Variations de la couleur primaire */
-    --primary-hover: #002244;
-    --primary-dark: #001122;
-    --rgba-primary-1: rgba(0, 51, 102, 0.1);
-    --rgba-primary-2: rgba(0, 51, 102, 0.2);
-    --rgba-primary-3: rgba(0, 51, 102, 0.3);
-    --rgba-primary-4: rgba(0, 51, 102, 0.4);
-    --rgba-primary-5: rgba(0, 51, 102, 0.5);
-    --rgba-primary-6: rgba(0, 51, 102, 0.6);
-    --rgba-primary-7: rgba(0, 51, 102, 0.7);
-    --rgba-primary-8: rgba(0, 51, 102, 0.8);
-    --rgba-primary-9: rgba(0, 51, 102, 0.9);
-
-    /* Ombres modernes */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
-
-    /* Transitions */
-    --transition-base: all 0.3s ease;
-    --transition-fast: all 0.15s ease;
-    --transition-slow: all 0.5s ease;
+#main-wrapper.menu-toggle .main-content {
+    margin-left: var(--adventiste-sidebar-width-collapsed) !important;
 }
-
-/* Styles personnalisés pour l'application */
-.brand-logo .svg-logo-path {
-    fill: var(--secondary);
+#main-wrapper.menu-toggle .sidebar {
+    width: var(--adventiste-sidebar-width-collapsed) !important;
+    min-width: var(--adventiste-sidebar-width-collapsed) !important;
 }
-
-.brand-logo .svg-logo-title {
-    fill: var(--primary);
-}
-
-/* Menu principal : violet #6A1B9A (logo → bas de la colonne)
-   !important pour override data-sibebarbg / data-navheaderbg du template */
-.nav-header,
-#main-wrapper .nav-header,
-[data-navheaderbg] .nav-header,
-body .nav-header {
-    background: #6A1B9A !important;
-    background-color: #6A1B9A !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* ============================================
-   MENU LATÉRAL (DEZNAV) - Violet #6A1B9A
-   ============================================ */
-.deznav,
-#main-wrapper .deznav,
-[data-sibebarbg] .deznav,
-body .deznav {
-    background: #6A1B9A !important;
-    background-color: #6A1B9A !important;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.deznav .metismenu a {
-    color: rgba(255, 255, 255, 0.9);
-    transition: var(--transition-base);
-}
-
-.deznav .metismenu a:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: var(--secondary);
-}
-
-.deznav .metismenu .mm-active > a {
-    background: rgba(255, 215, 0, 0.2);
-    color: var(--secondary);
-    border-left: 3px solid var(--secondary);
-}
-
-.deznav .metismenu .nav-text {
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: 500;
-}
-
-.deznav .metismenu .mm-active > a .nav-text {
-    color: var(--secondary);
-    font-weight: 600;
-}
-
-.deznav .metismenu i {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.deznav .metismenu .mm-active > a i,
-.deznav .metismenu a:hover i {
-    color: var(--secondary);
-}
-
-.deznav .copyright,
-.deznav .copyright p {
-    color: rgba(255, 255, 255, 0.85);
-}
-
-/* ============================================
-   TOGGLE MENU (HAMBURGER) - COMPORTEMENT COMME LE TEMPLATE
-   ============================================ */
-/* Quand le menu est en mode collapsed (menu-toggle) */
-#main-wrapper.menu-toggle .nav-header {
-    width: 7.5rem;
-    z-index: 999;
-}
-
-#main-wrapper.menu-toggle .nav-header .brand-logo {
-    padding-left: 0;
-    padding-right: 0;
-    justify-content: center;
-}
-
-#main-wrapper.menu-toggle .nav-header .brand-title {
-    display: none;
-}
-
-#main-wrapper.menu-toggle .nav-header .logo-abbr,
-#main-wrapper.menu-toggle .nav-header img.logo-abbr {
-    display: block !important;
-    margin: 0 auto !important;
-    margin-right: 0 !important;
-}
-
 #main-wrapper.menu-toggle .header {
-    padding-left: 7.5rem;
-    width: 100%;
+    left: 80px !important;
+}
+#main-wrapper.menu-toggle .nav-header {
+    width: 80px !important;
 }
 
-#main-wrapper.menu-toggle .deznav {
-    width: 7.5rem;
-    overflow: visible;
+#main-wrapper.menu-toggle .nav-text {
     position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }
-
-#main-wrapper.menu-toggle .deznav .nav-text {
-    display: none;
-}
-
-#main-wrapper.menu-toggle .deznav .slimScrollDiv,
-#main-wrapper.menu-toggle .deznav .deznav-scroll {
-    overflow: visible !important;
-}
-
-#main-wrapper.menu-toggle .deznav .metismenu li {
-    position: relative;
-}
-
-#main-wrapper.menu-toggle .deznav .metismenu li a {
-    padding: 22px 15px;
-    text-align: center;
-    justify-content: center;
-}
-
-#main-wrapper.menu-toggle .deznav .metismenu li a > i {
+#main-wrapper.menu-toggle .nav-section-header .nav-text {
+    position: static;
     width: auto;
     height: auto;
-    margin-right: 0;
-    margin-left: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-#main-wrapper.menu-toggle .deznav .metismenu li a svg {
-    max-width: 24px;
-    max-height: 24px;
-    margin-right: 0;
-}
-
-#main-wrapper.menu-toggle .deznav .metismenu .has-arrow:after {
-    display: none;
-}
-
-#main-wrapper.menu-toggle .deznav .copyright {
-    display: none;
-}
-
-/* Le content-body s'ajuste automatiquement via le header padding */
-
-/* Responsive pour menu-toggle */
-@media only screen and (max-width: 1400px) {
-    #main-wrapper.menu-toggle .nav-header {
-        width: 5rem;
-    }
-
-    #main-wrapper.menu-toggle .header {
-        padding-left: 5rem;
-    }
-
-    #main-wrapper.menu-toggle .deznav {
-        width: 5rem;
-    }
-
-    #main-wrapper.menu-toggle .content-body {
-        margin-left: 5rem;
-    }
-}
-
-/* ============================================
-   TEXTE BLANC SUR FONDS #003366
-   ============================================ */
-.nav-header,
-.card-header,
-.btn-primary,
-.badge-primary,
-.widget-stat::before {
-    color: white !important;
-}
-
-.nav-header *,
-.card-header *,
-.btn-primary *,
-.badge-primary * {
-    color: white !important;
-}
-
-.dashboard_bar span {
-    color: var(--primary) !important;
-}
-
-/* ============================================
-   BOUTONS MODERNES
-   ============================================ */
-.btn-primary {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: white;
-    transition: var(--transition-base);
-    box-shadow: var(--shadow-sm);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
-    color: white;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background-color: var(--secondary);
-    border-color: var(--secondary);
-    color: #333;
-    transition: var(--transition-base);
-    box-shadow: var(--shadow-sm);
-}
-
-.btn-secondary:hover {
-    background-color: #E6C200;
-    border-color: #E6C200;
-    color: #333;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-/* Style par défaut du template - pas de coins arrondis pour les boutons */
-
-.btn-success {
-    background-color: var(--success);
-    border-color: var(--success);
-    color: white;
-    transition: var(--transition-base);
-    box-shadow: var(--shadow-sm);
-}
-
-.btn-success:hover {
-    background-color: #1f3a0f;
-    border-color: #1f3a0f;
-    color: white;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-/* Boutons d'action du tableau - Utilise les variables CSS paramétrables */
-.btn-info {
-    background-color: var(--action-voir, var(--info));
-    border-color: var(--action-voir, var(--info));
-    color: white;
-    transition: var(--transition-base);
-    box-shadow: var(--shadow-sm);
-}
-
-.btn-info:hover {
-    background-color: var(--action-voir, var(--info));
-    border-color: var(--action-voir, var(--info));
-    color: white;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-.btn-warning {
-    background-color: var(--action-modifier, var(--warning));
-    border-color: var(--action-modifier, var(--warning));
-    color: white;
-    transition: var(--transition-base);
-    box-shadow: var(--shadow-sm);
-}
-
-.btn-warning:hover {
-    background-color: var(--action-modifier, var(--warning));
-    border-color: var(--action-modifier, var(--warning));
-    color: white;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-.btn-danger {
-    background-color: var(--action-supprimer, var(--danger));
-    border-color: var(--action-supprimer, var(--danger));
-    color: white;
-    transition: var(--transition-base);
-    box-shadow: var(--shadow-sm);
-}
-
-.btn-danger:hover {
-    background-color: var(--action-supprimer, var(--danger));
-    border-color: var(--action-supprimer, var(--danger));
-    color: white;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-/* Bouton citron pour les actions d'ajout - Utilise les variables CSS paramétrables */
-.btn-citron {
-    background-color: var(--bouton-ajout, #FFEB3B);
-    border-color: var(--bouton-ajout, #FFEB3B);
-    color: #333;
-    transition: var(--transition-base);
-    box-shadow: var(--shadow-sm);
-    font-weight: 600;
-}
-
-.btn-citron:hover {
-    background-color: var(--bouton-ajout-hover, #FDD835);
-    border-color: var(--bouton-ajout-hover, #FDD835);
-    color: #333;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-/* Sur header foncé: rendre le bouton plus vif/visible */
-.card-header .btn-citron {
-    background-color: var(--bouton-ajout, #FFEA00);
-    border-color: rgba(255, 255, 255, 0.65);
-    color: #111;
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
-}
-
-.card-header .btn-citron:hover,
-.card-header .btn-citron:focus {
-    background-color: var(--bouton-ajout-hover, #FFD200);
-    border-color: rgba(255, 255, 255, 0.85);
-    color: #111;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
-    transform: translateY(-1px);
-}
-
-/* Boutons de taille sm */
-.btn-sm.btn-rounded {
-    padding: 6px 16px;
-    font-size: 0.875rem;
-}
-
-/* ============================================
-   CARTES MODERNES - Style template original (coins carrés)
-   ============================================ */
-.card {
-    border: none;
-    /* Force la forme (évite les styles du template qui peuvent reprendre la main) */
-    border-radius: 0 !important;
-    box-shadow: var(--shadow-md);
-    transition: var(--transition-base);
+.nav-header {
     overflow: hidden;
 }
 
-.card:hover {
-    box-shadow: var(--shadow-lg);
+.sidebar-nav-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.sidebar-nav-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+html,
+body {
+    overflow-x: hidden;
+}
+.header {
+    overflow: visible;
+}
+
+#mainHeader {
+    position: fixed !important;
+    top: 0 !important;
+    left: var(--adventiste-sidebar-width) !important;
+    right: 0 !important;
+    height: var(--adventiste-header-height) !important;
+    z-index: 2147482000 !important;
+    transform: translateZ(0);
+}
+
+#navHeader {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: var(--adventiste-sidebar-width) !important;
+    height: var(--adventiste-header-height) !important;
+    z-index: 2147482001 !important;
+    transform: translateZ(0);
+}
+
+#main-wrapper.menu-toggle #mainHeader {
+    left: var(--adventiste-sidebar-width-collapsed) !important;
+}
+
+#main-wrapper.menu-toggle #navHeader {
+    width: var(--adventiste-sidebar-width-collapsed) !important;
+}
+
+body.dark-mode {
+    background: #121212;
+    color: #ddd;
+}
+body.dark-mode .header {
+    background: linear-gradient(135deg, #151018 0%, #121c1a 50%, #18122a 100%) !important;
+}
+body.dark-mode .nav-header {
+    background: linear-gradient(145deg, #161022 0%, #121f1c 45%, #18122c 100%) !important;
+}
+body.dark-mode .sidebar {
+    background: linear-gradient(135deg, #120c18 0%, #0f1c18 40%, #140e22 100%) !important;
+}
+
+.footer {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* ——— Zones de contenu & cartes (UI plus institutionnelle) ——— */
+.adventiste-content-canvas {
+    background-color: #f4f7fb;
+    background-image:
+        radial-gradient(ellipse 100% 80% at 100% -10%, rgba(0, 168, 107, 0.07), transparent 52%),
+        radial-gradient(ellipse 70% 50% at 0% 100%, rgba(212, 168, 75, 0.06), transparent 48%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(74, 53, 112, 0.04), transparent 45%);
+    min-height: calc(100vh - 5rem);
+}
+
+html.dark .adventiste-content-canvas {
+    background-color: rgb(15 23 42);
+    background-image:
+        radial-gradient(ellipse 100% 80% at 100% -10%, rgba(0, 168, 107, 0.12), transparent 52%),
+        radial-gradient(ellipse 70% 50% at 0% 100%, rgba(212, 168, 75, 0.08), transparent 48%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(120, 82, 168, 0.1), transparent 45%);
+}
+
+.adventiste-page-header-shell {
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+    border-bottom: 1px solid rgb(226 232 240 / 0.85);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.97) 0%, rgb(248 250 252 / 0.98) 100%);
+    box-shadow: 0 1px 3px rgb(15 23 42 / 0.04);
+}
+
+html.dark .adventiste-page-header-shell {
+    border-bottom-color: rgb(51 65 85 / 0.6);
+    background: linear-gradient(180deg, rgb(30 41 59 / 0.96) 0%, rgb(15 23 42 / 0.98) 100%);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+}
+
+.adventiste-page-header-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(105deg, rgba(0, 168, 107, 0.04) 0%, transparent 35%, rgba(212, 168, 75, 0.05) 100%);
+    pointer-events: none;
+}
+
+.adventiste-page-header-accent {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00a86b 0%, #0d8f5f 25%, #d4a84b 55%, #7852a8 100%);
+    opacity: 0.92;
+}
+
+.adventiste-card-pro {
+    border-radius: 1rem;
+    border: 1px solid rgb(226 232 240 / 0.95);
+    background: rgb(255 255 255 / 0.92);
+    box-shadow:
+        0 1px 2px rgb(15 23 42 / 0.04),
+        0 8px 24px -6px rgb(15 23 42 / 0.08);
+    backdrop-filter: blur(8px);
+    transition:
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+html.dark .adventiste-card-pro {
+    border-color: rgb(51 65 85 / 0.85);
+    background: rgb(30 41 59 / 0.75);
+    box-shadow:
+        0 1px 2px rgb(0 0 0 / 0.2),
+        0 12px 32px -8px rgb(0 0 0 / 0.35);
+}
+
+a.adventiste-card-pro:hover {
+    border-color: rgb(0 168 107 / 0.35);
+    box-shadow:
+        0 4px 12px rgb(0 168 107 / 0.08),
+        0 16px 40px -8px rgb(15 23 42 / 0.12);
     transform: translateY(-2px);
 }
 
-.card-header {
-    background: linear-gradient(135deg, var(--titre-page, var(--primary)) 0%, var(--titre-page-dark, var(--primary-dark)) 100%);
-    color: white;
-    padding: 20px 24px;
-    border-bottom: none;
-    border-radius: 0 !important;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
+html.dark a.adventiste-card-pro:hover {
+    border-color: rgb(0 168 107 / 0.45);
+    box-shadow:
+        0 4px 16px rgb(0 168 107 / 0.12),
+        0 20px 48px -10px rgb(0 0 0 / 0.45);
 }
 
-/* Le header doit remplir aussi les coins/bordures de la carte */
-.card > .card-header {
-    border-top-left-radius: inherit !important;
-    border-top-right-radius: inherit !important;
+.adventiste-card-pro-static {
+    border-radius: 1rem;
+    border: 1px solid rgb(226 232 240 / 0.95);
+    background: rgb(255 255 255 / 0.92);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 10px 28px -8px rgb(15 23 42 / 0.1);
+    backdrop-filter: blur(8px);
 }
 
-.card-header h4 {
-    margin: 0;
-    font-weight: 600;
-    font-size: 1.25rem;
-    color: white;
+html.dark .adventiste-card-pro-static {
+    border-color: rgb(51 65 85 / 0.85);
+    background: rgb(30 41 59 / 0.75);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 12px 32px -8px rgb(0 0 0 / 0.35);
 }
 
-.card-header .card-title {
-    color: white;
-}
-
-.card-header .card-action {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Le template force .card-action > a à une taille "icône" (1.875rem).
-   On annule ça pour nos vrais boutons (texte horizontal). */
-.card-header .card-action > a.btn {
-    width: auto !important;
-    height: auto !important;
-    line-height: normal !important;
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap !important;
-    text-align: center;
-}
-
-.card-body {
-    padding: 24px;
-}
-
-/* ============================================
-   TABLEAUX MODERNES
-   ============================================ */
-.table {
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-.table thead th {
-    background: linear-gradient(135deg, var(--rgba-primary-1) 0%, var(--rgba-primary-2) 100%);
-    color: var(--primary);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-    padding: 16px;
-    border: none;
-    border-bottom: 2px solid var(--primary);
-}
-
-.table tbody tr {
-    transition: var(--transition-fast);
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.table tbody tr:hover {
-    background-color: var(--rgba-primary-1);
-    transform: scale(1.01);
-    box-shadow: var(--shadow-sm);
-}
-
-.table tbody td {
-    padding: 16px;
-    vertical-align: middle;
-}
-
-/* ============================================
-   BADGES MODERNES
-   ============================================ */
-.badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 500;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: var(--shadow-sm);
-}
-
-.badge-primary {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
-}
-
-.badge-success {
-    background: linear-gradient(135deg, var(--success) 0%, #1f3a0f 100%);
-    color: white;
-}
-
-.badge-danger {
-    background: linear-gradient(135deg, var(--danger) 0%, #b8112f 100%);
-    color: white;
-}
-
-.badge-info {
-    background: linear-gradient(135deg, var(--info) 0%, #3570b8 100%);
-    color: white;
-}
-
-.badge-warning {
-    background: linear-gradient(135deg, var(--warning) 0%, #e67d00 100%);
-    color: white;
-}
-
-/* ============================================
-   WIDGET STATISTIQUES
-   ============================================ */
-.widget-stat {
-    border: none;
-    border-radius: 0;
-    box-shadow: var(--shadow-md);
-    transition: var(--transition-base);
-    overflow: hidden;
-    position: relative;
-}
-
-.widget-stat::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-}
-
-.widget-stat:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
-}
-
-.widget-stat .card-body {
-    padding: 24px;
-}
-
-.widget-stat .media {
-    align-items: center;
-}
-
-.widget-stat .media .me-3 {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+.adventiste-icon-ring {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    box-shadow: var(--shadow-sm);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.875rem;
+    background: linear-gradient(135deg, rgba(0, 168, 107, 0.15) 0%, rgba(120, 82, 168, 0.12) 100%);
+    border: 1px solid rgba(0, 168, 107, 0.2);
+    color: #0a6b4a;
 }
 
-.widget-stat .media-body p {
-    color: #6c757d;
-    font-size: 0.875rem;
-    margin-bottom: 8px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+html.dark .adventiste-icon-ring {
+    background: linear-gradient(135deg, rgba(0, 168, 107, 0.22) 0%, rgba(120, 82, 168, 0.18) 100%);
+    border-color: rgba(0, 168, 107, 0.35);
+    color: #2ee8a8;
 }
 
-.widget-stat .media-body h4 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin: 0;
-}
-
-/* ============================================
-   FORMULAIRES MODERNES
-   ============================================ */
-.form-label {
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 8px;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.form-control {
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 12px 16px;
-    transition: var(--transition-base);
-    font-size: 0.9375rem;
-}
-
-.form-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 0.2rem var(--rgba-primary-2);
-    outline: none;
-}
-
-.form-control-color {
-    width: 60px;
-    height: 50px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 2px solid #e0e0e0;
-    transition: var(--transition-base);
-}
-
-.form-control-color:hover {
-    border-color: var(--primary);
-    transform: scale(1.1);
-}
-
-/* ============================================
-   SECTIONS DE FORMULAIRE
-   ============================================ */
-.mb-4 h5 {
-    color: var(--primary);
-    font-weight: 600;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--rgba-primary-1);
-    margin-bottom: 20px;
-}
-
-/* ============================================
-   ALERTES MODERNES
-   ============================================ */
-.alert {
-    border: none;
-    border-radius: 8px;
-    padding: 16px 20px;
-    box-shadow: var(--shadow-sm);
-    border-left: 4px solid;
-}
-
-.alert-danger {
-    background-color: rgba(220, 20, 60, 0.1);
-    border-left-color: var(--danger);
-    color: #721c24;
-}
-
-/* ============================================
-   WELCOME CARD
-   ============================================ */
-.welcome-card {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
-    box-shadow: var(--shadow-xl);
-    position: relative;
-    overflow: hidden;
-}
-
-.welcome-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    animation: pulse 3s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 0.8;
-    }
-}
-
-.welcome-card h4 {
-    color: var(--secondary);
-    font-weight: 700;
-    font-size: 1.75rem;
-    margin-bottom: 12px;
-}
-
-.welcome-card p {
-    font-size: 1.0625rem;
-    opacity: 0.9;
-    margin-bottom: 20px;
-}
-
-/* ============================================
-   BOUTONS D'ACTION HARMONISÉS (Pages liste - référence: Liste des recettes)
-   S'applique aux pages .page-list et .revenue-page
-   ============================================ */
-.page-list .btn-action,
-.revenue-page .btn-action {
+.adventiste-pill-nav a {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.2s;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        box-shadow 0.15s ease;
 }
-.page-list .btn-action:hover,
-.revenue-page .btn-action:hover {
+
+.adventiste-pill-nav a:not(.is-active) {
+    background: rgb(255 255 255 / 0.7);
+    color: rgb(51 65 85);
+    border: 1px solid rgb(226 232 240 / 0.9);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.03);
+}
+
+html.dark .adventiste-pill-nav a:not(.is-active) {
+    background: rgb(30 41 59 / 0.6);
+    color: rgb(203 213 225);
+    border-color: rgb(51 65 85 / 0.9);
+}
+
+.adventiste-pill-nav a:not(.is-active):hover {
+    border-color: rgba(0, 168, 107, 0.35);
+    color: rgb(4 120 87);
+}
+
+html.dark .adventiste-pill-nav a:not(.is-active):hover {
+    color: rgb(52 211 153);
+}
+
+.adventiste-pill-nav a.is-active {
+    background-color: #00b464;
+    color: #fff;
+    border: 1px solid rgb(0 180 100 / 0.45);
+    box-shadow: 0 2px 8px rgb(0 180 100 / 0.22);
+}
+
+/* Bouton principal aligné GED (#00b464) */
+.adventiste-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #00b464;
+    border: 1px solid rgb(0 180 100 / 0.35);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.06);
+    text-decoration: none;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+}
+
+.adventiste-btn-primary:hover {
+    background-color: #00a055;
+    box-shadow: 0 4px 12px rgb(0 180 100 / 0.25);
     transform: translateY(-1px);
 }
 
-/* Rafraîchir / liens secondaires sur header gradient */
-.page-list .btn-refresh,
-.revenue-page .btn-refresh,
-.page-list .btn-secondary-action,
-.revenue-page .btn-secondary-action {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-}
-.page-list .btn-refresh:hover,
-.revenue-page .btn-refresh:hover,
-.page-list .btn-secondary-action:hover,
-.revenue-page .btn-secondary-action:hover {
-    background: rgba(255, 255, 255, 0.3);
-    color: #fff;
-}
-
-/* Bouton Ajouter (or) */
-.page-list .btn-add,
-.revenue-page .btn-add {
-    background: #FFD700;
-    color: #1a1a1a;
-    border: none;
-}
-.page-list .btn-add:hover,
-.revenue-page .btn-add:hover {
-    background: #ffe033;
-    color: #1a1a1a;
-}
-
-/* Boutons dans le tableau: Modifier */
-.page-list .btn-edit,
-.revenue-page .btn-edit {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Boutons dans le tableau: Supprimer (icône seule) */
-.page-list .btn-delete,
-.revenue-page .btn-delete {
-    padding: 8px 12px;
-    border-radius: 6px;
+.adventiste-btn-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-}
-
-/* Bouton Voir (dans tableau) */
-.page-list .btn-view,
-.revenue-page .btn-view {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Bouton Filtrer */
-.page-list .btn-filter,
-.revenue-page .btn-filter {
-    padding: 10px 24px;
-    border-radius: 8px;
+    gap: 0.5rem;
+    border-radius: 0.625rem;
+    padding: 0.5rem 1.15rem;
+    font-size: 0.875rem;
     font-weight: 600;
+    color: rgb(51 65 85);
+    background: rgb(255 255 255 / 0.9);
+    border: 1px solid rgb(226 232 240 / 0.95);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
 }
 
-/* ============================================
-   ACTIONS DANS LES TABLEAUX
-   ============================================ */
-.table .d-flex .btn {
-    margin: 0 2px;
-    transition: var(--transition-fast);
+html.dark .adventiste-btn-secondary {
+    color: rgb(226 232 240);
+    background: rgb(30 41 59 / 0.8);
+    border-color: rgb(51 65 85 / 0.9);
 }
 
-.table .d-flex .btn:hover {
-    transform: scale(1.1);
+.adventiste-btn-secondary:hover {
+    background: rgb(248 250 252);
+    border-color: rgb(203 213 225);
 }
 
-/* ============================================
-   PAGINATION
-   ============================================ */
-.pagination .page-link {
-    color: var(--primary);
-    border-color: #e0e0e0;
-    transition: var(--transition-base);
+html.dark .adventiste-btn-secondary:hover {
+    background: rgb(51 65 85 / 0.6);
+    border-color: rgb(71 85 105);
 }
 
-.pagination .page-link:hover {
-    background-color: var(--rgba-primary-1);
-    border-color: var(--primary);
-    color: var(--primary);
+.adventiste-table-shell {
+    border-radius: 1rem;
+    border: 1px solid rgb(226 232 240 / 0.95);
+    background: rgb(255 255 255 / 0.95);
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 12px 32px -10px rgb(15 23 42 / 0.1);
 }
 
-.pagination .page-item.active .page-link {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    border-color: var(--primary);
-    color: white;
+html.dark .adventiste-table-shell {
+    border-color: rgb(51 65 85 / 0.85);
+    background: rgb(30 41 59 / 0.85);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 12px 36px -10px rgb(0 0 0 / 0.35);
 }
 
-/* ============================================
-   RESPONSIVE - Smartphones & Tablettes
-   ============================================
-   Breakpoint 1199px pour inclure les écrans type 1080x2436 (portrait)
-   où la largeur viewport peut être 1080px. */
+.adventiste-table-shell thead {
+    background: linear-gradient(180deg, rgb(248 250 252) 0%, rgb(241 245 249) 100%);
+}
 
-/* Sidebar mobile : overlay avec fond sombre, fermeture au clic extérieur */
+html.dark .adventiste-table-shell thead {
+    background: linear-gradient(180deg, rgb(30 41 59) 0%, rgb(15 23 42) 100%);
+}
+
+.adventiste-table-shell tbody tr:hover {
+    background: rgb(240 253 244 / 0.45);
+}
+
+html.dark .adventiste-table-shell tbody tr:hover {
+    background: rgb(15 23 42 / 0.65);
+}
+
+/* Formulaire membre : grilles explicites (3 colonnes d’Identité au dernier bloc) — ne dépend pas des seuls utilitaires Tailwind */
+.membre-form-rattachement {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .membre-form-rattachement {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: end;
+    }
+}
+
+.membre-form-body-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .membre-form-body-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.membre-form-body-grid__full {
+    grid-column: 1 / -1;
+}
+
+/* Paroisse — menu latéral mobile (identique comportement qu’avec l’ancien tpl) */
 @media (max-width: 1199.98px) {
-    /* Position fixe pour que le menu s'affiche correctement sur smartphone */
-    #main-wrapper .deznav {
-        position: fixed !important;
+    .main-content {
+        margin-left: 0 !important;
+    }
+    #mainHeader {
         left: 0 !important;
-        top: 0 !important;
-        bottom: 0 !important;
-        height: 100vh !important;
+    }
+    #navHeader {
+        display: none !important;
+    }
+    .sidebar.theme-sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-        z-index: 1050 !important;
-        width: 280px !important;
+        z-index: 2147481000 !important;
     }
-
-    #main-wrapper.menu-toggle .deznav {
-        transform: translateX(0) !important;
+    #main-wrapper.menu-toggle .sidebar.theme-sidebar {
+        transform: translateX(0);
     }
-
-    /* Hamburger et nav-control toujours visibles sur mobile */
-    .nav-control,
-    .hamburger {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    /* Overlay cliquable pour fermer le menu (voir layout app.blade.php #sidebar-overlay) */
     .sidebar-overlay {
         display: none;
         position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.4);
-        z-index: 1001;
+        z-index: 2147480500;
         opacity: 0;
         transition: opacity 0.25s ease;
     }
-
     #main-wrapper.menu-toggle .sidebar-overlay {
         display: block;
         opacity: 1;
     }
-
-    .content-body {
-        margin-left: 0 !important;
-    }
-
-    .header {
-        padding-left: 5rem;
-    }
-
-    /* Sur appareil tactile en "version ordinateur" : vue large mais menu mobile */
-    @media (hover: none) and (pointer: coarse) and (max-width: 1399px) {
-        #main-wrapper .deznav {
-            position: fixed !important;
-            left: 0 !important;
-            top: 0 !important;
-            height: 100vh !important;
-            transform: translateX(-100%);
-            z-index: 1050 !important;
-        }
-        #main-wrapper.menu-toggle .deznav {
-            transform: translateX(0) !important;
-        }
-    }
-
-    /* Sur mobile/tablette : quand le menu est ouvert, sidebar large + texte lisible (pas de coupure) */
-    #main-wrapper.menu-toggle .deznav {
-        width: 85vw !important;
-        max-width: 320px !important;
-        overflow: visible !important;
-    }
-
-    #main-wrapper.menu-toggle .deznav .deznav-scroll,
-    #main-wrapper.menu-toggle .deznav .slimScrollDiv {
-        overflow-x: visible !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    #main-wrapper.menu-toggle .deznav .nav-text {
-        display: inline-block !important;
-        white-space: normal !important;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-        line-height: 1.35 !important;
-    }
-
-    #main-wrapper.menu-toggle .deznav .metismenu li a {
-        padding: 14px 16px !important;
-        text-align: left !important;
-        justify-content: flex-start;
-        align-items: center;
-        display: flex !important;
-        flex-wrap: nowrap;
-        white-space: normal !important;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        min-height: 48px;
-    }
-
-    #main-wrapper.menu-toggle .deznav .metismenu li a > i,
-    #main-wrapper.menu-toggle .deznav .metismenu li a > svg {
-        margin-right: 14px !important;
-        flex-shrink: 0 !important;
-    }
-
-    /* Sous-menu : texte complet visible, alignement propre */
-    #main-wrapper.menu-toggle .deznav .metismenu li ul a {
-        padding: 12px 16px 12px 2.5rem !important;
-        white-space: normal !important;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        line-height: 1.4 !important;
-        display: block !important;
-    }
-
-    #main-wrapper.menu-toggle .deznav .metismenu .has-arrow:after {
-        display: block !important;
-        flex-shrink: 0 !important;
-    }
-
-    #main-wrapper.menu-toggle .deznav .copyright {
-        display: block !important;
-    }
-
-    /* Éviter toute troncature ou débordement caché */
-    #main-wrapper.menu-toggle .deznav .metismenu a {
-        overflow: visible !important;
-    }
-
-    /* Sous-menus en mode « dépliant » au tap (plus de fly-out au survol) */
-    #main-wrapper.menu-toggle .deznav .metismenu li > ul {
-        position: static !important;
-        left: auto !important;
-        right: auto !important;
-        top: auto !important;
-        box-shadow: none !important;
-        padding-left: 1rem !important;
-        margin-top: 0 !important;
-        display: none;
-        background: rgba(0, 0, 0, 0.15) !important;
-        border-radius: 0.25rem;
-        margin-bottom: 0.25rem;
-    }
-
-    #main-wrapper.menu-toggle .deznav .metismenu li.mm-active > ul,
-    #main-wrapper.menu-toggle .deznav .metismenu li .mm-show {
-        display: block !important;
-        height: auto !important;
-        overflow: visible !important;
-    }
-
-    #main-wrapper.menu-toggle .deznav .metismenu li > ul li > ul {
-        position: static !important;
-        left: auto !important;
-        padding-left: 1rem !important;
-    }
-
-    #main-wrapper.menu-toggle .deznav .metismenu li > ul li.mm-active > ul,
-    #main-wrapper.menu-toggle .deznav .metismenu li > ul li .mm-show,
-    #main-wrapper.menu-toggle .deznav .metismenu ul.mm-show {
-        display: block !important;
-    }
-
-    /* Zone de contenu : padding réduit sur mobile */
-    .content-body .container-fluid {
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-    }
-}
-
-/* Cibles tactiles minimales 44px (recommandation accessibilité) */
-@media (pointer: coarse) {
-    .deznav .metismenu a,
-    .nav-control,
-    .btn:not(.btn-sm),
-    .dropdown-toggle,
-    .page-link {
-        min-height: 44px;
-        min-width: 44px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .deznav .metismenu a {
-        padding: 12px 20px;
-    }
-
-    .card-header .btn-sm {
-        min-height: 40px;
-        padding: 8px 14px;
-    }
-}
-
-/* Tablettes */
-@media (max-width: 768px) {
-    .widget-stat .media-body h4 {
-        font-size: 1.5rem;
-    }
-
-    .card-header {
-        padding: 16px;
-    }
-
-    .card-body {
-        padding: 16px;
-    }
-
-    .dashboard_bar span {
-        font-size: 0.95rem;
-    }
-
-    .header .navbar .header-right .nav-item .nav-link {
-        padding: 0.5rem;
-    }
-}
-
-/* Tableaux : défilement horizontal dès que l'écran est étroit (dont 1080px en contenu utile) */
-.table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-}
-
-/* Forcer le tableau à garder ses colonnes et à être scrollable horizontalement */
-@media (max-width: 1199.98px) {
-    .table-responsive {
-        margin-left: -0.75rem;
-        margin-right: -0.75rem;
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .table-responsive.overflow-hidden {
-        overflow-x: auto !important;
-    }
-
-    .content-body .container-fluid .table-responsive {
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .table-responsive .table,
-    .table-responsive table.dataTable {
-        min-width: 600px;
-        width: 100% !important;
-    }
-
-    .table-responsive .table td,
-    .table-responsive .table th {
-        white-space: nowrap;
-    }
-
-    .table-responsive .table td:first-child,
-    .table-responsive .table th:first-child {
-        white-space: normal;
-        min-width: 140px;
-    }
-
-    .table-responsive .table td code,
-    .table-responsive .table td .badge {
-        white-space: normal;
-        word-break: break-word;
-    }
-
-    /* DataTables : garder le scroll horizontal si le wrapper remplace table-responsive */
-    .dataTables_wrapper {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .dataTables_wrapper .dataTables_scrollBody {
-        overflow-x: auto !important;
-    }
-}
-
-/* Cartes et grilles : pleine largeur sur mobile */
-@media (max-width: 575.98px) {
-    .content-body .container-fluid {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-
-    .card-header .card-title {
-        font-size: 1.1rem;
-    }
-
-    .page-list .card-header .d-flex.gap-2,
-    .page-list .card-header .btn-action {
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .footer .copyright {
-        font-size: 0.75rem;
-        text-align: center;
-    }
-}
-
-/* ============================================
-   PAGE UTILISATEUR - DÉTAILS (scopé)
-   Respecte les variables CSS paramétrables
-   ============================================ */
-.user-details .user-hero {
-    background: linear-gradient(
-        135deg,
-        var(--titre-page, var(--primary)) 0%,
-        var(--titre-page-dark, var(--primary-dark)) 100%
-    );
-    color: white;
-    box-shadow: var(--shadow-xl);
-    position: relative;
-    overflow: hidden;
-}
-
-.user-details .user-hero::before {
-    content: '';
-    position: absolute;
-    top: -30%;
-    right: -30%;
-    width: 90%;
-    height: 160%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, transparent 60%);
-    transform: rotate(12deg);
-}
-
-.user-details .user-hero-body {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 18px;
-}
-
-.user-details .user-hero-left {
-    display: flex;
-    gap: 16px;
-    min-width: 0;
-}
-
-.user-details .user-avatar {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.18);
-    flex: 0 0 auto;
-}
-
-.user-details .user-hero-meta {
-    min-width: 0;
-}
-
-.user-details .user-hero-name {
-    font-size: 1.35rem;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 6px;
-    color: white;
-}
-
-.user-details .user-hero-sub {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    opacity: 0.95;
-    margin-bottom: 10px;
-}
-
-.user-details .user-hero-item {
-    display: inline-flex;
-    gap: 6px;
-    align-items: baseline;
-    min-width: 0;
-}
-
-.user-details .user-hero-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    opacity: 0.85;
-}
-
-.user-details .user-hero-value {
-    font-weight: 600;
-    word-break: break-word;
-}
-
-.user-details .user-hero-sep {
-    opacity: 0.8;
-}
-
-.user-details .user-hero-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.user-details .badge-secondary {
-    background: rgba(255, 255, 255, 0.16);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-}
-
-.user-details .user-hero-right {
-    flex: 0 0 auto;
-}
-
-.user-details .kv {
-    display: grid;
-    gap: 10px;
-}
-
-.user-details .kv-row {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 14px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 100%);
-    border: 1px solid rgba(0, 0, 0, 0.04);
-}
-
-.user-details .kv-key {
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.user-details .kv-val {
-    color: #2d3748;
-    font-weight: 500;
-    word-break: break-word;
-}
-
-.user-details .section-title {
-    font-weight: 800;
-    color: var(--primary);
-    letter-spacing: 0.2px;
-    margin-bottom: 10px;
-}
-
-.user-details .chip-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.user-details .chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 7px 12px;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.user-details .chip-primary {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.user-details .chip-info {
-    background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(0, 51, 102, 0.12) 100%);
-    color: var(--primary);
-    border-color: rgba(0, 51, 102, 0.12);
-}
-
-.user-details .permission-groups {
-    display: grid;
-    gap: 14px;
-}
-
-.user-details .permission-group {
-    padding: 12px 12px 14px;
-    border-radius: 14px;
-    background: rgba(0, 0, 0, 0.02);
-    border: 1px solid rgba(0, 0, 0, 0.04);
-}
-
-.user-details .permission-group-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.user-details .permission-group-title {
-    font-weight: 900;
-    color: var(--primary);
-    letter-spacing: 0.6px;
-}
-
-.user-details .permission-group-count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 32px;
-    height: 26px;
-    padding: 0 10px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    color: var(--primary);
-    font-weight: 800;
-}
-
-@media (max-width: 576px) {
-    .user-details .user-hero-body {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .user-details .kv-row {
-        grid-template-columns: 1fr;
-        gap: 6px;
-    }
-}
-
-/* ============================================
-   ENHANCED UX — Design professionnel
-   Améliore l'attractivité et l'expérience utilisateur
-   ============================================ */
-body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.card {
-    transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card:hover {
-    box-shadow: 0 8px 32px rgba(0, 51, 102, 0.12) !important;
-}
-
-.btn {
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn:active {
-    transform: scale(0.98);
-}
-
-.form-control:focus,
-.form-select:focus {
-    transition: transform 0.15s ease;
-}
-
-.form-control:focus {
-    transform: translateY(-1px);
-}
-
-.table tbody tr {
-    transition: background 0.15s ease;
-}
-
-.alert {
-    border-radius: 10px;
-}
-
-a:focus-visible,
-button:focus-visible,
-input:focus-visible {
-    outline: 2px solid var(--secondary, #FFD700);
-    outline-offset: 2px;
 }
